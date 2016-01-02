@@ -1,0 +1,26 @@
+{
+  "name": "react-starter-kit",
+  "version": "1.0.0",
+  "description": "A skeleton of a react web application.",
+  "scripts": {
+    "start": "node devServer.js",
+    "lint": "eslint *.js src"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.6.18",
+    "babel-loader": "^5.1.4",
+    "babel-plugin-react-transform": "^1.1.0",
+    "eslint": "^1.9.0",
+    "eslint-plugin-react": "^3.8.0",
+    "express": "^4.13.3",
+    "react-transform-hmr": "^1.0.0",
+    "webpack": "^1.9.11",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.2.0"
+  }
+}
