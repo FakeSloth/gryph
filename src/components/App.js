@@ -35,8 +35,14 @@ class App extends Component {
     socket.on('disconnect', function(){console.log("BOO!")});
   }
 
-  onAddMessage(message) {
-    socket.emit('chat message', message);
+  onAddMessage(message, isError) {
+    if (isError) {
+      this.setState(Object.assign(this.state, {}, {
+        messages: this.state.messages.concat([message])
+      }));
+    } else {
+      socket.emit('chat message', message);
+    }
   }
 
   onAddUser(username) {
