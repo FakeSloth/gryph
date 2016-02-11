@@ -19,7 +19,7 @@ class MessageInput extends Component {
   render() {
     return (
       <form onSubmit={this.handleAddMessage}>
-        <input type="text" ref="input" />
+        <input type="text" ref="input" className="form-control" />
       </form>
     );
   }

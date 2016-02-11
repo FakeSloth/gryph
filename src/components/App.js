@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
+import Navbar from './Navbar';
 
 var socket = require('socket.io-client')();
 
@@ -9,7 +10,8 @@ class App extends Component {
     super();
 
     this.state = {
-      messages: []
+      messages: [],
+      users: []
     };
 
     this.onAddMessage = this.onAddMessage.bind(this);
@@ -32,8 +34,15 @@ class App extends Component {
   render() {
     return (
       <div>
-        <MessageList messages={this.state.messages}></MessageList>
-        <MessageInput onAddMessage={this.onAddMessage}></MessageInput>
+        <Navbar></Navbar>
+        <div className="container-fluid">
+          <div className="col-md-7"></div>
+          <div className="col-md-1"></div>
+          <div className="col-md-4">
+            <MessageList messages={this.state.messages}></MessageList>
+            <MessageInput onAddMessage={this.onAddMessage}></MessageInput>
+          </div>
+        </div>
       </div>
     );
   }

@@ -15,7 +15,7 @@ class MessageList extends Component {
     const list = this.props.messages.map((message, index) => (
       <Message message={message} key={index}></Message>
     ));
-    return <ul className="chatbox" ref="list">{list}</ul>
+    return <ul className="chatbox" ref="list">{list}</ul>;
   }
 }
 
