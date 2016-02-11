@@ -1,6 +1,20 @@
 import React, {Component} from 'react';
 
 class Navbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleAddUser = this.handleAddUser.bind(this);
+  }
+
+  handleAddUser(e) {
+    e.preventDefault();
+    const node = this.refs.input;
+    const username = node.value.trim();
+    if (!username) return;
+    this.props.onAddUser(username);
+  }
+
   render() {
     return (
       <nav className="navbar navbar-default">
@@ -16,9 +30,9 @@ class Navbar extends Component {
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form className="navbar-form navbar-right" role="search">
+            <form className="navbar-form navbar-right" onSubmit={this.handleAddUser}>
               <div className="form-group">
-                <input type="text" className="form-control" placeholder="Search" />
+                <input type="text" className="form-control" placeholder="Username" ref="input" />
               </div>
             </form>
           </div>

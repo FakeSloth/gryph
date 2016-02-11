@@ -16,12 +16,28 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+var users = {};
+
 io.on('connection', function(socket){
   console.log('a user connected');
-  socket.on('chat message', function(data) {
-    io.emit('chat message', data);
+
+  socket.on('chat message', function(message) {
+    io.emit('chat message', message);
   });
-  socket.on('disconnect', function(){
+
+  socket.on('add user', function(username) {
+    if (users[username]) return;
+    if (socket.username) {
+      delete users[socket.username];
+    }
+    socket.username = username;
+    users[username] = {username: username, ip: socket.handshake.address};
+    io.emit('update users', Object.keys(users));
+  });
+
+  socket.on('disconnect', function() {
+    delete users[socket.username];
+    io.emit('update users', Object.keys(users));
     console.log('user disconnected');
   });
 });
@@ -30,6 +46,6 @@ server.listen(port, function(error) {
   if (error) {
     console.error(error);
   } else {
-    console.info('==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.', port, port);
+    console.info('==> Listening on port %s. Open up http://localhost:%s/ in your browser.', port, port);
   }
 });

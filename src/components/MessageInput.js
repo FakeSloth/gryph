@@ -12,7 +12,7 @@ class MessageInput extends Component {
     const node = this.refs.input;
     const message = node.value.trim();
     if (!message) return;
-    this.props.onAddMessage(message);
+    this.props.onAddMessage(this.props.username + ': ' + message);
     node.value = '';
   }
 
