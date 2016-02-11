@@ -11,9 +11,16 @@ class MessageList extends Component {
   }
 
   render() {
-    const list = this.props.messages.map((message, index) => (
-      <li key={index}>{message}</li>
-    ));
+    const list = this.props.messages.map((mObj, index) => {
+      if (mObj.username) {
+        return (
+          <li key={index}>
+            <span><b>{mObj.username}:</b> {mObj.message}</span>
+          </li>
+        );
+      }
+      return <li key={index}>{mObj.message}</li>;
+    });
     return <ul className="chatbox list-unstyled" ref="list">{list}</ul>;
   }
 }

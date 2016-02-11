@@ -9,13 +9,15 @@ class MessageInput extends Component {
 
   handleAddMessage(e) {
     e.preventDefault();
-    if (!this.props.username) {
-      return this.props.onAddMessage('Please enter a username.');
-    }
     const node = this.refs.input;
+    if (!this.props.username) {
+      this.props.onAddMessage({message: 'Please enter a username.'}, true);
+      node.value = '';
+      return;
+    }
     const message = node.value.trim();
     if (!message) return;
-    this.props.onAddMessage(this.props.username + ': ' + message);
+    this.props.onAddMessage({username: this.props.username, message: message});
     node.value = '';
   }
 
