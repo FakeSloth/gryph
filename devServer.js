@@ -1,9 +1,11 @@
 var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
+var app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var config = require('./webpack.config');
 
-var app = new (require('express'))();
 var port = 3000;
 
 var compiler = webpack(config);
@@ -14,7 +16,17 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(port, function(error) {
+io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('chat message', function(data) {
+    io.emit('chat message', data);
+  });
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+server.listen(port, function(error) {
   if (error) {
     console.error(error);
   } else {
