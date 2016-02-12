@@ -32,7 +32,7 @@ io.on('connection', function(socket){
 
   socket.on('add user', function(username) {
     const userid = toId(username);
-    if (!userid || userid.length > 19) return;
+    if (!userid || userid.length > 15) return;
     if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
       users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
       socket.user = users[userid];
