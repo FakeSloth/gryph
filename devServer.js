@@ -51,11 +51,16 @@ function nextVideo(io, socket) {
   const videoid = videos.shift();
   getDuration(videoid)
     .then(duration => {
+      // 10 minute limit
+      if (duration > 600000) {
+        socket.emit('error video', {message: 'Video is too long. The limit is 10 minutes.'});
+        return nextVideo(io, socket);
+      }
       isPlaying = true;
       currentVideo = {videoid: videoid, start: Date.now()};
       setTimeout(() => {
         isPlaying = false;
-        nextVideo(io);
+        nextVideo(io, socket);
       }, duration);
       io.emit('next video', currentVideo);
     })
