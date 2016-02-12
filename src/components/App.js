@@ -16,6 +16,7 @@ class App extends Component {
       username: ''
     };
 
+    this.addMessage = this.addMessage.bind(this);
     this.onAddMessage = this.onAddMessage.bind(this);
     this.onAddUser = this.onAddUser.bind(this);
   }
@@ -23,9 +24,7 @@ class App extends Component {
   componentDidMount() {
     socket.on('connect', function(){console.log("YEAH")});
     socket.on('chat message', (message) => {
-      this.setState(Object.assign(this.state, {}, {
-        messages: this.state.messages.concat([message])
-      }));
+      this.addMessage(message);
     });
     socket.on('update users', (users) => {
       this.setState(Object.assign(this.state, {}, {
@@ -41,14 +40,14 @@ class App extends Component {
     socket.on('disconnect', function(){console.log("BOO!")});
   }
 
-  onAddMessage(message, isError) {
-    if (isError) {
-      this.setState(Object.assign(this.state, {}, {
-        messages: this.state.messages.concat([message])
-      }));
-    } else {
-      socket.emit('chat message', message);
-    }
+  addMessage(message) {
+    this.setState(Object.assign(this.state, {}, {
+      messages: this.state.messages.concat([message])
+    }));
+  }
+
+  onAddMessage(message) {
+    socket.emit('chat message', message);
   }
 
   onAddUser(username) {
@@ -61,7 +60,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar onAddUser={this.onAddUser}></Navbar>
+        <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7"></div>
           <div className="col-md-1">
@@ -69,7 +68,12 @@ class App extends Component {
           </div>
           <div className="col-md-4">
             <MessageList messages={this.state.messages}></MessageList>
-            <MessageInput onAddMessage={this.onAddMessage} username={this.state.username}></MessageInput>
+            <MessageInput
+              onAddMessage={this.onAddMessage}
+              onAddError={this.addMessage}
+              username={this.state.username}
+            >
+            </MessageInput>
           </div>
         </div>
       </div>
