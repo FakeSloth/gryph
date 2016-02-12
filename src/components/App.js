@@ -15,15 +15,17 @@ class App extends Component {
       messages: [],
       users: [],
       username: '',
-      videoStarted: false,
-      videoTimeStart: 0,
-      videoUrl: ''
+      videoUrl: '',
+      allowSeek: false,
+      videoStart: 0
     };
 
     this.addMessage = this.addMessage.bind(this);
     this.onAddMessage = this.onAddMessage.bind(this);
     this.onAddUser = this.onAddUser.bind(this);
     this.onAddVideo = this.onAddVideo.bind(this);
+    this.onPause = this.onPause.bind(this);
+    this.setAllowSeekToFalse = this.setAllowSeekToFalse.bind(this);
   }
 
   componentDidMount() {
@@ -34,9 +36,15 @@ class App extends Component {
     socket.on('error video', (err) => {
       this.addMessage(err);
     });
-    socket.on('next video', (url) => {
+    socket.on('next video', (video) => {
       this.setState(Object.assign(this.state, {}, {
-        videoUrl: url
+        videoUrl: video.videoid,
+        videoStart: video.start
+      }));
+    });
+    socket.on('start video', (data) => {
+      this.setState(Object.assign(this.state, {}, {
+        videoUrl: data.videoid
       }));
     });
     socket.on('update users', (users) => {
@@ -82,15 +90,31 @@ class App extends Component {
     node.value = '';
   }
 
+  onPause() {
+    this.setState(Object.assign(this.state, {}, {
+      allowSeek: true
+    }));
+  }
+
+  setAllowSeekToFalse() {
+    this.setState(Object.assign(this.state, {}, {
+      allowSeek: false
+    }));
+  }
+
   render() {
     return (
       <div>
         <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
-            {this.state.videoUrl === '' ?
-              <h1>No Video is playing.</h1> :
-              <Player video={this.state.videoUrl} onEnd={this.onEnd}></Player>
+            {this.state.videoUrl === '' || typeof this.state.videoUrl !== 'string' ?
+              (<h1>No Video is playing.</h1>) :
+              (<Player video={this.state.videoUrl}
+                      onPause={this.onPause}
+                      allowSeek={this.state.allowSeek}
+                      setAllowSeekToFalse={this.setAllowSeekToFalse}
+                      start={this.state.videoStart}></Player>)
             }
             <form onSubmit={this.onAddVideo}>
               <input type="text" placeholder="Add Video" ref="add_video" className="form-control" />

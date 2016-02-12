@@ -57,7 +57,7 @@ function nextVideo(io, socket) {
         isPlaying = false;
         nextVideo(io);
       }, duration);
-      io.emit('next video', videoid);
+      io.emit('next video', currentVideo);
     })
     .catch(error => {
       socket.emit('error video', {message: 'Invalid video url.'});
@@ -68,6 +68,9 @@ io.on('connection', function(socket){
   console.log('a user connected');
 
   socket.emit('chat history', {users: Object.keys(users).map(userid => users[userid].username), history: history});
+  if (isPlaying) {
+    socket.emit('start video', currentVideo);
+  }
 
   socket.on('add video', function(video) {
     videos.push(video);

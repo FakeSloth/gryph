@@ -4,10 +4,16 @@ import YouTube from 'react-youtube';
 class Player extends Component {
   constructor(props) {
     super(props);
+
+    this.onPlay = this.onPlay.bind(this);
   }
 
-  onError(e) {
-    console.log(e.data)
+  onPlay(e) {
+    const player = e.target;
+    if (this.props.allowSeek) {
+      player.seekTo((Date.now()-this.props.start)/1000, true);
+      this.props.setAllowSeekToFalse();
+    }
   }
 
   render() {
@@ -16,7 +22,7 @@ class Player extends Component {
         autoplay: 1,
         fs: 0,
         rel: 0,
-        modestbranding: 1,
+        modestbranding: 1
       }
     };
 
@@ -25,7 +31,8 @@ class Player extends Component {
         <YouTube
           className="embed-responsive-item"
           videoId={this.props.video}
-          onError={this.onError}
+          onPlay={this.onPlay}
+          onPause={this.props.onPause}
           opts={opts}
         />
       </div>
