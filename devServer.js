@@ -32,29 +32,33 @@ function getDuration(id) {
     const url = 'https://www.googleapis.com/youtube/v3/videos?id=' + id + '&key=AIzaSyDYwPzLevXauI-kTSVXTLroLyHEONuF9Rw&part=snippet,contentDetails';
     got(url)
       .then(response => {
-        // TODO: CHECK FOR BAD ID
-        const time = JSON.parse(response.body).items[0].contentDetails.duration;
+        const json = JSON.parse(response.body);
+        if (!json.items.length) return reject();
+        const time = json.items[0].contentDetails.duration;
         resolve(moment.duration(time).asMilliseconds());
       })
       .catch(error => console.log(error.response.body));
   });
 }
 
-function nextVideo(io) {
+function nextVideo(io, socket) {
   if (isPlaying) return;
   if (videos.isEmpty()) {
     isPlaying = false;
     return;
-  };
-  isPlaying = true;
+  }
   const videoid = videos.shift();
   getDuration(videoid)
     .then(duration => {
+      isPlaying = true;
       setTimeout(() => {
         isPlaying = false;
         nextVideo(io);
       }, duration);
       io.emit('next video', videoid);
+    })
+    .catch(error => {
+      socket.emit('error video', {message: 'Invalid video url.'});
     });
 }
 
@@ -65,7 +69,7 @@ io.on('connection', function(socket){
 
   socket.on('add video', function(video) {
     videos.push(video);
-    nextVideo(io);
+    nextVideo(io, socket);
   });
 
   socket.on('chat message', function(data) {

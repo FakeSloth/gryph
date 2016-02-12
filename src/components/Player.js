@@ -6,6 +6,10 @@ class Player extends Component {
     super(props);
   }
 
+  onError(e) {
+    console.log(e.data)
+  }
+
   render() {
     const opts = {
       playerVars: { // https://developers.google.com/youtube/player_parameters
@@ -21,7 +25,7 @@ class Player extends Component {
         <YouTube
           className="embed-responsive-item"
           videoId={this.props.video}
-          onEnd={this.props.onEnd}
+          onError={this.onError}
           opts={opts}
         />
       </div>

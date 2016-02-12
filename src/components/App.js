@@ -31,6 +31,9 @@ class App extends Component {
     socket.on('chat message', (message) => {
       this.addMessage(message);
     });
+    socket.on('error video', (err) => {
+      this.addMessage(err);
+    });
     socket.on('next video', (url) => {
       this.setState(Object.assign(this.state, {}, {
         videoUrl: url
