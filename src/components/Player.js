@@ -10,6 +10,7 @@ class Player extends Component {
 
   onPlay(e) {
     const player = e.target;
+    console.log(this.props.allowSeek);
     if (this.props.allowSeek) {
       player.seekTo((Date.now()-this.props.start)/1000, true);
       this.props.setAllowSeekToFalse();

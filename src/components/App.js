@@ -42,9 +42,11 @@ class App extends Component {
         videoStart: video.start
       }));
     });
-    socket.on('start video', (data) => {
+    socket.on('start video', (video) => {
       this.setState(Object.assign(this.state, {}, {
-        videoUrl: data.videoid
+        videoUrl: video.videoid,
+        videoStart: video.start,
+        allowSeek: true
       }));
     });
     socket.on('update users', (users) => {
@@ -91,6 +93,7 @@ class App extends Component {
   }
 
   onPause() {
+    console.log('SOMEONE pAUSED')
     this.setState(Object.assign(this.state, {}, {
       allowSeek: true
     }));
