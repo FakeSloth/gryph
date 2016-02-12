@@ -23,9 +23,9 @@ app.get('/', function(req, res) {
 
 var users = {};
 var history = [];
-var currentVideoDuration = 0;
 var videos = new Deque();
 var isPlaying = false;
+var currentVideo = {videoid: '', start: 0};
 
 function getDuration(id) {
   return new Promise((resolve, reject) => {
@@ -51,6 +51,7 @@ function nextVideo(io, socket) {
   getDuration(videoid)
     .then(duration => {
       isPlaying = true;
+      currentVideo = {videoid: videoid, start: Date.now()};
       setTimeout(() => {
         isPlaying = false;
         nextVideo(io);
