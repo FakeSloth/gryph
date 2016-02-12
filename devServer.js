@@ -5,6 +5,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var config = require('./webpack.config');
+var toId = require('./toId');
 
 var port = process.env.PORT || 3000;
 
@@ -26,18 +27,25 @@ io.on('connection', function(socket){
   });
 
   socket.on('add user', function(username) {
-    if (users[username]) return;
-    if (socket.username) {
-      delete users[socket.username];
+    const userid = toId(username);
+    if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
+      users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
+      socket.user = users[userid];
+      io.emit('update users', Object.keys(users).map(userid => users[userid].username));
+      return;
     }
-    socket.username = username;
-    users[username] = {username: username, ip: socket.handshake.address};
-    io.emit('update users', Object.keys(users));
+    if (users[userid]) return;
+    if (socket.user && socket.user.userid) {
+      delete users[socket.user.userid];
+    }
+    users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
+    socket.user = users[userid];
+    io.emit('update users', Object.keys(users).map(userid => users[userid].username));
   });
 
   socket.on('disconnect', function() {
-    delete users[socket.username];
-    io.emit('update users', Object.keys(users));
+    if (socket.user) delete users[socket.user.userid];
+    io.emit('update users', Object.keys(users).map(userid => users[userid].username));
     console.log('user disconnected');
   });
 });

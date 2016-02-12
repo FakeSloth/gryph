@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import colors from '../../colors';
 
 class UserList extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class UserList extends Component {
 
   render() {
     const list = this.props.users.map((user, index) => (
-      <li key={index}>{user}</li>
+      <li key={index}><b style={{color: colors(user)}}>{user}</b></li>
     ));
     const numUsers = this.props.users.length;
     return (

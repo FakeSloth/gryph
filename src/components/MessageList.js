@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import colors from '../../colors';
 
 class MessageList extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class MessageList extends Component {
       if (mObj.username) {
         return (
           <li key={index}>
-            <span><b>{mObj.username}:</b> {mObj.message}</span>
+            <span><b style={{color: colors(mObj.username)}}>{mObj.username}:</b> {mObj.message}</span>
           </li>
         );
       }
