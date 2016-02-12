@@ -4,7 +4,6 @@ var crypto = require('crypto');
 var toId = require('./toId');
 var colorCache = {};
 
-// hashColor function
 function hashColor(name) {
 	name = toId(name);
 	if (colorCache[name]) return colorCache[name];
