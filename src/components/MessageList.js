@@ -16,7 +16,9 @@ class MessageList extends Component {
       if (mObj.username) {
         return (
           <li key={index}>
-            <span><b style={{color: colors(mObj.username)}}>{mObj.username}:</b> {mObj.message}</span>
+            <b style={{color: colors(mObj.username)}}>{mObj.username}:</b>
+            {' '}
+            <span dangerouslySetInnerHTML={mObj.message}></span>
           </li>
         );
       }
