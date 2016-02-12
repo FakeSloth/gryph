@@ -45,6 +45,7 @@ function nextVideo(io, socket) {
   if (isPlaying) return;
   if (videos.isEmpty()) {
     isPlaying = false;
+    io.emit('next video', '');
     return;
   }
   const videoid = videos.shift();

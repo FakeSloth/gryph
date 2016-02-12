@@ -88,7 +88,10 @@ class App extends Component {
         <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
-            <Player video={this.state.videoUrl} onEnd={this.onEnd}></Player>
+            {this.state.videoUrl === '' ?
+              <h1>No Video is playing.</h1> :
+              <Player video={this.state.videoUrl} onEnd={this.onEnd}></Player>
+            }
             <form onSubmit={this.onAddVideo}>
               <input type="text" placeholder="Add Video" ref="add_video" className="form-control" />
             </form>
