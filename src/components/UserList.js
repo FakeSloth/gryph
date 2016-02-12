@@ -19,7 +19,6 @@ class UserList extends Component {
       if (a > b) return 1;
       return 0;
     });
-    console.log(users);
     const list = users.map((user, index) => (
       <li key={index}><b style={{color: colors(user)}}>{user}</b></li>
     ));

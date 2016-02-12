@@ -7,6 +7,9 @@ var io = require('socket.io')(server);
 var config = require('./webpack.config');
 var toId = require('./toId');
 var parse = require('./parse');
+var Deque = require("double-ended-queue");
+var got = require('got');
+var moment = require('moment');
 
 var port = process.env.PORT || 3000;
 
@@ -20,15 +23,54 @@ app.get('/', function(req, res) {
 
 var users = {};
 var history = [];
+var currentVideoDuration = 0;
+var videos = new Deque();
+var isPlaying = false;
+
+function getDuration(id) {
+  return new Promise((resolve, reject) => {
+    const url = 'https://www.googleapis.com/youtube/v3/videos?id=' + id + '&key=AIzaSyDYwPzLevXauI-kTSVXTLroLyHEONuF9Rw&part=snippet,contentDetails';
+    got(url)
+      .then(response => {
+        // TODO: CHECK FOR BAD ID
+        const time = JSON.parse(response.body).items[0].contentDetails.duration;
+        resolve(moment.duration(time).asMilliseconds());
+      })
+      .catch(error => console.log(error.response.body));
+  });
+}
+
+function nextVideo(io) {
+  if (isPlaying) return;
+  if (videos.isEmpty()) {
+    isPlaying = false;
+    return;
+  };
+  isPlaying = true;
+  const videoid = videos.shift();
+  getDuration(videoid)
+    .then(duration => {
+      setTimeout(() => {
+        isPlaying = false;
+        nextVideo(io);
+      }, duration);
+      io.emit('next video', videoid);
+    });
+}
 
 io.on('connection', function(socket){
   console.log('a user connected');
 
   socket.emit('chat history', {users: Object.keys(users).map(userid => users[userid].username), history: history});
 
+  socket.on('add video', function(video) {
+    videos.push(video);
+    nextVideo(io);
+  });
+
   socket.on('chat message', function(data) {
     if (data.message.length > 300) return;
-    if (typeof data === 'object') {
+    if (typeof data === 'object' && data.hasOwnProperty('username')) {
         const markup = {__html: parse(data.message)};
         data = {username: data.username, message: markup};
     }
