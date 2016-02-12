@@ -18,11 +18,15 @@ app.get('/', function(req, res) {
 });
 
 var users = {};
+var history = [];
 
 io.on('connection', function(socket){
   console.log('a user connected');
 
+  socket.emit('chat history', {users: Object.keys(users).map(userid => users[userid].username), history: history});
+
   socket.on('chat message', function(message) {
+    history.push(message);
     io.emit('chat message', message);
   });
 

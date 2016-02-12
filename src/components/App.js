@@ -32,6 +32,12 @@ class App extends Component {
         users: users
       }));
     });
+    socket.on('chat history', ({users, history}) => {
+      this.setState(Object.assign(this.state, {}, {
+        users: users,
+        messages: history
+      }));
+    });
     socket.on('disconnect', function(){console.log("BOO!")});
   }
 
