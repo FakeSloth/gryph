@@ -6,8 +6,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var config = require('./webpack.config');
 var toId = require('./toId');
-var demFeels = require('dem-feels');
-var escapeHTML = require('./escapehtml');
+var parse = require('./parse');
 
 var port = process.env.PORT || 3000;
 
@@ -29,7 +28,7 @@ io.on('connection', function(socket){
 
   socket.on('chat message', function(data) {
     if (typeof data === 'object') {
-        const markup = {__html: demFeels(escapeHTML(data.message))}
+        const markup = {__html: parse(data.message)};
         data = {username: data.username, message: markup};
     }
     history.push(data);
