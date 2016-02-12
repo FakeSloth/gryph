@@ -27,6 +27,7 @@ io.on('connection', function(socket){
   socket.emit('chat history', {users: Object.keys(users).map(userid => users[userid].username), history: history});
 
   socket.on('chat message', function(data) {
+    if (data.message.length > 300) return;
     if (typeof data === 'object') {
         const markup = {__html: parse(data.message)};
         data = {username: data.username, message: markup};

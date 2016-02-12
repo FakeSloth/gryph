@@ -16,6 +16,7 @@ class MessageInput extends Component {
       return;
     }
     const message = node.value.trim();
+    if (message.length > 300) return this.props.onAddError({message: 'Message too long.'});
     if (!message) return;
     this.props.onAddMessage({username: this.props.username, message: message});
     node.value = '';
