@@ -12,7 +12,14 @@ class UserList extends Component {
   }
 
   render() {
-    const list = this.props.users.map((user, index) => (
+    const users = this.props.users;
+    users.sort((a, b) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+    console.log(users);
+    const list = users.map((user, index) => (
       <li key={index}><b style={{color: colors(user)}}>{user}</b></li>
     ));
     const numUsers = this.props.users.length;
