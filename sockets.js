@@ -6,7 +6,7 @@ const moment = require('moment');
 
 const config = require('./config');
 const utils = require('./utils');
-const parse = require('./parse');
+const parser = require('./parser');
 
 let users = {};
 let history = [];
@@ -60,7 +60,7 @@ function sockets(io) {
     socket.on('chat message', (data) => {
       if (data.message.length > 300) return;
       if (typeof data === 'object' && data.hasOwnProperty('username')) {
-        const markup = {__html: parse(data.message)};
+        const markup = {__html: parser(data.message)};
         data = {username: data.username, message: markup};
       }
       history.push(data);

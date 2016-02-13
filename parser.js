@@ -3,7 +3,7 @@
 const demFeels = require('dem-feels');
 const escapeHTML = require('./utils').escapeHTML;
 
-function parse(str) {
+function parser(str) {
   // escape html
   str = escapeHTML(str);
   // ``code``
@@ -25,4 +25,4 @@ function parse(str) {
   return str;
 }
 
-module.exports = parse;
+module.exports = parser;
