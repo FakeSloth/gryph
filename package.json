@@ -1,9 +1,9 @@
 {
-  "name": "react-starter-kit",
+  "name": "gryph",
   "version": "1.0.0",
   "description": "A skeleton of a react web application.",
   "scripts": {
-    "start": "node devServer.js",
+    "start": "node server.js",
     "lint": "eslint *.js src"
   },
   "license": "MIT",
