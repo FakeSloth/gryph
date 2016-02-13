@@ -35,11 +35,16 @@ class Navbar extends Component {
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form className="navbar-form navbar-right" onSubmit={this.handleAddUser}>
-              <div className="form-group">
-                <input type="text" className="form-control" placeholder="Username" ref="input" />
-              </div>
-            </form>
+            {this.props.chooseName ?
+              (<form className="navbar-form navbar-right" onSubmit={this.handleAddUser}>
+                <div className="form-group">
+                  <input type="text" className="form-control" placeholder="Username" ref="input" />
+                </div>
+              </form>) :
+              (<form className="navbar-form navbar-right">
+                <button onClick={this.props.onChooseName} className="btn btn-primary">Choose Name</button>
+              </form>)
+            }
           </div>
         </div>
       </nav>

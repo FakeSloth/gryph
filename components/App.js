@@ -13,6 +13,7 @@ class App extends Component {
 
     this.state = {
       allowSeek: false,
+      chooseName: false,
       messages: [],
       username: '',
       users: [],
@@ -26,6 +27,7 @@ class App extends Component {
     this.onAddVideo = this.onAddVideo.bind(this);
     this.onPause = this.onPause.bind(this);
     this.setAllowSeekToFalse = this.setAllowSeekToFalse.bind(this);
+    this.onChooseName = this.onChooseName.bind(this);
   }
 
   componentDidMount() {
@@ -113,13 +115,22 @@ class App extends Component {
     }));
   }
 
+  onChooseName() {
+    this.setState(Object.assign(this.state, {}, {
+      chooseName: true
+    }));
+  }
+
   render() {
     const videoId = this.state.videoId;
     const hasVideoId = videoId === '' || typeof videoId !== 'string';
 
     return (
       <div>
-        <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
+        <Navbar onAddUser={this.onAddUser}
+                onAddError={this.addMessage}
+                onChooseName={this.onChooseName}
+                chooseName={this.state.chooseName}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
             {hasVideoId ?
