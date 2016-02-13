@@ -4,7 +4,7 @@
   "description": "A video sharing chat application.",
   "scripts": {
     "start": "node server.js",
-    "lint": "eslint *.js src"
+    "test": "eslint *.js components/*.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
     "babel-preset-react-hmre": "^1.0.1",
-    "eslint": "^2.0.0",
+    "eslint": "^1.9.0",
     "eslint-plugin-react": "^3.8.0",
     "express": "^4.13.3",
     "webpack": "^1.9.11",
