@@ -13,7 +13,7 @@ let history = [];
 let videos = new Deque();
 
 let isPlaying = false;
-let currentVideo = {videoid: '', start: 0};
+let currentVideo = {id: '', start: 0};
 
 function sockets(io) {
   io.on('connection', (socket) => {
@@ -109,11 +109,11 @@ function nextVideo(io, socket) {
     .then(duration => {
       // 10 minute limit
       if (duration > 600000) {
-        socket.emit('error video', {message: 'Video is too long. The limit is 10 minutes.'});
+        socket.emit('chat message', {message: 'Video is too long. The limit is 10 minutes.'});
         return nextVideo(io, socket);
       }
       isPlaying = true;
-      currentVideo = {videoid: videoid, start: Date.now()};
+      currentVideo = {id: videoid, start: Date.now()};
       setTimeout(() => {
         isPlaying = false;
         nextVideo(io, socket);
@@ -121,7 +121,7 @@ function nextVideo(io, socket) {
       io.emit('next video', currentVideo);
     })
     .catch(() => {
-      socket.emit('error video', {message: 'Invalid video url.'});
+      socket.emit('chat message', {message: 'Invalid video url.'});
     });
 }
 

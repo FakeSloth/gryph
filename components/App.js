@@ -2,21 +2,21 @@ import React, {Component} from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import Navbar from './Navbar';
-import UserList from './UserList';
 import Player from './Player';
+import UserList from './UserList';
 
-var socket = require('socket.io-client')();
+let socket = require('socket.io-client')();
 
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      messages: [],
-      users: [],
-      username: '',
-      videoUrl: '',
       allowSeek: false,
+      messages: [],
+      username: '',
+      users: [],
+      videoId: '',
       videoStart: 0
     };
 
@@ -29,38 +29,43 @@ class App extends Component {
   }
 
   componentDidMount() {
-    socket.on('connect', function(){console.log("YEAH")});
-    socket.on('chat message', (message) => {
-      this.addMessage(message);
-    });
-    socket.on('error video', (err) => {
-      this.addMessage(err);
-    });
-    socket.on('next video', (video) => {
-      this.setState(Object.assign(this.state, {}, {
-        videoUrl: video.videoid,
-        videoStart: video.start
-      }));
-    });
-    socket.on('start video', (video) => {
-      this.setState(Object.assign(this.state, {}, {
-        videoUrl: video.videoid,
-        videoStart: video.start,
-        allowSeek: true
-      }));
-    });
-    socket.on('update users', (users) => {
-      this.setState(Object.assign(this.state, {}, {
-        users: users
-      }));
-    });
+    // @params users :: Array
+    // @params history :: Array
     socket.on('chat history', ({users, history}) => {
       this.setState(Object.assign(this.state, {}, {
         users: users,
         messages: history
       }));
     });
-    socket.on('disconnect', function(){console.log("BOO!")});
+
+    // @param data :: Object {message: String, username(Optional): String}
+    socket.on('chat message', (data) => {
+      this.addMessage(data);
+    });
+
+    // @param video :: Object {id: String, start: Date}
+    socket.on('next video', (video) => {
+      this.setState(Object.assign(this.state, {}, {
+        videoId: video.id,
+        videoStart: video.start
+      }));
+    });
+
+    // @param video :: Object {id: String, start: Date}
+    socket.on('start video', (video) => {
+      this.setState(Object.assign(this.state, {}, {
+        videoId: video.id,
+        videoStart: video.start,
+        allowSeek: true
+      }));
+    });
+
+    // @param users :: Array (String)
+    socket.on('update users', (users) => {
+      this.setState(Object.assign(this.state, {}, {
+        users: users
+      }));
+    });
   }
 
   addMessage(message) {
@@ -85,7 +90,9 @@ class App extends Component {
     const node = this.refs.add_video;
     const video = node.value.trim();
     const parts = video.split('=');
-    if (parts.length < 2) return this.addMessage({message: 'Invalid Video Url'});
+    if (parts.length < 2) {
+      return this.addMessage({message: 'Invalid Video Url'});
+    }
     const url = parts[1].trim();
     if (!url) return this.addMessage({message: 'Invalid Video Url'});
     socket.emit('add video', url);
@@ -93,7 +100,6 @@ class App extends Component {
   }
 
   onPause() {
-    console.log('SOMEONE pAUSED')
     this.setState(Object.assign(this.state, {}, {
       allowSeek: true
     }));
@@ -106,19 +112,21 @@ class App extends Component {
   }
 
   render() {
+    const videoId = this.state.videoId;
+    const hasVideoId = videoId === '' || typeof videoId !== 'string';
+
     return (
       <div>
         <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
-            {this.state.videoUrl === '' || typeof this.state.videoUrl !== 'string' ?
-              (<h1>No Video is playing.</h1>) :
-              (<Player video={this.state.videoUrl}
-                      onPause={this.onPause}
-                      allowSeek={this.state.allowSeek}
-                      setAllowSeekToFalse={this.setAllowSeekToFalse}
-                      start={this.state.videoStart}></Player>)
-            }
+            {hasVideoId ? <h1>No Video is playing.</h1> :
+              (<Player videoId={this.state.videoId}
+                       onPause={this.onPause}
+                       allowSeek={this.state.allowSeek}
+                       setAllowSeekToFalse={this.setAllowSeekToFalse}
+                       start={this.state.videoStart}
+              ></Player>)}
             <form onSubmit={this.onAddVideo}>
               <input type="text" placeholder="Add Video" ref="add_video" className="form-control" />
             </form>
