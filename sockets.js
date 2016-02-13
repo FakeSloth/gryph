@@ -9,7 +9,7 @@ const utils = require('./utils');
 const parser = require('./parser');
 
 let users = {};
-let history = [];
+let chatHistory = [];
 let videos = new Deque();
 
 let isPlaying = false;
@@ -21,7 +21,7 @@ function sockets(io) {
     * On initial connect.
     */
 
-    socket.emit('chat history', {users: getUsernames(), history: history});
+    socket.emit('chat history', {users: getUsernames(), history: chatHistory});
 
     if (isPlaying) {
       socket.emit('start video', currentVideo);
@@ -63,7 +63,7 @@ function sockets(io) {
         const markup = {__html: parser(data.message)};
         data = {username: data.username, message: markup};
       }
-      history.push(data);
+      chatHistory.push(data);
       io.emit('chat message', data);
     });
 

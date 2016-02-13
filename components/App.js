@@ -90,12 +90,14 @@ class App extends Component {
     const node = this.refs.add_video;
     const video = node.value.trim();
     const parts = video.split('=');
+    const error = {message: 'Invalid video url.', context: 'text-danger'};
     if (parts.length < 2) {
-      return this.addMessage({message: 'Invalid Video Url.'});
+      return this.addMessage(error);
     }
     const url = parts[1].trim();
-    if (!url) return this.addMessage({message: 'Invalid Video Url.'});
+    if (!url) return this.addMessage(error);
     socket.emit('add video', url);
+    this.addMessage({message: video + ' added.', context: 'text-success'});
     node.value = '';
   }
 

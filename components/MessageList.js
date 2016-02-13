@@ -22,6 +22,13 @@ class MessageList extends Component {
           </li>
         );
       }
+      if (mObj.context) {
+        return (
+          <li key={index}>
+            <span className={mObj.context}>{mObj.message}</span>
+          </li>
+        );
+      }
       return <li key={index}>{mObj.message}</li>;
     });
     return <ul className="chatbox list-unstyled" ref="list">{list}</ul>;

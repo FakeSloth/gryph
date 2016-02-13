@@ -10,13 +10,14 @@ class MessageInput extends Component {
   handleAddMessage(e) {
     e.preventDefault();
     const node = this.refs.input;
+    const error = (msg) => ({message: msg, context: 'text-danger'});
     if (!this.props.username) {
-      this.props.onAddError({message: 'Please enter a username.'});
+      this.props.onAddError(error('Please enter a username.'));
       node.value = '';
       return;
     }
     const message = node.value.trim();
-    if (message.length > 300) return this.props.onAddError({message: 'Message too long.'});
+    if (message.length > 300) return this.props.onAddError(error('Message too long.'));
     if (!message) return;
     this.props.onAddMessage({username: this.props.username, message: message});
     node.value = '';

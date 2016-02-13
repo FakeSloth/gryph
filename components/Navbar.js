@@ -12,10 +12,11 @@ class Navbar extends Component {
     e.preventDefault();
     const node = this.refs.input;
     const username = node.value.trim();
-    if (!username) return this.props.onAddError({message: 'Username cannot be empty.'});
+    const error = (msg) => ({message: msg, context: 'text-danger'});
+    if (!username) return this.props.onAddError(error('Username cannot be empty.'));
     const userid = toId(username);
-    if (!userid) return this.props.onAddError({message: 'Only letters and numbers are allowed.'});
-    if (userid.length > 15) return this.props.onAddError({message: 'Cannot be longer than 15 characters.'});
+    if (!userid) return this.props.onAddError(error('Only letters and numbers are allowed in username.'));
+    if (userid.length > 15) return this.props.onAddError(error('Username cannot be longer than 15 characters.'));
     this.props.onAddUser(username);
   }
 
