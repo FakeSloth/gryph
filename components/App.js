@@ -91,10 +91,10 @@ class App extends Component {
     const video = node.value.trim();
     const parts = video.split('=');
     if (parts.length < 2) {
-      return this.addMessage({message: 'Invalid Video Url'});
+      return this.addMessage({message: 'Invalid Video Url.'});
     }
     const url = parts[1].trim();
-    if (!url) return this.addMessage({message: 'Invalid Video Url'});
+    if (!url) return this.addMessage({message: 'Invalid Video Url.'});
     socket.emit('add video', url);
     node.value = '';
   }
@@ -120,15 +120,24 @@ class App extends Component {
         <Navbar onAddUser={this.onAddUser} onAddError={this.addMessage}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
-            {hasVideoId ? <h1>No Video is playing.</h1> :
+            {hasVideoId ?
+              (<div className="jumbotron"><h1>No video is playing.</h1></div>) :
               (<Player videoId={this.state.videoId}
                        onPause={this.onPause}
                        allowSeek={this.state.allowSeek}
                        setAllowSeekToFalse={this.setAllowSeekToFalse}
                        start={this.state.videoStart}
               ></Player>)}
+            <br />
             <form onSubmit={this.onAddVideo}>
-              <input type="text" placeholder="Add Video" ref="add_video" className="form-control" />
+              <div className="row">
+                <div className="col-md-10">
+                  <input type="text" placeholder="YouTube Video Url" ref="add_video" className="form-control" />
+                </div>
+                <div className="col-md-2">
+                  <button type="submit" className="btn btn-default">Add Video</button>
+                </div>
+              </div>
             </form>
           </div>
           <div className="col-md-1">
