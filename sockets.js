@@ -9,17 +9,19 @@ const utils = require('./utils');
 const parser = require('./parser');
 
 let users = {};
+let numUsers = 0;
 let chatHistory = [];
 let videos = new Deque();
 
 let isPlaying = false;
-let currentVideo = {id: '', start: 0};
+let currentVideo = {id: '', start: 0, username: ''};
 
 function sockets(io) {
   io.on('connection', (socket) => {
     /**
     * On initial connect.
     */
+    numUsers++;
 
     socket.emit('chat history', {users: getUsernames(), history: chatHistory});
 
@@ -52,7 +54,8 @@ function sockets(io) {
 
     // @param videoId :: String
     socket.on('add video', (videoId) => {
-      videos.push(videoId);
+      const username = (socket.user && socket.user.username) || 'Guest ' + numUsers;
+      videos.push({id: videoId, username});
       nextVideo(io, socket);
     });
 
@@ -74,15 +77,14 @@ function sockets(io) {
   });
 }
 
-function getDuration(id) {
+function getYTVideoData(id) {
   return new Promise((resolve, reject) => {
     const url = 'https://www.googleapis.com/youtube/v3/videos?id=' + id + '&key=' + config.googleAPIKey + '&part=snippet,contentDetails';
     got(url)
       .then(response => {
         const json = JSON.parse(response.body);
         if (!json.items.length) return reject();
-        const time = json.items[0].contentDetails.duration;
-        resolve(moment.duration(time).asMilliseconds());
+        resolve(json.items[0]);
       })
       .catch(error => console.log(error.response.body));
   });
@@ -101,27 +103,30 @@ function nextVideo(io, socket) {
   if (isPlaying) return;
   if (videos.isEmpty()) {
     isPlaying = false;
-    io.emit('next video', '');
+    io.emit('next video', {id: '', start: 0, username: ''});
     return;
   }
-  const videoid = videos.shift();
-  getDuration(videoid)
-    .then(duration => {
+  const video = videos.shift();
+  const error = (msg) => ({message: msg, context: 'text-danger'});
+  getYTVideoData(video.id)
+    .then(data => {
+      const duration = moment.duration(data.contentDetails.duration).asMilliseconds();
       // 10 minute limit
       if (duration > 600000) {
-        socket.emit('chat message', {message: 'Video is too long. The limit is 10 minutes.'});
+        socket.emit('chat message', error('Video is too long. The limit is 10 minutes.'));
         return nextVideo(io, socket);
       }
       isPlaying = true;
-      currentVideo = {id: videoid, start: Date.now()};
+      currentVideo = {id: video.id, start: Date.now(), username: video.username};
       setTimeout(() => {
         isPlaying = false;
         nextVideo(io, socket);
       }, duration);
       io.emit('next video', currentVideo);
     })
-    .catch(() => {
-      socket.emit('chat message', {message: 'Invalid video url.'});
+    .catch((err) => {
+      console.error(err);
+      socket.emit('chat message', error('Invalid video url.'));
     });
 }
 

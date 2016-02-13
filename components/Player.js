@@ -10,7 +10,6 @@ class Player extends Component {
 
   onPlay(e) {
     const player = e.target;
-    console.log(this.props.allowSeek);
     if (this.props.allowSeek) {
       const diff = Date.now()-this.props.start;
       const seconds = diff/1000;

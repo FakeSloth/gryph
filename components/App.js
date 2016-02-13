@@ -4,6 +4,7 @@ import MessageInput from './MessageInput';
 import Navbar from './Navbar';
 import Player from './Player';
 import UserList from './UserList';
+import {hashColor} from '../utils';
 
 let socket = require('socket.io-client')();
 
@@ -17,8 +18,7 @@ class App extends Component {
       messages: [],
       username: '',
       users: [],
-      videoId: '',
-      videoStart: 0
+      video: {id: '', start: 0, username: ''}
     };
 
     this.addMessage = this.addMessage.bind(this);
@@ -48,16 +48,14 @@ class App extends Component {
     // @param video :: Object {id: String, start: Date}
     socket.on('next video', (video) => {
       this.setState(Object.assign(this.state, {}, {
-        videoId: video.id,
-        videoStart: video.start
+        video: video
       }));
     });
 
     // @param video :: Object {id: String, start: Date}
     socket.on('start video', (video) => {
       this.setState(Object.assign(this.state, {}, {
-        videoId: video.id,
-        videoStart: video.start,
+        video: video,
         allowSeek: true
       }));
     });
@@ -99,7 +97,7 @@ class App extends Component {
     const url = parts[1].trim();
     if (!url) return this.addMessage(error);
     socket.emit('add video', url);
-    this.addMessage({message: video + ' added.', context: 'text-success'});
+    this.addMessage({message: video + ' added to video queue.', context: 'text-success'});
     node.value = '';
   }
 
@@ -122,8 +120,9 @@ class App extends Component {
   }
 
   render() {
-    const videoId = this.state.videoId;
+    const videoId = this.state.video.id;
     const hasVideoId = videoId === '' || typeof videoId !== 'string';
+    const host = this.state.video.username;
 
     return (
       <div>
@@ -135,12 +134,15 @@ class App extends Component {
           <div className="col-md-7">
             {hasVideoId ?
               (<div className="jumbotron"><h1>No video is playing.</h1></div>) :
-              (<Player videoId={this.state.videoId}
-                       onPause={this.onPause}
-                       allowSeek={this.state.allowSeek}
-                       setAllowSeekToFalse={this.setAllowSeekToFalse}
-                       start={this.state.videoStart}
-              ></Player>)}
+              (<div>
+                <Player videoId={this.state.video.id}
+                        onPause={this.onPause}
+                        allowSeek={this.state.allowSeek}
+                        setAllowSeekToFalse={this.setAllowSeekToFalse}
+                        start={this.state.video.start}
+                ></Player>
+                <p><b>Host: <span style={{color: hashColor(host)}}>{host}</span></b></p>
+              </div>)}
             <br />
             <form onSubmit={this.onAddVideo}>
               <div className="row">

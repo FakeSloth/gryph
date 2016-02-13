@@ -60,7 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 
 app.get('/', (req, res) => {
-  res.render('index', {title: 'Project Gryph', isDev: app.get('isDev')});
+  res.render('index', {title: 'gryph', isDev: app.get('isDev')});
 });
 
 // catch 404 and forward to error handler
