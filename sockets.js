@@ -5,7 +5,7 @@ const got = require('got');
 const moment = require('moment');
 
 const config = require('./config');
-const toId = require('./toId');
+const utils = require('./utils');
 const parse = require('./parse');
 
 let users = {};
@@ -33,7 +33,7 @@ function sockets(io) {
 
     // @param username :: String
     socket.on('add user', (username) => {
-      const userid = toId(username);
+      const userid = utils.toId(username);
       if (!userid || userid.length > 19) return;
       if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
         users[userid] = {userid: userid, username: username, ip: socket.handshake.address};

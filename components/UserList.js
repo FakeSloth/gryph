@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import colors from '../colors';
+import {hashColor} from '../utils';
 
 class UserList extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class UserList extends Component {
       return 0;
     });
     const list = users.map((user, index) => (
-      <li key={index}><b style={{color: colors(user)}}>{user}</b></li>
+      <li key={index}><b style={{color: hashColor(user)}}>{user}</b></li>
     ));
     const numUsers = this.props.users.length;
     return (

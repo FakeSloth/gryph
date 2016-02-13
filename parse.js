@@ -1,5 +1,7 @@
-var demFeels = require('dem-feels');
-var escapeHTML = require('./escapehtml');
+'use strict';
+
+const demFeels = require('dem-feels');
+const escapeHTML = require('./utils').escapeHTML;
 
 function parse(str) {
   // escape html

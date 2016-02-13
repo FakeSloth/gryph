@@ -1,21 +1,41 @@
 'use strict';
 
-var crypto = require('crypto');
-var toId = require('./toId');
-var colorCache = {};
+const crypto = require('crypto');
+
+const entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+};
+
+function escapeHTML(string) {
+  return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
+}
+
+function toId(text) {
+  if (typeof text !== 'string' && typeof text !== 'number') return '';
+  return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+let colorCache = {};
 
 function hashColor(name) {
 	name = toId(name);
 	if (colorCache[name]) return colorCache[name];
-  var hash = crypto.createHash('md5').update(name).digest("hex");
-	var H = parseInt(hash.substr(4, 4), 16) % 360; // 0 to 360
-	var S = parseInt(hash.substr(0, 4), 16) % 50 + 40; // 40 to 89
-	var L = Math.floor(parseInt(hash.substr(8, 4), 16) % 20 + 30); // 30 to 49
-	var C = (100 - Math.abs(2 * L - 100)) * S / 100 / 100;
-	var X = C * (1 - Math.abs((H / 60) % 2 - 1));
-	var m = L / 100 - C / 2;
+  let hash = crypto.createHash('md5').update(name).digest("hex");
+	let H = parseInt(hash.substr(4, 4), 16) % 360; // 0 to 360
+	let S = parseInt(hash.substr(0, 4), 16) % 50 + 40; // 40 to 89
+	let L = Math.floor(parseInt(hash.substr(8, 4), 16) % 20 + 30); // 30 to 49
+	let C = (100 - Math.abs(2 * L - 100)) * S / 100 / 100;
+	let X = C * (1 - Math.abs((H / 60) % 2 - 1));
+	let m = L / 100 - C / 2;
 
-	var R1, G1, B1;
+	let R1, G1, B1;
 	switch (Math.floor(H / 60)) {
 		case 1: R1 = X; G1 = C; B1 = 0; break;
 		case 2: R1 = 0; G1 = C; B1 = X; break;
@@ -24,24 +44,24 @@ function hashColor(name) {
 		case 5: R1 = C; G1 = 0; B1 = X; break;
 		case 0: default: R1 = C; G1 = X; B1 = 0; break;
 	}
-	var lum = (R1 + m) * 0.2126 + (G1 + m) * 0.7152 + (B1 + m) * 0.0722; // 0.05 (dark blue) to 0.93 (yellow)
-	var HLmod = (lum - 0.5) * -100; // -43 (yellow) to 45 (dark blue)
+	let lum = (R1 + m) * 0.2126 + (G1 + m) * 0.7152 + (B1 + m) * 0.0722; // 0.05 (dark blue) to 0.93 (yellow)
+	let HLmod = (lum - 0.5) * -100; // -43 (yellow) to 45 (dark blue)
 	if (HLmod > 12) HLmod -= 12;
 	else if (HLmod < -10) HLmod = (HLmod + 10) * 2 / 3;
 	else HLmod = 0;
 
 	L += HLmod;
-	var Smod = 10 - Math.abs(50 - L);
+	let Smod = 10 - Math.abs(50 - L);
 	if (HLmod > 15) Smod += (HLmod - 15) / 2;
 	S -= Smod;
 
-	var rgb = hslToRgb(H, S, L);
+	let rgb = hslToRgb(H, S, L);
 	colorCache[name] = "#" + rgbToHex(rgb.r, rgb.g, rgb.b);
 	return colorCache[name];
 }
 
 function hslToRgb(h, s, l) {
-	var r, g, b, m, c, x;
+	let r, g, b, m, c, x;
 	if (!isFinite(h)) h = 0;
 	if (!isFinite(s)) s = 0;
 	if (!isFinite(l)) l = 0;
@@ -102,4 +122,4 @@ function toHex(N) {
 	return "0123456789ABCDEF".charAt((N - N % 16) / 16) + "0123456789ABCDEF".charAt(N % 16);
 }
 
-module.exports = hashColor;
+module.exports = {escapeHTML, hashColor, toId};
