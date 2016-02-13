@@ -53,6 +53,7 @@ if (app.get('isDev')) {
 }
 
 app.set('port', config.port);
+app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * App routes.
