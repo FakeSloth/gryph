@@ -4,6 +4,7 @@ import MessageInput from './MessageInput';
 import Navbar from './Navbar';
 import Player from './Player';
 import UserList from './UserList';
+import VideoHistoryList from './VideoHistoryList';
 import {hashColor} from '../utils';
 
 let socket = require('socket.io-client')();
@@ -18,7 +19,8 @@ class App extends Component {
       messages: [],
       username: '',
       users: [],
-      video: {id: '', start: 0, username: ''}
+      video: {id: '', start: 0, username: ''},
+      videoHistory: []
     };
 
     this.addMessage = this.addMessage.bind(this);
@@ -64,6 +66,13 @@ class App extends Component {
     socket.on('update users', (users) => {
       this.setState(Object.assign(this.state, {}, {
         users: users
+      }));
+    });
+
+    // @param videos :: Array ({url: String, title: String, img: String})
+    socket.on('video history', (videos) => {
+      this.setState(Object.assign(this.state, {}, {
+        videoHistory: videos
       }));
     });
   }
@@ -154,6 +163,7 @@ class App extends Component {
                 </div>
               </div>
             </form>
+            <VideoHistoryList videos={this.state.videoHistory} isPlaying={this.state.video.id}></VideoHistoryList>
           </div>
           <div className="col-md-1">
             <UserList users={this.state.users}></UserList>

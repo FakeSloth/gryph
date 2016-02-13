@@ -10,7 +10,8 @@ const parser = require('./parser');
 
 let users = {};
 let numUsers = 0;
-let chatHistory = [];
+let chatHistory = new Deque(100);
+let videoHistory = new Deque(100);
 let videos = new Deque();
 
 let isPlaying = false;
@@ -23,7 +24,8 @@ function sockets(io) {
     */
     numUsers++;
 
-    socket.emit('chat history', {users: getUsernames(), history: chatHistory});
+    socket.emit('chat history', {users: getUsernames(), history: chatHistory.toArray()});
+    socket.emit('video history', videoHistory.toArray());
 
     if (isPlaying) {
       socket.emit('start video', currentVideo);
@@ -110,9 +112,10 @@ function nextVideo(io, socket) {
   const error = (msg) => ({message: msg, context: 'text-danger'});
   getYTVideoData(video.id)
     .then(data => {
-      const duration = moment.duration(data.contentDetails.duration).asMilliseconds();
+      const duration = data.contentDetails.duration;
+      const ms = moment.duration(duration).asMilliseconds();
       // 10 minute limit
-      if (duration > 600000) {
+      if (ms > 600000) {
         socket.emit('chat message', error('Video is too long. The limit is 10 minutes.'));
         return nextVideo(io, socket);
       }
@@ -121,8 +124,19 @@ function nextVideo(io, socket) {
       setTimeout(() => {
         isPlaying = false;
         nextVideo(io, socket);
-      }, duration);
+      }, ms);
       io.emit('next video', currentVideo);
+      const seconds = moment.duration(duration).seconds();
+      videoHistory.unshift({
+        url: 'https://www.youtube.com/watch?v=' + video.id,
+        title: data.snippet.title,
+        img: data.snippet.thumbnails.default.url,
+        duration: moment.duration(duration).minutes() + ':' + (seconds < 10 ? '0' + seconds : seconds),
+        author: data.snippet.channelTitle,
+        channel: 'https://youtube.com/channel/' + data.snippet.channelId + '/videos',
+        publishedAt: moment(data.snippet.publishedAt).fromNow()
+      });
+      io.emit('video history', videoHistory.toArray());
     })
     .catch((err) => {
       console.error(err);
