@@ -26,6 +26,7 @@ let colorCache = {};
 
 function hashColor(name) {
   name = toId(name);
+  if (name === 'panpawn') colorCache[name] = 'crowt';
   if (colorCache[name]) return colorCache[name];
   let hash = crypto.createHash('md5').update(name).digest('hex');
   let H = parseInt(hash.substr(4, 4), 16) % 360; // 0 to 360
