@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import {hashColor} from '../utils';
 
 class VideoHistoryList extends Component {
   constructor(props) {
@@ -21,7 +22,11 @@ class VideoHistoryList extends Component {
             </a>
           </h4>
           <p><strong>Published {video.publishedAt}</strong></p>
-          <p>Channel: <a href={video.channel}>{video.author}</a> Duration: <em>{video.duration}</em></p>
+          <p>
+            Channel: <a href={video.channel}>{video.author}</a>{' | '}
+            Duration: <em>{video.duration}</em>{' | '}
+            Host: <strong style={{color: hashColor(video.host)}}>{video.host}</strong>
+          </p>
         </div>
       </div>
     ));

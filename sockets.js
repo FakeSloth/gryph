@@ -128,6 +128,7 @@ function nextVideo(io, socket) {
       io.emit('next video', currentVideo);
       const seconds = moment.duration(duration).seconds();
       videoHistory.unshift({
+        host: video.username,
         url: 'https://www.youtube.com/watch?v=' + video.id,
         title: data.snippet.title,
         img: data.snippet.thumbnails.default.url,
