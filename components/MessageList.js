@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import colors from '../../colors';
+import colors from '../colors';
 
 class MessageList extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import toId from '../../toId';
+import toId from '../toId';
 
 class Navbar extends Component {
   constructor(props) {
