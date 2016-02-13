@@ -99,6 +99,10 @@ app.use((err, req, res, next) => {
 
 sockets(io);
 
+/**
+ * Start Express server.
+ */
+
 server.listen(app.get('port'), (error) => {
   if (error) return console.error(error);
   const env = chalk.green(app.get('env'));

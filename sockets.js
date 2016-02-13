@@ -17,7 +17,6 @@ let currentVideo = {videoid: '', start: 0};
 
 function sockets(io) {
   io.on('connection', (socket) => {
-
     /**
     * On initial connect.
     */
@@ -92,6 +91,11 @@ function getDuration(id) {
 function getUsernames() {
   return Object.keys(users).map(userid => users[userid].username);
 }
+
+/**
+ * Recursively calls next video as long as videos queue is not empty
+ * using setTimeout.
+ */
 
 function nextVideo(io, socket) {
   if (isPlaying) return;
