@@ -1,126 +1,109 @@
-var webpack = require('webpack');
-var webpackDevMiddleware = require('webpack-dev-middleware');
-var webpackHotMiddleware = require('webpack-hot-middleware');
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var config = require('./webpack.config');
-var toId = require('./toId');
-var parse = require('./parse');
-var Deque = require("double-ended-queue");
-var got = require('got');
-var moment = require('moment');
+'use strict';
 
-var port = process.env.PORT || 3000;
+/**
+ * Module dependencies.
+ */
 
-var compiler = webpack(config);
-app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }));
-app.use(webpackHotMiddleware(compiler));
+const chalk = require('chalk');
+const express = require('express');
+const http = require('http');
+const logger = require('morgan');
+const path = require('path');
+const socketio = require('socket.io');
 
-app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+const webpackConfig = require('./webpack.config');
 
-var users = {};
-var history = [];
-var videos = new Deque();
-var isPlaying = false;
-var currentVideo = {videoid: '', start: 0};
+const config = require('./config');
+const sockets = require('./sockets');
 
-function getDuration(id) {
-  return new Promise((resolve, reject) => {
-    const url = 'https://www.googleapis.com/youtube/v3/videos?id=' + id + '&key=AIzaSyDYwPzLevXauI-kTSVXTLroLyHEONuF9Rw&part=snippet,contentDetails';
-    got(url)
-      .then(response => {
-        const json = JSON.parse(response.body);
-        if (!json.items.length) return reject();
-        const time = json.items[0].contentDetails.duration;
-        resolve(moment.duration(time).asMilliseconds());
-      })
-      .catch(error => console.log(error.response.body));
-  });
+/**
+ * Create Express server.
+ */
+
+const app = express();
+const server = http.Server(app);
+
+/**
+ * Create sockets.
+ */
+
+const io = socketio(server);
+
+/**
+ * App configuration.
+ */
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+
+app.set('isDev', app.get('env') !== 'production');
+
+if (app.get('isDev')) {
+  // compile react components
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
+  app.use(webpackHotMiddleware(compiler));
+
+  // turn on console logging
+  app.use(logger('dev'));
 }
 
-function nextVideo(io, socket) {
-  if (isPlaying) return;
-  if (videos.isEmpty()) {
-    isPlaying = false;
-    io.emit('next video', '');
-    return;
-  }
-  const videoid = videos.shift();
-  getDuration(videoid)
-    .then(duration => {
-      // 10 minute limit
-      if (duration > 600000) {
-        socket.emit('error video', {message: 'Video is too long. The limit is 10 minutes.'});
-        return nextVideo(io, socket);
-      }
-      isPlaying = true;
-      currentVideo = {videoid: videoid, start: Date.now()};
-      setTimeout(() => {
-        isPlaying = false;
-        nextVideo(io, socket);
-      }, duration);
-      io.emit('next video', currentVideo);
-    })
-    .catch(error => {
-      socket.emit('error video', {message: 'Invalid video url.'});
+app.set('port', config.port);
+
+/**
+ * App routes.
+ */
+
+app.get('/', (req, res) => {
+  res.render('index', {title: 'Project Gryph', isDev: app.get('isDev')});
+});
+
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
-io.on('connection', function(socket){
-  console.log('a user connected');
-
-  socket.emit('chat history', {users: Object.keys(users).map(userid => users[userid].username), history: history});
-  if (isPlaying) {
-    socket.emit('start video', currentVideo);
-  }
-
-  socket.on('add video', function(video) {
-    videos.push(video);
-    nextVideo(io, socket);
-  });
-
-  socket.on('chat message', function(data) {
-    if (data.message.length > 300) return;
-    if (typeof data === 'object' && data.hasOwnProperty('username')) {
-        const markup = {__html: parse(data.message)};
-        data = {username: data.username, message: markup};
-    }
-    history.push(data);
-    io.emit('chat message', data);
-  });
-
-  socket.on('add user', function(username) {
-    const userid = toId(username);
-    if (!userid || userid.length > 19) return;
-    if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
-      users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
-      socket.user = users[userid];
-      io.emit('update users', Object.keys(users).map(userid => users[userid].username));
-      return;
-    }
-    if (users[userid]) return;
-    if (socket.user && socket.user.userid) {
-      delete users[socket.user.userid];
-    }
-    users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
-    socket.user = users[userid];
-    io.emit('update users', Object.keys(users).map(userid => users[userid].username));
-  });
-
-  socket.on('disconnect', function() {
-    if (socket.user) delete users[socket.user.userid];
-    io.emit('update users', Object.keys(users).map(userid => users[userid].username));
-    console.log('user disconnected');
+// production error handler
+// no stacktraces leaked to user
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
   });
 });
 
-server.listen(port, function(error) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.info('==> Listening on port %s. Open up http://localhost:%s/ in your browser.', port, port);
-  }
+/**
+ * Handle sockets.
+ */
+
+sockets(io);
+
+server.listen(app.get('port'), (error) => {
+  if (error) return console.error(error);
+  const env = chalk.green(app.get('env'));
+  const port = chalk.magenta(app.get('port'));
+  console.info('==> Listening on port %s in %s mode.', port, env);
 });
+
+module.exports = app;
