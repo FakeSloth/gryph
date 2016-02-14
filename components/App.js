@@ -16,7 +16,9 @@ class App extends Component {
     this.state = {
       allowSeek: false,
       chooseName: false,
+      isAuthing: false,
       messages: [],
+      nameChosen: false,
       username: '',
       users: [],
       video: {id: '', start: 0, username: ''},
@@ -30,6 +32,7 @@ class App extends Component {
     this.onPause = this.onPause.bind(this);
     this.setAllowSeekToFalse = this.setAllowSeekToFalse.bind(this);
     this.onChooseName = this.onChooseName.bind(this);
+    this.onIsAuthing = this.onIsAuthing.bind(this);
   }
 
   componentDidMount() {
@@ -89,7 +92,8 @@ class App extends Component {
 
   onAddUser(username) {
     this.setState(Object.assign(this.state, {}, {
-      username: username
+      username: username,
+      nameChosen: true
     }));
     socket.emit('add user', username);
   }
@@ -124,8 +128,21 @@ class App extends Component {
 
   onChooseName() {
     this.setState(Object.assign(this.state, {}, {
-      chooseName: true
+      chooseName: true,
+      nameChosen: false
     }));
+  }
+  
+  onIsAuthing() {
+    this.setState(Object.assign(this.state, {}, {
+      isAuthing: true,
+      nameChosen: false,
+      chooseName: false
+    }));
+  }
+  
+  onRegister(data) {
+    socket.emit('register user', data); 
   }
 
   render() {
@@ -138,6 +155,11 @@ class App extends Component {
         <Navbar onAddUser={this.onAddUser}
                 onAddError={this.addMessage}
                 onChooseName={this.onChooseName}
+                onIsAuthing={this.onIsAuthing}
+                onRegister={this.onRegister}
+                nameChosen={this.state.nameChosen}
+                username={this.state.username}
+                isAuthing={this.state.isAuthing}
                 chooseName={this.state.chooseName}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
