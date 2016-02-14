@@ -1,5 +1,6 @@
 'use strict';
 
+var i = 0;
 const Deque = require('double-ended-queue');
 const got = require('got');
 const moment = require('moment');
@@ -146,15 +147,14 @@ function sockets(io) {
           }
         });
     });
-
     socket.on('token secret', (token) => {
-        if (!token) return socket.emit('chat message', {message: 'NO!'})
+      if (!token) console.log('no')
         jwt.verify(token, 'super secret', function(err, decoded) {
           if (err) {
-            socket.emit('chat message', {message: 'NO! NO!'})
+            console.log(i++, 'no')
           } else {
             console.log(decoded)
-            socket.emit('chat message', {message: 'yes'})
+            console.log(i++, 'yes')
           }
         });
     });

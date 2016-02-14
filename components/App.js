@@ -40,10 +40,12 @@ class App extends Component {
   componentDidMount() {
           var token = localStorage.getItem('token');
           var decoded = jwt.decode(token, {complete: true});
+          var username = decoded.payload.username;
+          console.log(decoded)
           this.setState(Object.assign(this.state, {}, {
-            username: decoded.username,
+            username: username,
             nameChosen: true,
-            users: this.state.users.concat([decoded.username])
+            users: this.state.users.concat([username])
           }));
     // @params users :: Array
     // @params history :: Array
@@ -101,13 +103,7 @@ class App extends Component {
     this.setState(Object.assign(this.state, {}, {
       messages: this.state.messages.concat([message])
     }));
-    localforage.getItem('token', function(err, token) {
-        if (err) {
-            console.error('Oh noes!');
-        } else {
-          socket.emit('token secret', token)
-        }
-    });
+    socket.emit('token secret', localStorage.getItem('token'))
   }
 
   onAddMessage(message) {
