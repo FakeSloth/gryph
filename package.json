@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^1.1.1",
+    "compression": "^1.6.1",
     "dem-feels": "^1.2.0",
     "double-ended-queue": "^0.9.7",
     "got": "^6.1.1",

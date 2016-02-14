@@ -5,6 +5,7 @@
  */
 
 const chalk = require('chalk');
+const compress = require('compression');
 const express = require('express');
 const http = require('http');
 const logger = require('morgan');
@@ -52,6 +53,7 @@ if (app.get('isDev')) {
   app.use(logger('dev'));
 }
 
+app.use(compress());
 app.set('port', config.port);
 app.use(express.static(path.join(__dirname, 'public')));
 
