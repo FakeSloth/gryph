@@ -4,7 +4,8 @@
   "description": "A video sharing chat application.",
   "scripts": {
     "start": "node server.js",
-    "test": "eslint *.js components/*.js"
+    "test": "eslint *.js components/*.js",
+    "build": "webpack -p"
   },
   "repository": {
     "type": "git",
