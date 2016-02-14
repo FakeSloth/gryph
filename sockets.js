@@ -3,6 +3,34 @@
 const Deque = require('double-ended-queue');
 const got = require('got');
 const moment = require('moment');
+const Db = require('machdb')('mongodb://localhost:27017/myproject');
+const crypto = require('crypto');
+
+// MOVE THIS SHIT LATER
+/**
+ * Authetication helper functions.
+ */
+
+function createSalt() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function createHash(password, salt) {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(password, salt, 100000, 512, (err, key) => {
+      if (err) return reject(err);
+
+      const hash = key.toString('hex');
+      resolve(hash);
+    });
+  });
+}
+
+function isValidPassword(password, salt, userHash) {
+  return new Promise((resolve, reject) => {
+    createHash(password, salt).then(hash => resolve(hash === userHash));
+  });
+}
 
 const config = require('./config');
 const utils = require('./utils');
@@ -75,6 +103,27 @@ function sockets(io) {
     socket.on('disconnect', () => {
       if (socket.user) delete users[socket.user.userid];
       io.emit('update users', getUsernames());
+    });
+    
+    socket.on('register user', (data) => {
+      // do some validation
+      const username = data.username.trim();
+      if (!username || !data.password) return;
+      if (username > 15) return;
+      const userid = utils.toId(username);
+      if (Db('users').get(userid)) return;
+      const salt = createSalt();
+      createHash(data.password, salt).then(hash => {
+        const user = {
+          userid,
+          username,
+          salt,
+          hash
+        };
+        
+        Db('users').set(userid, user);
+        socket.emit('chat message', {message: 'You are register! Now try to login!', context: 'text-success'});
+      });
     });
   });
 }
