@@ -19,6 +19,8 @@
     "double-ended-queue": "^0.9.7",
     "got": "^6.1.1",
     "hbs": "^4.0.0",
+    "jsonwebtoken": "^5.5.4",
+    "localforage": "^1.4.0",
     "machdb": "^1.0.0",
     "moment": "^2.11.2",
     "morgan": "^1.6.1",

@@ -7,6 +7,7 @@ class Navbar extends Component {
 
     this.handleAddUser = this.handleAddUser.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleAddUser(e) {
@@ -20,7 +21,7 @@ class Navbar extends Component {
     if (userid.length > 19) return this.props.onAddError(error('Username cannot be longer than 19 characters.'));
     this.props.onAddUser(username);
   }
-  
+
   handleRegister(e) {
     e.preventDefault();
     const username = this.refs.username_input.value.trim();
@@ -30,8 +31,23 @@ class Navbar extends Component {
     if (!password) return this.props.onAddError(error('Password cannot be empty.'));
     const userid = toId(username);
     if (!userid) return this.props.onAddError(error('Only letters and numbers are allowed in username.'));
-    if (userid.length > 15) return this.props.onAddError(error('Username cannot be longer than 15 characters.'));
+    if (userid.length > 19) return this.props.onAddError(error('Username cannot be longer than 15 characters.'));
     this.props.onRegister({username, password});
+    this.refs.username_input.value = '';
+    this.refs.password_input.value = '';
+  }
+
+  handleLogin(e) {
+    e.preventDefault();
+    const username = this.refs.username_input.value.trim();
+    const password = this.refs.password_input.value;
+    const error = (msg) => ({message: msg, context: 'text-danger'});
+    if (!username) return this.props.onAddError(error('Username cannot be empty.'));
+    if (!password) return this.props.onAddError(error('Password cannot be empty.'));
+    const userid = toId(username);
+    if (!userid) return this.props.onAddError(error('Only letters and numbers are allowed in username.'));
+    if (userid.length > 19) return this.props.onAddError(error('Username cannot be longer than 15 characters.'));
+    this.props.onLogin({username, password});
     this.refs.username_input.value = '';
     this.refs.password_input.value = '';
   }
@@ -40,22 +56,22 @@ class Navbar extends Component {
     const onLoadForm = (<form className="navbar-form navbar-right">
                           <button onClick={this.props.onChooseName} className="btn btn-primary">Choose Name</button>
                         </form>);
-    
+
     const chooseNameForm = (<form className="navbar-form navbar-right" onSubmit={this.handleAddUser}>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Username" ref="input" />
                               </div>
                             </form>);
-                            
+
     const authForm = (<form className="navbar-form navbar-right">
                         <div className="form-group">
                           <input type="text" className="form-control" placeholder="Username" ref="username_input" />{' '}
                           <input type="text" className="form-control" placeholder="Password" ref="password_input" />{' '}
-                          <button className="btn btn-primary" onClick={this.onLogin}>Login</button>
+                          <button className="btn btn-primary" onClick={this.handleLogin}>Login</button>
                           <button className="btn btn-default" onClick={this.handleRegister}>Register</button>
                         </div>
                       </form>);
-                      
+
     const afterChooseName =
       (<ul className="nav navbar-nav navbar-right">
         <li className="dropdown">
@@ -69,19 +85,19 @@ class Navbar extends Component {
           </ul>
         </li>
       </ul>);
-      
+
     let display;
-    
+
     if (this.props.nameChosen) {
       display = afterChooseName;
     } else if (this.props.chooseName) {
       display = chooseNameForm;
     } else if (this.props.isAuthing) {
-      display = authForm; 
+      display = authForm;
     } else {
       display = onLoadForm;
     }
-    
+
     return (
       <nav className="navbar navbar-default">
         <div className="container-fluid">

@@ -5,6 +5,7 @@ const got = require('got');
 const moment = require('moment');
 const Db = require('machdb')('mongodb://localhost:27017/myproject');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 // MOVE THIS SHIT LATER
 /**
@@ -46,6 +47,7 @@ let isPlaying = false;
 let currentVideo = {id: '', start: 0, username: ''};
 
 function sockets(io) {
+
   io.on('connection', (socket) => {
     /**
     * On initial connect.
@@ -104,14 +106,14 @@ function sockets(io) {
       if (socket.user) delete users[socket.user.userid];
       io.emit('update users', getUsernames());
     });
-    
+
     socket.on('register user', (data) => {
       // do some validation
       const username = data.username.trim();
-      if (!username || !data.password) return;
-      if (username > 15) return;
+      if (!username || !data.password) return socket.emit('chat message', {message: 'You must enter a usernname or password.', context: 'text-danger'});
+      if (username.length > 19) return socket.emit('chat message', {message: 'Username cannot be longer than 19 characters.', context: 'text-danger'});
       const userid = utils.toId(username);
-      if (Db('users').get(userid)) return;
+      if (Db('users').get(userid)) return socket.emit('chat message', {message: 'Someone has already registered this username.', context: 'text-danger'});
       const salt = createSalt();
       createHash(data.password, salt).then(hash => {
         const user = {
@@ -120,10 +122,41 @@ function sockets(io) {
           salt,
           hash
         };
-        
+
         Db('users').set(userid, user);
         socket.emit('chat message', {message: 'You are register! Now try to login!', context: 'text-success'});
       });
+    });
+
+    socket.on('login user', (data) => {
+      const username = data.username.trim();
+      if (!username || !data.password) return socket.emit('chat message', {message: 'You must enter a usernname or password.', context: 'text-danger'});
+      if (username.length > 19) return socket.emit('chat message', {message: 'Username cannot be longer than 19 characters.', context: 'text-danger'});
+      const userid = utils.toId(username);
+      if (!Db('users').get(userid)) return socket.emit('chat message', {message: 'This username is not registered.', context: 'text-danger'});
+      const user = Db('users').get(userid);
+      isValidPassword(data.password, user.salt, user.hash)
+        .then(valid => {
+          if (!valid) {
+            socket.emit('chat message', {message: 'Invalid username or password.', context: 'text-danger'});
+          } else {
+            const token = jwt.sign(user, 'super secret');
+            socket.emit('chat message', {message: 'u are logined!', context: 'text-success'});
+            socket.emit('get token', token);
+          }
+        });
+    });
+
+    socket.on('token secret', (token) => {
+        if (!token) return socket.emit('chat message', {message: 'NO!'})
+        jwt.verify(token, 'super secret', function(err, decoded) {
+          if (err) {
+            socket.emit('chat message', {message: 'NO! NO!'})
+          } else {
+            console.log(decoded)
+            socket.emit('chat message', {message: 'yes'})
+          }
+        });
     });
   });
 }

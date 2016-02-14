@@ -6,6 +6,8 @@ import Player from './Player';
 import UserList from './UserList';
 import VideoHistoryList from './VideoHistoryList';
 import {hashColor} from '../utils';
+import localforage from 'localforage';
+import jwt from 'jsonwebtoken';
 
 let socket = require('socket.io-client')();
 
@@ -36,6 +38,13 @@ class App extends Component {
   }
 
   componentDidMount() {
+          var token = localStorage.getItem('token');
+          var decoded = jwt.decode(token, {complete: true});
+          this.setState(Object.assign(this.state, {}, {
+            username: decoded.username,
+            nameChosen: true,
+            users: this.state.users.concat([decoded.username])
+          }));
     // @params users :: Array
     // @params history :: Array
     socket.on('chat history', ({users, history}) => {
@@ -78,12 +87,27 @@ class App extends Component {
         videoHistory: videos
       }));
     });
+
+    socket.on('get token', (token) => {
+      console.log('got token')
+      localStorage.setItem('token', token, function(err, res) {
+        if (err) console.log(err);
+        console.log(res);
+      });
+    });
   }
 
   addMessage(message) {
     this.setState(Object.assign(this.state, {}, {
       messages: this.state.messages.concat([message])
     }));
+    localforage.getItem('token', function(err, token) {
+        if (err) {
+            console.error('Oh noes!');
+        } else {
+          socket.emit('token secret', token)
+        }
+    });
   }
 
   onAddMessage(message) {
@@ -132,7 +156,7 @@ class App extends Component {
       nameChosen: false
     }));
   }
-  
+
   onIsAuthing() {
     this.setState(Object.assign(this.state, {}, {
       isAuthing: true,
@@ -140,9 +164,13 @@ class App extends Component {
       chooseName: false
     }));
   }
-  
+
   onRegister(data) {
-    socket.emit('register user', data); 
+    socket.emit('register user', data);
+  }
+
+  onLogin(data) {
+    socket.emit('login user', data);
   }
 
   render() {
@@ -157,6 +185,7 @@ class App extends Component {
                 onChooseName={this.onChooseName}
                 onIsAuthing={this.onIsAuthing}
                 onRegister={this.onRegister}
+                onLogin={this.onLogin}
                 nameChosen={this.state.nameChosen}
                 username={this.state.username}
                 isAuthing={this.state.isAuthing}
