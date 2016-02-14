@@ -1,27 +1,15 @@
-.container-fluid {
-    background: rgba(0, 0, 0, 0.8);
+#userlist {
+	width: 97px;
+	overflow: hidden;
 }
 
-.col-md-1 {
-	background-color: rgba(200, 200, 200, 0.8);
-    border: 0.25px solid black;
-    border-right: none;
+.chatbox {
+	height: 80vh;
+	overflow-y: auto;
+	word-wrap: break-word;
 }
 
-.col-md-4 {
-	background-color: rgba(244, 244, 244, 0.8);
-    border: 0.25px solid black;
+img {
+	vertical-align: baseline;
 }
 
-.col-md-4 .chatbox {
-    height: 83.45vh
-}
-
-.navbar-header .navbar-brand {
-   font-weight: bold;
-   color: #fff
-}
-
-.form-control {
-    height: 28px;
-}

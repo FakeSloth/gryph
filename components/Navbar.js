@@ -16,7 +16,7 @@ class Navbar extends Component {
     if (!username) return this.props.onAddError(error('Username cannot be empty.'));
     const userid = toId(username);
     if (!userid) return this.props.onAddError(error('Only letters and numbers are allowed in username.'));
-    if (userid.length > 15) return this.props.onAddError(error('Username cannot be longer than 15 characters.'));
+    if (userid.length > 19) return this.props.onAddError(error('Username cannot be longer than 19 characters.'));
     this.props.onAddUser(username);
   }
 
