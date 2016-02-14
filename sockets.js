@@ -38,7 +38,7 @@ function sockets(io) {
     // @param username :: String
     socket.on('add user', (username) => {
       const userid = utils.toId(username);
-      if (!userid || userid.length > 15) return socket.emit('chat message', {message: 'Invalid username.', context: 'text-danger'});
+      if (!userid || userid.length > 19) return socket.emit('chat message', {message: 'Invalid username.', context: 'text-danger'});
       if (users[userid] && userid !== (socket.user && socket.user.userid)) return socket.emit('chat message', {message: 'Someone is already on this username.', context: 'text-danger'});
       if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
         users[userid] = {userid: userid, username: username, ip: socket.handshake.address};

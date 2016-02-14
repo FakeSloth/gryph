@@ -20,7 +20,7 @@ class UserList extends Component {
       return 0;
     });
     const list = users.map((user, index) => (
-      <li key={index}><b style={{color: hashColor(user)}}>{user}</b></li>
+      <li id="userlist" key={index}><b style={{color: hashColor(user)}}>{user}</b></li>
     ));
     const numUsers = this.props.users.length;
     return (
