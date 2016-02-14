@@ -6,6 +6,8 @@ import Player from './Player';
 import UserList from './UserList';
 import VideoHistoryList from './VideoHistoryList';
 import {hashColor} from '../utils';
+import localforage from 'localforage';
+import jwt from 'jsonwebtoken';
 
 let socket = require('socket.io-client')();
 
@@ -16,7 +18,9 @@ class App extends Component {
     this.state = {
       allowSeek: false,
       chooseName: false,
+      isAuthing: false,
       messages: [],
+      nameChosen: false,
       username: '',
       users: [],
       video: {id: '', start: 0, username: ''},
@@ -30,9 +34,21 @@ class App extends Component {
     this.onPause = this.onPause.bind(this);
     this.setAllowSeekToFalse = this.setAllowSeekToFalse.bind(this);
     this.onChooseName = this.onChooseName.bind(this);
+    this.onIsAuthing = this.onIsAuthing.bind(this);
   }
 
   componentDidMount() {
+          var token = localStorage.getItem('token');
+          var decoded = jwt.decode(token, {complete: true});
+          if (decoded) {
+          var username = decoded.payload.username;
+          console.log(decoded)
+          this.setState(Object.assign(this.state, {}, {
+            username: username,
+            nameChosen: true,
+            users: this.state.users.concat([username])
+          }));
+          }
     // @params users :: Array
     // @params history :: Array
     socket.on('chat history', ({users, history}) => {
@@ -75,12 +91,21 @@ class App extends Component {
         videoHistory: videos
       }));
     });
+
+    socket.on('get token', (token) => {
+      console.log('got token')
+      localStorage.setItem('token', token, function(err, res) {
+        if (err) console.log(err);
+        console.log(res);
+      });
+    });
   }
 
   addMessage(message) {
     this.setState(Object.assign(this.state, {}, {
       messages: this.state.messages.concat([message])
     }));
+    socket.emit('token secret', localStorage.getItem('token'))
   }
 
   onAddMessage(message) {
@@ -89,7 +114,8 @@ class App extends Component {
 
   onAddUser(username) {
     this.setState(Object.assign(this.state, {}, {
-      username: username
+      username: username,
+      nameChosen: true
     }));
     socket.emit('add user', username);
   }
@@ -124,8 +150,25 @@ class App extends Component {
 
   onChooseName() {
     this.setState(Object.assign(this.state, {}, {
-      chooseName: true
+      chooseName: true,
+      nameChosen: false
     }));
+  }
+
+  onIsAuthing() {
+    this.setState(Object.assign(this.state, {}, {
+      isAuthing: true,
+      nameChosen: false,
+      chooseName: false
+    }));
+  }
+
+  onRegister(data) {
+    socket.emit('register user', data);
+  }
+
+  onLogin(data) {
+    socket.emit('login user', data);
   }
 
   render() {
@@ -138,6 +181,12 @@ class App extends Component {
         <Navbar onAddUser={this.onAddUser}
                 onAddError={this.addMessage}
                 onChooseName={this.onChooseName}
+                onIsAuthing={this.onIsAuthing}
+                onRegister={this.onRegister}
+                onLogin={this.onLogin}
+                nameChosen={this.state.nameChosen}
+                username={this.state.username}
+                isAuthing={this.state.isAuthing}
                 chooseName={this.state.chooseName}></Navbar>
         <div className="container-fluid">
           <div className="col-md-7">
