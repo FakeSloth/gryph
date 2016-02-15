@@ -1,30 +1,18 @@
 import React, {Component} from 'react';
-import {Router, Route, IndexRoute, hashHistory} from 'react-router';
-import Home from './Home';
-import About from '../pages/About';
-import Playlists from '../pages/Playlists';
+import MessageList from './MessageList';
+import MessageInput from './MessageInput';
+import Navbar from './Navbar';
+import Player from './Player';
+import UserList from './UserList';
+import VideoHistoryList from './VideoHistoryList';
+import {hashColor} from '../utils';
+import jwt from 'jsonwebtoken';
 
-class App extends Component {
+let socket = require('socket.io-client')();
+
+class Home extends Component {
   constructor(props) {
     super(props);
-  }
-
-  render() {
-    return (
-      <Router history={hashHistory}>
-        <Route path="/" component={Home}>
-          <Route path="about" component={About} />
-          <Route path="playlists" component={Playlists} />
-        </Route>
-      </Router>
-    );
-  }
-}
-
-/*
-class App extends Component {
-  constructor() {
-    super();
 
     this.state = {
       allowSeek: false,
@@ -199,6 +187,7 @@ class App extends Component {
                 username={this.state.username}
                 isAuthing={this.state.isAuthing}
                 chooseName={this.state.chooseName}></Navbar>
+        {this.props.children}
         <div className="container-fluid">
           <div className="col-md-7">
             {hasVideoId ?
@@ -241,6 +230,6 @@ class App extends Component {
       </div>
     );
   }
-}*/
+}
 
-export default App;
+export default Home;

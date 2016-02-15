@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import {toId, hashColor} from '../utils';
 
 class Navbar extends Component {
@@ -112,6 +113,10 @@ class Navbar extends Component {
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul className="nav navbar-nav">
+              <li><Link to="about">About</Link></li>
+              <li><Link to="playlists">Playlists</Link></li>
+            </ul>
             {display}
           </div>
         </div>
