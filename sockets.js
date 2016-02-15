@@ -4,7 +4,7 @@ var i = 0;
 const Deque = require('double-ended-queue');
 const got = require('got');
 const moment = require('moment');
-const Db = require('machdb')('mongodb://localhost:27017/myproject');
+const Db = require('origindb')('db');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
