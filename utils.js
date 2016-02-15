@@ -5,14 +5,11 @@ const crypto = require('crypto');
 const entityMap = {
   '&': '&amp;',
   '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '\'': '&#39;',
-  '/': '&#x2F;'
+  '>': '&gt;'
 };
 
 function escapeHTML(string) {
-  return String(string).replace(/[&<>"'\/]/g, function (s) {
+  return String(string).replace(/[&<>]/g, function (s) {
     return entityMap[s];
   });
 }
