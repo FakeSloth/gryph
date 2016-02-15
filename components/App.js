@@ -49,17 +49,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-          var token = localStorage.getItem('token');
-          var decoded = jwt.decode(token, {complete: true});
-          if (decoded) {
-          var username = decoded.payload.username;
-          console.log(decoded)
-          this.setState(Object.assign(this.state, {}, {
-            username: username,
-            nameChosen: true,
-            users: this.state.users.concat([username])
-          }));
-          }
+    var token = localStorage.getItem('token');
+    var decoded = jwt.decode(token, {complete: true});
+    if (decoded) {
+      var username = decoded.payload.username;
+      console.log(decoded)
+      this.setState(Object.assign(this.state, {}, {
+         username: username,
+        nameChosen: true,
+        users: this.state.users.concat([username])
+      }));
+    }
     // @params users :: Array
     // @params history :: Array
     socket.on('chat history', ({users, history}) => {
