@@ -2,11 +2,11 @@ import React, {PropTypes} from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 
-const Chat = ({messages, addMessage}) => {
+const Chat = ({messages, addMessage, socket}) => {
   return (
     <div className="col-md-4">
       <MessageList messages={messages} />
-      <MessageInput addMessage={addMessage} />
+      <MessageInput addMessage={addMessage} socket={socket} />
     </div>
   );
 }

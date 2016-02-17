@@ -6,3 +6,9 @@ export function addMessage(text) {
     text
   };
 };
+
+export function emitMessage(text, socket) {
+  return (dispatch) => {
+    socket.emit('chat message', {text});
+  };
+};

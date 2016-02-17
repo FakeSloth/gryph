@@ -51,15 +51,15 @@ function connection(io, socket) {
 
   socket.on('chat message', (msg) => {
     if (!_.isObject(msg) || (_.isObject(msg) && !msg.text)) return;
-    if (msg.text.trim() || msg.text.length > 300) return;
+    if (!msg.text.trim() || msg.text.length > 300) return;
 
     if (_.has(msg, 'username')) {
-      const markup = {__html: parser(data.text)};
-      data = {username: data.username, text: markup};
+      const markup = {__html: parser(msg.text)};
+      data = {username: msg.username, text: markup};
     }
-    pushToChatHistory(data)
-    chatHistory.push(data);
-    io.emit('chat message', data);
+    pushToChatHistory(msg)
+    chatHistory.push(msg);
+    io.emit('chat message', msg);
   });
 
   socket.on('disconnect', () => {

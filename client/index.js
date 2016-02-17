@@ -9,3 +9,5 @@ render(
   <Root store={store} />,
   document.getElementById('root')
 );
+
+store.subscribe(data => console.log(data))

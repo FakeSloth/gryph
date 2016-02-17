@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 
-const MessageInput = ({addMessage}) => {
+const MessageInput = ({addMessage, socket}) => {
   let input;
 
   return (
@@ -9,7 +9,7 @@ const MessageInput = ({addMessage}) => {
       const text = input.value.trim();
       if (!text) return;
       if (text.length > 300) return;
-      addMessage(text);
+      addMessage(text, socket);
       input.value = '';
     }}>
       <input type="text"
