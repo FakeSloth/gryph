@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
-import {toId, hashColor} from '../utils';
+import hashColor from '../hashColor';
+import toId from '../../common/toId';
 
 class Navbar extends Component {
   constructor(props) {
@@ -109,13 +110,13 @@ class Navbar extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="/">gryph</a>
+            <Link className="navbar-brand" to="/">gryph</Link>
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
-              <li><Link to="about">About</Link></li>
-              <li><Link to="playlists">Playlists</Link></li>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/playlists">Playlists</Link></li>
             </ul>
             {display}
           </div>

@@ -1,5 +1,8 @@
 'use strict';
 
+const Users = require('./users');
+const m = require('./common/message');
+
 var i = 0;
 const Deque = require('double-ended-queue');
 const got = require('got');
@@ -39,7 +42,6 @@ const utils = require('./utils');
 const parser = require('./parser');
 
 let users = {};
-let numUsers = 0;
 let chatHistory = new Deque(100);
 let videoHistory = new Deque(100);
 let videos = new Deque();
@@ -48,12 +50,8 @@ let isPlaying = false;
 let currentVideo = {id: '', start: 0, username: ''};
 
 function sockets(io) {
-
   io.on('connection', (socket) => {
-    /**
-    * On initial connect.
-    */
-    numUsers++;
+    socket.userid = Users.add(socket);
 
     socket.emit('chat history', {users: getUsernames(), history: chatHistory.toArray()});
     socket.emit('video history', videoHistory.toArray());
@@ -62,27 +60,31 @@ function sockets(io) {
       socket.emit('start video', currentVideo);
     }
 
-    /**
-    * Main events.
-    */
+    function emitMsg(message, props) {
+      socket.emit('chat message', m(message, props));
+    }
 
-    // @param username :: String
+    /**
+     * Add user event.
+     *
+     * @param {String} username
+     */
+
     socket.on('add user', (username) => {
       const userid = utils.toId(username);
-      if (!userid || userid.length > 19) return socket.emit('chat message', {message: 'Invalid username.', context: 'text-danger'});
-      if (users[userid] && userid !== (socket.user && socket.user.userid)) return socket.emit('chat message', {message: 'Someone is already on this username.', context: 'text-danger'});
-      if (socket.user && username !== socket.user.username && userid === socket.user.userid) {
-        users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
-        socket.user = users[userid];
-        io.emit('update users', getUsernames());
-        return;
+      if (!userid || userid.length > 19) {
+        emitMsg('Invalid username.', {className: 'text-danger'});
+      } else if (socket.userid === userid) {
+        Users.get(userid).username = username;
+        io.emit('update users', Users.list());
+      } else if (Users.get(userid)) {
+        emitMsg('Someone is already on this username.', {className: 'text-danger'});
+      } else {
+        socket.userid = userid;
+        Users.get(userid).username = username;
+        Users.get(userid).userid = userid;
+        io.emit('update users', Users.list());
       }
-      if (socket.user && socket.user.userid) {
-        delete users[socket.user.userid];
-      }
-      users[userid] = {userid: userid, username: username, ip: socket.handshake.address};
-      socket.user = users[userid];
-      io.emit('update users', getUsernames());
     });
 
     // @param videoId :: String
@@ -96,6 +98,7 @@ function sockets(io) {
     socket.on('chat message', (data) => {
       if (data.message.length > 300) return;
       if (typeof data === 'object' && data.hasOwnProperty('username')) {
+        // FIX PARSER!
         const markup = {__html: parser(data.message)};
         data = {username: data.username, message: markup};
       }

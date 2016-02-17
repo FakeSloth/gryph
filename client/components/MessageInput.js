@@ -1,6 +1,33 @@
-import React, {Component, PropTypes} from 'react';
+import React, {PropTypes} from 'react';
 
-class MessageInput extends Component {
+const MessageInput = ({addMessage}) => {
+  let input;
+
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      if (text.length > 300) return;
+      addMessage(text);
+      input.value = '';
+    }}>
+      <input type="text"
+             className="form-control"
+             ref={(node) => {
+               input = node;
+             }} />
+    </form>
+  );
+};
+
+MessageInput.propTypes = {
+  addMessage: PropTypes.func.isRequired
+};
+
+export default MessageInput;
+
+/*class MessageInput extends Component {
   constructor(props) {
     super(props);
 
@@ -30,10 +57,4 @@ class MessageInput extends Component {
       </form>
     );
   }
-}
-
-MessageInput.propTypes = {
-  onAddMessage: PropTypes.func.isRequired
-};
-
-export default MessageInput;
+}*/

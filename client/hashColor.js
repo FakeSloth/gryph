@@ -1,23 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
-
-const entityMap = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;'
-};
-
-function escapeHTML(string) {
-  return String(string).replace(/[&<>]/g, function (s) {
-    return entityMap[s];
-  });
-}
-
-function toId(text) {
-  if (typeof text !== 'string' && typeof text !== 'number') return '';
-  return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
-}
+const toId = require('../common/toId');
 
 let colorCache = {};
 
@@ -120,4 +104,4 @@ function toHex(N) {
   return '0123456789ABCDEF'.charAt((N - N % 16) / 16) + '0123456789ABCDEF'.charAt(N % 16);
 }
 
-module.exports = {escapeHTML, hashColor, toId};
+module.exports = hashColor;

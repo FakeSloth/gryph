@@ -15,7 +15,7 @@ const socketio = require('socket.io');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require('../webpack.config');
 
 const config = require('./config');
 const sockets = require('./sockets');
@@ -55,7 +55,7 @@ if (app.get('isDev')) {
 
 app.use(compress());
 app.set('port', config.port);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 /**
  * App routes.

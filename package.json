@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A video sharing chat application.",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server",
     "test": "eslint *.js components/*.js",
     "build": "webpack -p"
   },
@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bunyan": "^1.6.0",
     "chalk": "^1.1.1",
     "compression": "^1.6.1",
     "dem-feels": "^1.2.0",
@@ -29,8 +30,10 @@
     "origindb": "^2.4.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "react-router": "^1.0.3",
+    "react-redux": "^4.4.0",
+    "react-router": "^2.0.0",
     "react-youtube": "^5.0.0",
+    "redux": "^3.3.1",
     "socket.io": "^1.4.5",
     "socket.io-client": "^1.4.5",
     "socketio-auth": "0.0.5"
