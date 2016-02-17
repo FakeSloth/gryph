@@ -148,15 +148,15 @@ function sockets(io) {
         });
     });
     socket.on('token secret', (token) => {
-      if (!token) console.log('no')
-        jwt.verify(token, 'super secret', function(err, decoded) {
-          if (err) {
-            console.log(i++, 'no')
-          } else {
-            console.log(decoded)
-            console.log(i++, 'yes')
-          }
-        });
+      if (!token) console.log('no');
+      jwt.verify(token, 'super secret', function(err, decoded) {
+        if (err) {
+          console.log(i++, 'no');
+        } else {
+          console.log(decoded);
+          console.log(i++, 'yes');
+        }
+      });
     });
   });
 }
