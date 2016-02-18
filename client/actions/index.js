@@ -8,7 +8,22 @@ export function addMessage(text) {
 };
 
 export function emitMessage(text, socket) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    console.log(getState())
     socket.emit('chat message', {text});
   };
 };
+
+export function setUsername(name) {
+  return {
+    type: types.SET_USERNAME,
+    name
+  };
+}
+
+export function setChooseName(chooseName) {
+  return {
+    type: types[chooseName],
+    chooseName
+  };
+}

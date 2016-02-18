@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const _ = require('lodash/fp');
 const toId = require('../common/toId');
 
 let users = {};
@@ -26,18 +26,15 @@ function add(socket) {
 }
 
 function get(name) {
-  return _.get(users, toId(name));
+  return _.get(toId(name), users);
 }
 
 function list() {
-  return _.chain(users)
-          .values()
-          .map('name')
-          .value();
+  return _.flow(_.values, _.map('name'))(users);
 }
 
-function remove(userid) {
-  _.unset(users, userid);
+function remove(name) {
+  users = _.unset(toId(name), users);
 }
 
 const Users = {

@@ -9,7 +9,7 @@ const socket = io();
 
 class Home extends Component {
   componentDidMount() {
-    const {dispatch} = this.context;
+    const {dispatch} = this.props;
 
     socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg.text)));
   }
@@ -29,10 +29,6 @@ class Home extends Component {
   }
 };
 
-Home.contextTypes = {
-  dispatch: PropTypes.func.isRequired
-};
-
 Home.propTypes = {
   messages: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
@@ -46,7 +42,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(Actions, dispatch)
+    actions: bindActionCreators(Actions, dispatch),
+    dispatch
   };
 }
 
