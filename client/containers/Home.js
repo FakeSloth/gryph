@@ -1,42 +1,46 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import io from 'socket.io-client';
 import * as Actions from '../actions';
 import Chat from '../components/Chat';
-
-const socket = io();
+import UserList from '../components/UserList';
 
 class Home extends Component {
   componentDidMount() {
     const {dispatch} = this.props;
 
-    socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg.text)));
+    socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg)));
+    socket.on('update userlist', (msg) => dispatch(Actions.updateUserList(msg)));
   }
 
   render() {
-    const {messages, actions} = this.props;
+    const {messages, actions, userList, username} = this.props;
 
     return (
       <div className="row">
         <div className="col-md-7">
         </div>
-        <div className="col-md-1">
-        </div>
-        <Chat messages={messages} addMessage={actions.emitMessage} socket={socket} />
+        <UserList users={userList} />
+        <Chat
+          messages={messages}
+          addMessage={actions.addMessage}
+          emitMessage={(msg) => socket.emit('chat message', msg)}
+          username={username}
+        />
       </div>
     );
   }
 };
 
 Home.propTypes = {
-  messages: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    messages: state.messages
+    messages: state.messages,
+    userList: state.name.userList,
+    username: state.name.username
   };
 }
 

@@ -1,15 +1,9 @@
 import * as types from '../constants/ActionTypes';
 
-export function addMessage(text) {
+export function addMessage(message) {
   return {
     type: types.ADD_MESSAGE,
-    text
-  };
-};
-
-export function emitMessage(text, socket) {
-  return (dispatch, getState) => {
-    socket.emit('chat message', {text});
+    message
   };
 };
 
@@ -24,5 +18,12 @@ export function setChooseName(chooseName) {
   return {
     type: types.SET_CHOOSE_NAME,
     chooseName
+  };
+}
+
+export function updateUserList(users) {
+  return {
+    type: types.UPDATE_USER_LIST,
+    users
   };
 }

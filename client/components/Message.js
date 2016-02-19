@@ -11,7 +11,7 @@ const Message = ({message}) => {
       <li>
         <strong style={{color: hashColor(username)}}>{username}:</strong>
         {' '}
-        <span dangerouslySetInnerHTML={text}></span>
+        <span dangerouslySetInnerHTML={{__html: text}}></span>
       </li>
     );
   } else if (className) {

@@ -1,47 +1,50 @@
 'use strict';
 
-const _ = require('lodash/fp');
 const toId = require('../common/toId');
 
 let users = {};
-let numUsers = 0;
 
-function User(socket) {
-  const name = 'Guest ' + (++numUsers);
-  const userid = toId(name);
-
-  return {
-    socket,
-    name,
-    userid,
-    ip: socket.request.connection.remoteAddress,
-    isNamed: false
-  };
+function User(name, socket) {
+  this.name = name;
+  this.userId = toId(name);
+  this.socket = socket;
+  this.ip = socket.request.connection.remoteAddress;
+  this.isNamed = false;
 }
 
-function add(socket) {
-  const user = new User(socket);
-  users[user.userid] = user;
-  return user.userid;
+User.prototype.setName = function(name) {
+  delete users[this.userId];
+  this.name = name;
+  this.userId = toId(name);
+  this.socket.userId = this.userId;
+  this.isNamed = true;
+  users[this.userId] = this;
+};
+
+
+function createUser(name, socket) {
+  const user = new User(name, socket);
+  users[user.userId] = user;
+  return user.userId;
 }
 
-function get(name) {
-  return _.get(toId(name), users);
+function getUser(name) {
+  return users[toId(name)];
 }
 
-function list() {
-  return _.flow(_.values, _.map('name'))(users);
+function listUsers() {
+  return Object.keys(users).map(name => users[name].name);
 }
 
-function remove(name) {
-  users = _.unset(toId(name), users);
+function removeUser(name) {
+  delete users[toId(name)];
 }
 
 const Users = {
-  add,
-  get: get,
-  list,
-  remove
+  create: createUser,
+  get: getUser,
+  list: listUsers,
+  remove: removeUser
 };
 
 module.exports = Users;

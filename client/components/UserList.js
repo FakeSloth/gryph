@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {hashColor} from '../utils';
+import hashColor from '../hashColor';
 
 class UserList extends Component {
   constructor(props) {
@@ -13,18 +13,23 @@ class UserList extends Component {
 
   render() {
     const users = this.props.users;
+    const numUsers = this.props.users.length;
+
     users.sort((a, b) => {
       a = a.toLowerCase(), b = b.toLowerCase();
       if (a < b) return -1;
       if (a > b) return 1;
       return 0;
     });
-    const list = users.map((user, index) => (
-      <li id="userlist" key={index}><b style={{color: hashColor(user)}}>{user}</b></li>
+
+    const list = users.map((username, index) => (
+      <li id="userlist" key={index}>
+        <strong style={{color: hashColor(username)}}>{username}</strong>
+      </li>
     ));
-    const numUsers = this.props.users.length;
+
     return (
-      <div>
+      <div className="col-md-1">
         <small>{numUsers} {numUsers === 1 ? 'User' : 'Users'}</small>
         <ul className="list-unstyled" ref="list">
           {list}
