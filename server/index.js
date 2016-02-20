@@ -4,10 +4,13 @@
  * Module dependencies.
  */
 
+const bcrypt = require('bcrypt-nodejs');
+const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const compress = require('compression');
 const express = require('express');
 const http = require('http');
+const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const path = require('path');
 const socketio = require('socket.io');
@@ -18,7 +21,9 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const webpackConfig = require('../webpack.config');
 
 const config = require('./config');
+const db = require(config.database.name)(config.database.location);
 const sockets = require('./sockets');
+const toId = require('../common/toId');
 
 /**
  * Create Express server.
@@ -54,6 +59,8 @@ if (app.get('isDev')) {
 }
 
 app.use(compress());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.set('port', config.port);
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -63,6 +70,44 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/', (req, res) => {
   res.render('index', {title: 'gryph', isDev: app.get('isDev')});
+});
+
+app.post('/register', (req, res, next) => {
+  const username = req.body.username.trim();
+  const userId = toId(username);
+  if (!username || !req.body.password) return;
+  if (username.length > 19 || req.body.password.length > 300) return;
+  if (db('users').get(userId)) {
+    return res.json({msg: 'Someone has already registered this username.'});
+  }
+  bcrypt.genSalt(10, function(err, salt) {
+    if (err) return next(err);
+    bcrypt.hash(req.body.password, salt, null, function(err, hash) {
+      if (err) return next(err);
+      db('users').set(userId, {username, userId, password: req.body.password});
+      const token = jwt.sign({username, userId}, config.jwtSecret, {
+        expiresInMinutes: 1440 // expires in 24 hours
+      });
+      res.json({token});
+    });
+  });
+});
+
+app.post('/login', (req, res, next) => {
+  const username = req.body.username.trim();
+  const userId = toId(username);
+  if (!username || !req.body.password) return;
+  if (username.length > 19 || req.body.password.length > 300) return;
+  const user = Db('users').get(userid);
+  if (!user) return res.json({msg: 'Invalid username or password.'});
+  bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
+    if (err) return next(err);
+    if (!isMatch) return res.json({msg: 'Invalid username or password.'});
+      const token = jwt.sign({username, userId}, config.jwtSecret, {
+        expiresInMinutes: 1440 // expires in 24 hours
+      });
+      res.json({token});
+  });
 });
 
 // catch 404 and forward to error handler
