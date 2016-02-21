@@ -17,10 +17,8 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
-   setTimeout(() => {
-     socket.emit('update messages', chatHistory);
-     socket.emit('update userlist', Users.list());
-   }, 100);
+   socket.emit('update messages', chatHistory);
+   socket.emit('update userlist', Users.list());
 
    function handleAddUser(username) {
      if (!socket.userId) {
