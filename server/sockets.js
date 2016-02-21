@@ -57,7 +57,7 @@ function connection(io, socket) {
       msg.text = parser(msg.text);
     }
 
-    pushToChatHistory(msg)
+    pushToChatHistory(msg);
     chatHistory.push(msg);
     io.emit('chat message', msg);
   });

@@ -13,7 +13,7 @@ const Chat = ({messages, addMessage, emitMessage, username}) => {
       />
     </div>
   );
-}
+};
 
 Chat.propTypes = {
   messages: PropTypes.array.isRequired,

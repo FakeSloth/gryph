@@ -5,7 +5,7 @@ export function addMessage(message) {
     type: types.ADD_MESSAGE,
     message
   };
-};
+}
 
 export function setUsername(name) {
   return {
