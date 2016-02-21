@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import fetch from 'isomorphic-fetch';
 import hashColor from '../hashColor';
 import toId from '../../common/toId';
 import * as Actions from '../actions';
@@ -19,6 +20,52 @@ class Name extends Component {
 
   handleChange(e) {
     this.setState({name: e.target.value});
+  }
+
+  auth(type) {
+    const form = new FormData();
+    const username = this.refs.username_input.value.trim();
+    const password = this.refs.password_input.value;
+    const {actions} = this.props;
+    if (!username || !password) {
+      return actions.addMessage({
+        text: 'Username and password cannot be empty.',
+        className: 'text-danger'
+      });
+    }
+    if (username.length > 19) {
+      return actions.addMessage({
+        text: 'Username cannot be longer than 19 characters.',
+        className: 'text-danger'
+      });
+    }
+    if (password.length > 300) return;
+    fetch('/' + type, {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username, password})
+    })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.msg) {
+        return this.props.actions.addMessage({
+          text: res.msg,
+          className: 'text-danger'
+        });
+      }
+      if (!res.token) return;
+      this.refs.username_input.value = '';
+      this.refs.password_input.value = '';
+      localStorage.setItem('token', res.token);
+      actions.setChooseName(AFTER_CHOOSE_NAME);
+      actions.setUsername(username);
+      socket.emit('add user', username);
+    })
+    .catch(error => console.error(error));
   }
 
   render() {
@@ -62,6 +109,7 @@ class Name extends Component {
                 className: "text-danger"
               });
             }
+            // CHECK IF NAME IS AUTH! using /auth route
             actions.setChooseName(AFTER_CHOOSE_NAME);
             actions.setUsername(name);
             socket.emit('add user', name);
@@ -80,7 +128,10 @@ class Name extends Component {
       );
     } else if (chooseName === DURING_CHOOSE_AUTH_NAME) {
       formBody = (
-        <form className="navbar-form navbar-right">
+        <form
+          className="navbar-form navbar-right"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div className="form-group">
             <button className="btn btn-default" onClick={(e) => {
               e.preventDefault();
@@ -90,9 +141,9 @@ class Name extends Component {
             </button>
             {' '}
             <input type="text" className="form-control" placeholder="Username" ref="username_input" />{' '}
-            <input type="text" className="form-control" placeholder="Password" ref="password_input" />{' '}
-            <button className="btn btn-primary" onClick={null}>Login</button>
-            <button className="btn btn-default" onClick={null}>Register</button>
+            <input type="password" className="form-control" placeholder="Password" ref="password_input" />{' '}
+            <button className="btn btn-primary" onClick={() => this.auth('login')}>Login</button>
+            <button className="btn btn-default" onClick={() => this.auth('register')}>Register</button>
           </div>
         </form>
       );

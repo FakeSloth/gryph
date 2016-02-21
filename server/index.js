@@ -75,8 +75,8 @@ app.get('/', (req, res) => {
 app.post('/register', (req, res, next) => {
   const username = req.body.username.trim();
   const userId = toId(username);
-  if (!username || !req.body.password) return;
-  if (username.length > 19 || req.body.password.length > 300) return;
+  if (!username || !req.body.password) return next(err);
+  if (username.length > 19 || req.body.password.length > 300) return next(err);
   if (db('users').get(userId)) {
     return res.json({msg: 'Someone has already registered this username.'});
   }
@@ -84,9 +84,9 @@ app.post('/register', (req, res, next) => {
     if (err) return next(err);
     bcrypt.hash(req.body.password, salt, null, function(err, hash) {
       if (err) return next(err);
-      db('users').set(userId, {username, userId, password: req.body.password});
+      db('users').set(userId, {username, userId, password: hash});
       const token = jwt.sign({username, userId}, config.jwtSecret, {
-        expiresInMinutes: 1440 // expires in 24 hours
+        expiresIn: '1 day'
       });
       res.json({token});
     });
@@ -96,15 +96,15 @@ app.post('/register', (req, res, next) => {
 app.post('/login', (req, res, next) => {
   const username = req.body.username.trim();
   const userId = toId(username);
-  if (!username || !req.body.password) return;
-  if (username.length > 19 || req.body.password.length > 300) return;
-  const user = Db('users').get(userid);
+  if (!username || !req.body.password) return next(err);
+  if (username.length > 19 || req.body.password.length > 300) return next(err);
+  const user = db('users').get(userId);
   if (!user) return res.json({msg: 'Invalid username or password.'});
   bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
     if (err) return next(err);
     if (!isMatch) return res.json({msg: 'Invalid username or password.'});
       const token = jwt.sign({username, userId}, config.jwtSecret, {
-        expiresInMinutes: 1440 // expires in 24 hours
+        expiresIn: '1 day'
       });
       res.json({token});
   });
