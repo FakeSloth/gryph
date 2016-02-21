@@ -30,7 +30,7 @@ class Home extends Component {
       </div>
     );
   }
-};
+}
 
 Home.propTypes = {
   actions: PropTypes.object.isRequired

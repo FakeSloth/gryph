@@ -1,3 +1,4 @@
+/*eslint-disable */
 import React, {Component} from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';

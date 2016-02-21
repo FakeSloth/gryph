@@ -99,14 +99,14 @@ class Name extends Component {
             if (!name) return;
             if (name.length > 19) {
               return actions.addMessage({
-                text: "Name cannot be more than 19 characters.",
-                className: "text-danger"
+                text: 'Name cannot be more than 19 characters.',
+                className: 'text-danger'
               });
             }
             if (usernames.includes(toId(name))) {
               return actions.addMessage({
-                text: "This name is taken.",
-                className: "text-danger"
+                text: 'This name is taken.',
+                className: 'text-danger'
               });
             }
             // CHECK IF NAME IS AUTH! using /auth route

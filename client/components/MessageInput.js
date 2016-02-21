@@ -10,12 +10,12 @@ const MessageInput = ({addMessage, emitMessage, username}) => {
       if (!text) return;
       if (!username) {
         return addMessage({
-          text: "Choose a username to chat.",
+          text: 'Choose a username to chat.'
         });
       }
       if (text.length > 300) {
         return addMessage({
-          text: "Your message is too long.",
+          text: 'Your message is too long.',
           className: 'text-danger'
         });
       }
