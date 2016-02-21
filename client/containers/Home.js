@@ -4,14 +4,24 @@ import {connect} from 'react-redux';
 import * as Actions from '../actions';
 import Chat from '../components/Chat';
 import UserList from '../components/UserList';
+import jwtDecode from 'jwt-decode';
+import {AFTER_CHOOSE_AUTH_NAME} from '../constants/chooseName';
 
 class Home extends Component {
   componentDidMount() {
-    const {dispatch} = this.props;
+    const {dispatch, actions} = this.props;
 
     socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg)));
     socket.on('update messages', (msgs) => dispatch(Actions.updateMessages(msgs)));
     socket.on('update userlist', (users) => dispatch(Actions.updateUserList(users)));
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      actions.setChooseName(AFTER_CHOOSE_AUTH_NAME);
+      actions.setUsername(decoded.username);
+      socket.emit('add user', {name: decoded.username, token});
+    }
   }
 
   render() {
