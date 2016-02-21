@@ -10,7 +10,8 @@ class Home extends Component {
     const {dispatch} = this.props;
 
     socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg)));
-    socket.on('update userlist', (msg) => dispatch(Actions.updateUserList(msg)));
+    socket.on('update messages', (msgs) => dispatch(Actions.updateMessages(msgs)));
+    socket.on('update userlist', (users) => dispatch(Actions.updateUserList(users)));
   }
 
   render() {

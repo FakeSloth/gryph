@@ -1,4 +1,5 @@
 export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const SET_USERNAME = 'SET_USERNAME';
 export const SET_CHOOSE_NAME = 'SET_CHOOSE_NAME';
 export const UPDATE_USER_LIST = 'UPDATE_USER_LIST';

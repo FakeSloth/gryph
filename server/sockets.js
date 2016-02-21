@@ -17,11 +17,10 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
-  /**
-   * Add user to chat userlist event.
-   *
-   * @params {String} username
-   */
+   setTimeout(() => {
+     socket.emit('update messages', chatHistory);
+     socket.emit('update userlist', Users.list());
+   }, 100);
 
    function handleAddUser(username) {
      if (!socket.userId) {

@@ -1,4 +1,4 @@
-import {ADD_MESSAGE} from '../constants/ActionTypes';
+import {ADD_MESSAGE, UPDATE_MESSAGES} from '../constants/ActionTypes';
 
 function messages(state = [], action) {
   switch (action.type) {
@@ -7,6 +7,8 @@ function messages(state = [], action) {
         ...state,
         action.message
       ];
+    case UPDATE_MESSAGES:
+      return action.messages;
     default:
       return state;
   }

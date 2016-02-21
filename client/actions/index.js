@@ -7,6 +7,13 @@ export function addMessage(message) {
   };
 }
 
+export function updateMessages(messages) {
+  return {
+    type: types.UPDATE_MESSAGES,
+    messages
+  };
+}
+
 export function setUsername(name) {
   return {
     type: types.SET_USERNAME,
