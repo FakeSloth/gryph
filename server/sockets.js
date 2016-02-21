@@ -4,6 +4,9 @@ const _ = require('lodash');
 const Users = require('./users');
 const toId = require('../common/toId');
 const parser = require('./parser');
+const config = require('./config');
+const db = require('./db');
+const jwt = require('jsonwebtoken');
 
 let chatHistory = [];
 
@@ -20,9 +23,19 @@ function connection(io, socket) {
    * @params {String} username
    */
 
-  socket.on('add user', (username) => {
-    if (!_.isString(username)) return;
+   function handleAddUser(username) {
+     if (!socket.userId) {
+       socket.userId = Users.create(username, socket);
+     } else {
+       Users.get(socket.userId).setName(username);
+     }
 
+     io.emit('update userlist', Users.list());
+   }
+
+  socket.on('add user', (data) => {
+    if (!_.isObject(data) || (_.isObject(data) && !data.name)) return;
+    const username = data.name;
     const userId = toId(username);
     if (!userId || userId.length > 19) return;
 
@@ -33,13 +46,16 @@ function connection(io, socket) {
 
     if (Users.get(userId)) return;
 
-    if (!socket.userId) {
-      socket.userId = Users.create(username, socket);
+    if (db('users').has(userId)) {
+      if (!data.token) return;
+      jwt.verify(data.token, config.jwtSecret, (err, decoded) => {
+        if (err) return;
+        if (decoded.userId !== userId) return;
+        handleAddUser(username);
+      });
     } else {
-      Users.get(socket.userId).setName(username);
+      handleAddUser(username);
     }
-
-    io.emit('update userlist', Users.list());
   });
 
   /**

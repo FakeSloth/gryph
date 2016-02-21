@@ -21,7 +21,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const webpackConfig = require('../webpack.config');
 
 const config = require('./config');
-const db = require(config.database.name)(config.database.location);
+const db = require('./db');
 const sockets = require('./sockets');
 const toId = require('../common/toId');
 
@@ -108,6 +108,13 @@ app.post('/login', (req, res, next) => {
     });
     res.json({token});
   });
+});
+
+app.post('/auth', (req, res) => {
+  if (db('users').has(toId(req.body.name))) {
+    return res.json({msg: 'This username is registered.'});
+  }
+  return res.json({success: true});
 });
 
 // catch 404 and forward to error handler

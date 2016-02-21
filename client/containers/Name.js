@@ -9,6 +9,7 @@ import {
   BEFORE_CHOOSE_NAME,
   DURING_CHOOSE_NAME,
   DURING_CHOOSE_AUTH_NAME,
+  AFTER_CHOOSE_AUTH_NAME,
   AFTER_CHOOSE_NAME} from '../constants/chooseName';
 
 class Name extends Component {
@@ -22,8 +23,7 @@ class Name extends Component {
     this.setState({name: e.target.value});
   }
 
-  auth(type) {
-    const form = new FormData();
+  auth(type, usernames) {
     const username = this.refs.username_input.value.trim();
     const password = this.refs.password_input.value;
     const {actions} = this.props;
@@ -36,6 +36,12 @@ class Name extends Component {
     if (username.length > 19) {
       return actions.addMessage({
         text: 'Username cannot be longer than 19 characters.',
+        className: 'text-danger'
+      });
+    }
+    if (usernames.includes(toId(username))) {
+      return actions.addMessage({
+        text: 'Someone is already on this username.',
         className: 'text-danger'
       });
     }
@@ -52,7 +58,7 @@ class Name extends Component {
     .then((response) => response.json())
     .then((res) => {
       if (res.msg) {
-        return this.props.actions.addMessage({
+        return actions.addMessage({
           text: res.msg,
           className: 'text-danger'
         });
@@ -61,11 +67,61 @@ class Name extends Component {
       this.refs.username_input.value = '';
       this.refs.password_input.value = '';
       localStorage.setItem('token', res.token);
-      actions.setChooseName(AFTER_CHOOSE_NAME);
+      actions.setChooseName(AFTER_CHOOSE_AUTH_NAME);
       actions.setUsername(username);
-      socket.emit('add user', username);
+      socket.emit('add user', {name: username, token: res.token});
     })
     .catch(error => console.error(error));
+  }
+
+  handleSubmitDuringChooseName(e, usernames) {
+    e.preventDefault();
+    const {actions, username, users} = this.props;
+    const name = this.state.name.trim();
+    if (!name) return;
+    if (name.length > 19) {
+      return actions.addMessage({
+        text: 'Name cannot be more than 19 characters.',
+        className: 'text-danger'
+      });
+    }
+    if (usernames.includes(toId(name))) {
+      return actions.addMessage({
+        text: 'Someone is already on this username.',
+        className: 'text-danger'
+      });
+    }
+    fetch('/auth', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({name})
+    })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.msg) {
+        return this.props.actions.addMessage({
+          text: res.msg,
+          className: 'text-danger'
+        });
+      }
+      if (!res.success) return;
+      actions.setChooseName(AFTER_CHOOSE_NAME);
+      actions.setUsername(name);
+      socket.emit('add user', {name});
+    })
+    .catch(error => console.error(error));
+  }
+
+  logout() {
+    const {actions} = this.props;
+    localStorage.removeItem('token');
+    actions.setChooseName(BEFORE_CHOOSE_NAME);
+    actions.setUsername('');
+    socket.emit('disconnect');
   }
 
   render() {
@@ -87,33 +143,20 @@ class Name extends Component {
           >
             Choose Name
           </button>
+          {' '}
+          <button
+            onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}
+            className="btn btn-default"
+          >
+            Login/Register
+          </button>
         </form>
       );
     } else if (chooseName === DURING_CHOOSE_NAME) {
       formBody = (
         <form
           className="navbar-form navbar-right"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const name = this.state.name.trim();
-            if (!name) return;
-            if (name.length > 19) {
-              return actions.addMessage({
-                text: 'Name cannot be more than 19 characters.',
-                className: 'text-danger'
-              });
-            }
-            if (usernames.includes(toId(name))) {
-              return actions.addMessage({
-                text: 'This name is taken.',
-                className: 'text-danger'
-              });
-            }
-            // CHECK IF NAME IS AUTH! using /auth route
-            actions.setChooseName(AFTER_CHOOSE_NAME);
-            actions.setUsername(name);
-            socket.emit('add user', name);
-          }}
+          onSubmit={(e) => this.handleSubmitDuringChooseName(e, usernames)}
         >
           <div className="form-group">
             <input
@@ -142,24 +185,40 @@ class Name extends Component {
             {' '}
             <input type="text" className="form-control" placeholder="Username" ref="username_input" />{' '}
             <input type="password" className="form-control" placeholder="Password" ref="password_input" />{' '}
-            <button className="btn btn-primary" onClick={() => this.auth('login')}>Login</button>
-            <button className="btn btn-default" onClick={() => this.auth('register')}>Register</button>
+            <button className="btn btn-primary" onClick={() => this.auth('login', usernames)}>Login</button>
+            <button className="btn btn-default" onClick={() => this.auth('register', usernames)}>Register</button>
           </div>
         </form>
       );
+    } else if (chooseName === AFTER_CHOOSE_AUTH_NAME) {
+      formBody = (
+        <ul className="nav navbar-nav navbar-right">
+          <li className="dropdown">
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <strong style={{color: hashColor(username)}}>{username}</strong>{' '}
+              <span className="caret"></span>
+            </a>
+            <ul className="dropdown-menu">
+              <li><a href="#" onClick={() => this.logout()}>Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      );
     } else if (chooseName === AFTER_CHOOSE_NAME) {
-      formBody = (<ul className="nav navbar-nav navbar-right">
-        <li className="dropdown">
-          <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            <strong style={{color: hashColor(username)}}>{username}</strong>{' '}
-            <span className="caret"></span>
-          </a>
-          <ul className="dropdown-menu">
-            <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_NAME)}>Change Name</a></li>
-            <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}>Login/Register</a></li>
-          </ul>
-        </li>
-      </ul>);
+      formBody = (
+        <ul className="nav navbar-nav navbar-right">
+          <li className="dropdown">
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <strong style={{color: hashColor(username)}}>{username}</strong>{' '}
+              <span className="caret"></span>
+            </a>
+            <ul className="dropdown-menu">
+              <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_NAME)}>Change Name</a></li>
+              <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}>Login/Register</a></li>
+            </ul>
+          </li>
+        </ul>
+      );
     }
 
     return formBody;
