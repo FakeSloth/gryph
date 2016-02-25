@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as Actions from '../actions';
 import Chat from '../components/Chat';
+import Player from '../components/Player';
 import UserList from '../components/UserList';
 import jwtDecode from 'jwt-decode';
 import {AFTER_CHOOSE_AUTH_NAME} from '../constants/chooseName';
@@ -29,8 +30,11 @@ class Home extends Component {
 
     return (
       <div className="row">
-        <div className="col-md-7">
-        </div>
+        <Player
+          addMessage={actions.addMessage}
+          addVideo={(videoId) => socket.emit('add video', videoId)}
+          username={username}
+        />
         <UserList users={userList} />
         <Chat
           messages={messages}

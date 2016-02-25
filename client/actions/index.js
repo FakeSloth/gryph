@@ -34,3 +34,17 @@ export function updateUserList(users) {
     users
   };
 }
+
+export function startNextVideo(video) {
+  return {
+    type: types.START_NEXT_VIDEO,
+    video
+  };
+}
+
+export function disableAllowSeek(allowSeek) {
+  return {
+    type: types.START_NEXT_VIDEO,
+    allowSeek
+  };
+}

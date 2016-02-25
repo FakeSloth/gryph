@@ -9,6 +9,8 @@ const db = require('./db');
 const jwt = require('jsonwebtoken');
 
 let chatHistory = [];
+let videoQueue = [];
+let videoQueueIps = {};
 
 function sockets(io) {
   io.on('connection', (socket) => {
@@ -73,6 +75,26 @@ function connection(io, socket) {
     pushToChatHistory(msg);
     chatHistory.push(msg);
     io.emit('chat message', msg);
+  });
+
+  socket.on('add video', (videoId) => {
+    if (!_.isString(videoId)) return;
+    if (!videoId || videoId.length > 300) return;
+    if (!socket.userId) return;
+    const user = Users.get(socket.userId);
+    if (videoQueueIps[user.ip]) {
+      return socket.emit('chat message', {
+        text: 'You already have a video in the queue.',
+        className: 'text-danger'
+      });
+    }
+    videoQueueIps[user.ip] = true;
+    videoQueue.push({videoId, host: user.name, ip: user.ip});
+    socket.emit('chat message', {
+      text: 'Video added to the queue.',
+      className: 'text-success'
+    });
+    console.log(videoQueue);
   });
 
   socket.on('disconnect', () => {
