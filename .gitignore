@@ -31,3 +31,6 @@ npm-debug.log
 
 # origindb
 db
+
+# bundle file
+public/js/bundle.js

@@ -34,7 +34,7 @@ const MessageInput = ({addMessage, emitMessage, username}) => {
 MessageInput.propTypes = {
   addMessage: PropTypes.func.isRequired,
   emitMessage: PropTypes.func.isRequired,
-  username: PropTypes.username.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default MessageInput;
