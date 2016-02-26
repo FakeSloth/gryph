@@ -132,8 +132,8 @@ class Name extends Component {
       .map(name => toId(name))
       .filter(userId => toId(username) !== userId);
     let formBody;
-    // NOTE: refactor each form and ul into its own components
 
+    // NOTE: refactor each form and ul into its own components
     if (chooseName === BEFORE_CHOOSE_NAME) {
       formBody = (
         <form
@@ -179,10 +179,14 @@ class Name extends Component {
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="form-group">
-            <button className="btn btn-default" onClick={(e) => {
-              e.preventDefault();
-              actions.setChooseName(AFTER_CHOOSE_NAME);
-            }}>
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={(e) => {
+                e.preventDefault();
+                actions.setChooseName(AFTER_CHOOSE_NAME);
+              }}
+            >
               <span className="glyphicon glyphicon-chevron-left"></span>
             </button>
             {' '}
