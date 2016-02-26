@@ -26,9 +26,11 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
-  socket.emit('update messages', chatHistory);
-  socket.emit('update userlist', Users.list());
-  if (isPlaying) socket.emit('next video', currentVideo);
+  setTimeout(() => {
+    socket.emit('update messages', chatHistory);
+    socket.emit('update userlist', Users.list());
+    if (isPlaying) socket.emit('next video', currentVideo);
+  }, 1000);
 
   function handleAddUser(username) {
     if (!socket.userId) {

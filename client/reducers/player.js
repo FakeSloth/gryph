@@ -1,7 +1,7 @@
 import {START_NEXT_VIDEO, SET_ALLOW_SEEK} from '../constants/ActionTypes';
 
 const initialState = {
-  allowSeek: false,
+  allowSeek: true,
   host: '',
   start: 0,
   videoId: ''
