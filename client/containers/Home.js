@@ -31,7 +31,6 @@ class Home extends Component {
 
   render() {
     const {messages, actions, userList, username, video} = this.props;
-    console.log(video);
 
     return (
       <div className="row">
@@ -55,7 +54,16 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-  actions: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired,
+  messages: PropTypes.array.isRequired,
+  userList: PropTypes.array.isRequired,
+  username: PropTypes.string.isRequired,
+  video: PropTypes.shape({
+    allowSeek: PropTypes.bool.isRequired,
+    host: PropTypes.string.isRequired,
+    start: PropTypes.number.isRequired,
+    videoId: PropTypes.string.isRequired
+  }).isRequired
 };
 
 function mapStateToProps(state) {

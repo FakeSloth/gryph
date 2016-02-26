@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Navbar from './Navbar';
 
 const App = ({children}) => {
@@ -10,6 +10,10 @@ const App = ({children}) => {
       </div>
     </div>
   );
+};
+
+App.propTypes = {
+  children: PropTypes.element.isRequired
 };
 
 export default App;

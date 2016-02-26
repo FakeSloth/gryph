@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 
 const VideoInput = ({addMessage, addVideo, username}) => {
   let input;
@@ -35,6 +35,12 @@ const VideoInput = ({addMessage, addVideo, username}) => {
       </div>
     </form>
   );
+};
+
+VideoInput.propTypes = {
+  addMessage: PropTypes.func.isRequired,
+  addVideo: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired
 };
 
 export default VideoInput;

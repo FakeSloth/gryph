@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Video from './Video';
 import VideoInput from './VideoInput';
 
@@ -14,6 +14,19 @@ const Player = (props) => {
       <VideoInput {...props} />
     </div>
   );
-}
+};
+
+Player.propTypes = {
+  addMessage: PropTypes.func.isRequired,
+  addVideo: PropTypes.func.isRequired,
+  setAllowSeek: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  video: PropTypes.shape({
+    allowSeek: PropTypes.bool.isRequired,
+    host: PropTypes.string.isRequired,
+    start: PropTypes.number.isRequired,
+    videoId: PropTypes.string.isRequired
+  }).isRequired
+};
 
 export default Player;

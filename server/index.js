@@ -160,7 +160,7 @@ sockets(io);
  */
 
 server.listen(app.get('port'), (error) => {
-  if (error) return console.error(error);
+  if (error) return winston.error(error);
   const env = chalk.green(app.get('env'));
   const port = chalk.magenta(app.get('port'));
   winston.info('==> Listening on port %s in %s mode.', port, env);

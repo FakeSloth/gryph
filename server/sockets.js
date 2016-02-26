@@ -26,19 +26,19 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
-   socket.emit('update messages', chatHistory);
-   socket.emit('update userlist', Users.list());
-   if (isPlaying) socket.emit('next video', currentVideo);
+  socket.emit('update messages', chatHistory);
+  socket.emit('update userlist', Users.list());
+  if (isPlaying) socket.emit('next video', currentVideo);
 
-   function handleAddUser(username) {
-     if (!socket.userId) {
-       socket.userId = Users.create(username, socket);
-     } else {
-       Users.get(socket.userId).setName(username);
-     }
+  function handleAddUser(username) {
+    if (!socket.userId) {
+      socket.userId = Users.create(username, socket);
+    } else {
+      Users.get(socket.userId).setName(username);
+    }
 
-     io.emit('update userlist', Users.list());
-   }
+    io.emit('update userlist', Users.list());
+  }
 
   socket.on('add user', (data) => {
     if (!_.isObject(data) || (_.isObject(data) && !data.name)) return;

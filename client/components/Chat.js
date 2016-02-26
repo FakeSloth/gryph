@@ -16,8 +16,10 @@ const Chat = ({messages, addMessage, emitMessage, username}) => {
 };
 
 Chat.propTypes = {
+  addMessage: PropTypes.func.isRequired,
+  emitMessage: PropTypes.func.isRequired,
   messages: PropTypes.array.isRequired,
-  addMessage: PropTypes.func.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default Chat;

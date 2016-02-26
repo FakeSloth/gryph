@@ -37,7 +37,8 @@
             2,
             "always"
         ],
-        "no-unused-vars": 1
+        "no-unused-vars": 1,
+        "react/no-danger": 0
     },
     "globals": {
       "socket": true

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import YouTube from 'react-youtube';
 
 const Video = ({video, setAllowSeek}) => {
@@ -10,7 +10,6 @@ const Video = ({video, setAllowSeek}) => {
       modestbranding: 1
     }
   };
-  console.log(video)
 
   return (
     <div className="embed-responsive embed-responsive-16by9">
@@ -31,6 +30,16 @@ const Video = ({video, setAllowSeek}) => {
       />
     </div>
   );
+};
+
+Video.propTypes = {
+  setAllowSeek: PropTypes.func.isRequired,
+  video: PropTypes.shape({
+    allowSeek: PropTypes.bool.isRequired,
+    host: PropTypes.string.isRequired,
+    start: PropTypes.number.isRequired,
+    videoId: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default Video;

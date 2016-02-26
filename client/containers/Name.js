@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+/*eslint no-console: 0*/
+import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetch from 'isomorphic-fetch';
@@ -77,7 +78,7 @@ class Name extends Component {
 
   handleSubmitDuringChooseName(e, usernames) {
     e.preventDefault();
-    const {actions, username, users} = this.props;
+    const {actions} = this.props;
     const name = this.state.name.trim();
     if (!name) return;
     if (name.length > 19) {
@@ -226,6 +227,13 @@ class Name extends Component {
     return formBody;
   }
 }
+
+Name.propTypes = {
+  actions: PropTypes.object.isRequired,
+  chooseName: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  users: PropTypes.array.isRequired
+};
 
 function mapStateToProps(state) {
   return {
