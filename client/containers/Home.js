@@ -10,11 +10,15 @@ import {AFTER_CHOOSE_AUTH_NAME} from '../constants/chooseName';
 
 class Home extends Component {
   componentDidMount() {
-    const {dispatch, actions} = this.props;
+    const {actions} = this.props;
 
-    socket.on('chat message', (msg) => dispatch(Actions.addMessage(msg)));
-    socket.on('update messages', (msgs) => dispatch(Actions.updateMessages(msgs)));
-    socket.on('update userlist', (users) => dispatch(Actions.updateUserList(users)));
+    socket.on('chat message', (msg) => actions.addMessage(msg));
+    socket.on('update messages', (msgs) => actions.updateMessages(msgs));
+    socket.on('update userlist', (users) => actions.updateUserList(users));
+    socket.on('next video', (video) => {
+      const {videoId, host, start} = video;
+      actions.startNextVideo(videoId, host, start);
+    });
 
     const token = localStorage.getItem('token');
     if (token) {
@@ -26,14 +30,17 @@ class Home extends Component {
   }
 
   render() {
-    const {messages, actions, userList, username} = this.props;
+    const {messages, actions, userList, username, video} = this.props;
+    console.log(video);
 
     return (
       <div className="row">
         <Player
           addMessage={actions.addMessage}
           addVideo={(videoId) => socket.emit('add video', videoId)}
+          setAllowSeek={actions.setAllowSeek}
           username={username}
+          video={video}
         />
         <UserList users={userList} />
         <Chat
@@ -55,7 +62,8 @@ function mapStateToProps(state) {
   return {
     messages: state.messages,
     userList: state.name.userList,
-    username: state.name.username
+    username: state.name.username,
+    video: state.player
   };
 }
 

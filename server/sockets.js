@@ -7,8 +7,11 @@ const parser = require('./parser');
 const config = require('./config');
 const db = require('./db');
 const jwt = require('jsonwebtoken');
+const got = require('got');
+const moment = require('moment');
 
 let chatHistory = [];
+let isPlaying = false;
 let videoQueue = [];
 let videoQueueIps = {};
 
@@ -88,13 +91,29 @@ function connection(io, socket) {
         className: 'text-danger'
       });
     }
-    videoQueueIps[user.ip] = true;
-    videoQueue.push({videoId, host: user.name, ip: user.ip});
-    socket.emit('chat message', {
-      text: 'Video added to the queue.',
-      className: 'text-success'
-    });
-    console.log(videoQueue);
+    const url = 'https://www.googleapis.com/youtube/v3/videos?id=' + videoId + '&key=' + config.googleAPIKey + '&part=snippet,contentDetails';
+    got(url).then(response => {
+      const json = JSON.parse(response.body);
+      if (!json.items.length) {
+        return socket.emit('chat message', {
+          text: 'This video does not exist.',
+          className: 'text-danger'
+        });
+      }
+      const duration = json.items[0].contentDetails.duration;
+      const ms = moment.duration(duration).asMilliseconds();
+      videoQueue.unshift({videoId, host: user.name, ip: user.ip, duration: ms});
+      //videoQueueIps[user.ip] = true;
+      console.log(videoQueue)
+      socket.emit('chat message', {
+        text: 'Video added to the queue.',
+        className: 'text-success'
+      });
+      if (!isPlaying) {
+        isPlaying = true;
+        nextVideo((video) => io.emit('next video', video));
+      }
+    }).catch(error => console.log(error.response.body));
   });
 
   socket.on('disconnect', () => {
@@ -108,6 +127,24 @@ function pushToChatHistory(message) {
     chatHistory.pop();
   }
   chatHistory.unshift(message);
+}
+
+function nextVideo(emitVideo) {
+  const video = videoQueue.pop();
+  delete videoQueueIps[video.ip];
+  emitVideo({videoId: video.videoId, host: video.host, start: Date.now()});
+  setTimeout(() => {
+    if (videoQueue.length) {
+      nextVideo(emitVideo);
+    } else {
+      resetVideo(emitVideo);
+    }
+  }, video.duration);
+}
+
+function resetVideo(emitVideo) {
+  isPlaying = false;
+  emitVideo({videoId: '', host: '', start: 0});
 }
 
 module.exports = sockets;

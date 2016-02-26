@@ -35,16 +35,18 @@ export function updateUserList(users) {
   };
 }
 
-export function startNextVideo(video) {
+export function startNextVideo(videoId, host, start) {
   return {
     type: types.START_NEXT_VIDEO,
-    video
+    videoId,
+    host,
+    start
   };
 }
 
-export function disableAllowSeek(allowSeek) {
+export function setAllowSeek(allowSeek) {
   return {
-    type: types.START_NEXT_VIDEO,
+    type: types.SET_ALLOW_SEEK,
     allowSeek
   };
 }
