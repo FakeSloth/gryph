@@ -83,7 +83,6 @@ function connection(io, socket) {
     }
 
     pushToChatHistory(msg);
-    chatHistory.push(msg);
     io.emit('chat message', msg);
   });
 
@@ -136,9 +135,9 @@ function connection(io, socket) {
 
 function pushToChatHistory(message) {
   if (chatHistory.length === 100) {
-    chatHistory.pop();
+    chatHistory.shift();
   }
-  chatHistory.unshift(message);
+  chatHistory.push(message);
 }
 
 function nextVideo(emitVideo) {
