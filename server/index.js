@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const path = require('path');
 const socketio = require('socket.io');
+const winston = require('winston');
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -162,7 +163,7 @@ server.listen(app.get('port'), (error) => {
   if (error) return console.error(error);
   const env = chalk.green(app.get('env'));
   const port = chalk.magenta(app.get('port'));
-  console.info('==> Listening on port %s in %s mode.', port, env);
+  winston.info('==> Listening on port %s in %s mode.', port, env);
 });
 
 module.exports = app;

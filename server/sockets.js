@@ -9,6 +9,7 @@ const db = require('./db');
 const jwt = require('jsonwebtoken');
 const got = require('got');
 const moment = require('moment');
+const winston = require('winston');
 
 const TEN_MINUTE_LIMIT = 600000;
 
@@ -122,7 +123,7 @@ function connection(io, socket) {
         isPlaying = true;
         nextVideo((video) => io.emit('next video', video));
       }
-    }).catch(error => console.log(error.response.body));
+    }).catch(error => winston.error(error.response.body));
   });
 
   socket.on('disconnect', () => {
