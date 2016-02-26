@@ -29,6 +29,13 @@ class Home extends Component {
     }
   }
 
+  componentWillUnmount() {
+    socket.off('chat message');
+    socket.off('update messages');
+    socket.off('update userlist');
+    socket.off('next video');
+  }
+
   render() {
     const {messages, actions, userList, username, video} = this.props;
 
