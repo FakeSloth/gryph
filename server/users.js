@@ -1,6 +1,6 @@
 'use strict';
 
-const toId = require('../common/toId');
+const toId = require('../toId');
 
 let users = {};
 

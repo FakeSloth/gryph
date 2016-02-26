@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Users = require('./users');
-const toId = require('../common/toId');
+const toId = require('../toId');
 const parser = require('./parser');
 const config = require('./config');
 const db = require('./db');
@@ -10,10 +10,13 @@ const jwt = require('jsonwebtoken');
 const got = require('got');
 const moment = require('moment');
 
+const TEN_MINUTE_LIMIT = 600000;
+
 let chatHistory = [];
 let isPlaying = false;
 let videoQueue = [];
 let videoQueueIps = {};
+let currentVideo = {videoId: '', host: '', start: 0};
 
 function sockets(io) {
   io.on('connection', (socket) => {
@@ -24,6 +27,7 @@ function sockets(io) {
 function connection(io, socket) {
    socket.emit('update messages', chatHistory);
    socket.emit('update userlist', Users.list());
+   if (isPlaying) socket.emit('next video', currentVideo);
 
    function handleAddUser(username) {
      if (!socket.userId) {
@@ -102,9 +106,14 @@ function connection(io, socket) {
       }
       const duration = json.items[0].contentDetails.duration;
       const ms = moment.duration(duration).asMilliseconds();
+      if (ms > TEN_MINUTE_LIMIT) {
+        return socket.emit('chat message', {
+          text: 'Video is too long. The limit is 10 minutes.',
+          className: 'text-danger'
+        });
+      }
       videoQueue.unshift({videoId, host: user.name, ip: user.ip, duration: ms});
-      //videoQueueIps[user.ip] = true;
-      console.log(videoQueue)
+      videoQueueIps[user.ip] = true;
       socket.emit('chat message', {
         text: 'Video added to the queue.',
         className: 'text-success'
@@ -132,7 +141,8 @@ function pushToChatHistory(message) {
 function nextVideo(emitVideo) {
   const video = videoQueue.pop();
   delete videoQueueIps[video.ip];
-  emitVideo({videoId: video.videoId, host: video.host, start: Date.now()});
+  currentVideo = {videoId: video.videoId, host: video.host, start: Date.now()};
+  emitVideo(currentVideo);
   setTimeout(() => {
     if (videoQueue.length) {
       nextVideo(emitVideo);
@@ -144,7 +154,8 @@ function nextVideo(emitVideo) {
 
 function resetVideo(emitVideo) {
   isPlaying = false;
-  emitVideo({videoId: '', host: '', start: 0});
+  currentVideo = {videoId: '', host: '', start: 0};
+  emitVideo(currentVideo);
 }
 
 module.exports = sockets;

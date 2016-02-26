@@ -23,7 +23,7 @@ const webpackConfig = require('../webpack.config');
 const config = require('./config');
 const db = require('./db');
 const sockets = require('./sockets');
-const toId = require('../common/toId');
+const toId = require('../toId');
 
 /**
  * Create Express server.

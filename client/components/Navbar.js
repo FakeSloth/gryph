@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 import Name from '../containers/Name';
 import hashColor from '../hashColor';
-import toId from '../../common/toId';
+import toId from '../../toId';
 
 const Navbar = () => {
   return (

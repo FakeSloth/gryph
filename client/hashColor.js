@@ -1,7 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
-const toId = require('../common/toId');
+const toId = require('../toId');
 
 let colorCache = {};
 
