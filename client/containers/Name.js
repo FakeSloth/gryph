@@ -3,14 +3,15 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetch from 'isomorphic-fetch';
 import hashColor from '../hashColor';
-import toId from '../../common/toId';
+import toId from '../../toId';
 import * as Actions from '../actions';
 import {
   BEFORE_CHOOSE_NAME,
   DURING_CHOOSE_NAME,
   DURING_CHOOSE_AUTH_NAME,
   AFTER_CHOOSE_AUTH_NAME,
-  AFTER_CHOOSE_NAME} from '../constants/chooseName';
+  AFTER_CHOOSE_NAME
+} from '../constants/chooseName';
 
 class Name extends Component {
   constructor(props) {
