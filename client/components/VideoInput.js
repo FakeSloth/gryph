@@ -17,7 +17,7 @@ const VideoInput = ({addMessage, addVideo, username}) => {
       if (parts.length < 2) return addMessage(error);
       const videoId = parts[1].trim();
       if (!videoId || videoId.length > 300) return addMessage(error);
-      addVideo(videoId);
+      addVideo(url);
       input.value = '';
     }}>
       <div className="row">

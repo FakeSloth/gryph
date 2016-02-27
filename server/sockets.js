@@ -84,10 +84,12 @@ function connection(io, socket) {
     io.emit('chat message', msg);
   });
 
-  socket.on('add video', (videoId) => {
-    if (!_.isString(videoId)) return;
-    if (!videoId || videoId.length > 300) return;
+  socket.on('add video', (data) => {
+    if (!_.isString(data)) return;
+    if (!data || data.length > 300) return;
     if (!socket.userId) return;
+    const videoId = validateVideo(data);
+    if (!videoId) return;
     const user = Users.get(socket.userId);
     if (videoQueueIps[user.ip]) {
       return socket.emit('chat message', {
@@ -156,6 +158,15 @@ function resetVideo(emitVideo) {
   isPlaying = false;
   currentVideo = {videoId: '', host: '', start: 0};
   emitVideo(currentVideo);
+}
+
+function validateVideo(data) {
+  const parts = data.split('=');
+  if (parts.length < 2) return;
+  if (parts[1].indexOf('&') >= 0) parts[1] = parts[1].split('&')[0];
+  const videoId = parts[1].trim();
+  if (!videoId) return;
+  return videoId;
 }
 
 module.exports = sockets;
