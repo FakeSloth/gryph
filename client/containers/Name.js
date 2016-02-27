@@ -133,7 +133,6 @@ class Name extends Component {
       .filter(userId => toId(username) !== userId);
     let formBody;
 
-    // NOTE: refactor each form and ul into its own components
     if (chooseName === BEFORE_CHOOSE_NAME) {
       formBody = (
         <form
