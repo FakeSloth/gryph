@@ -7,7 +7,7 @@ import About from '../components/About';
 import Playlists from '../components/Playlists';
 import Home from './Home';
 import jwtDecode from 'jwt-decode';
-import {AFTER_CHOOSE_AUTH_NAME} from '../constants/chooseName';
+import {AFTER_CHOOSE_AUTH_NAME, BEFORE_CHOOSE_NAME} from '../constants/chooseName';
 import * as Actions from '../actions/index';
 
 class Root extends Component {
@@ -20,6 +20,11 @@ class Root extends Component {
     socket.on('next video', (video) => {
       const {videoId, host, start} = video;
       actions.startNextVideo(videoId, host, start);
+    });
+    socket.on('error token', () => {
+      localStorage.removeItem('token');
+      actions.setChooseName(BEFORE_CHOOSE_NAME);
+      actions.setUsername('');
     });
 
     const token = localStorage.getItem('token');

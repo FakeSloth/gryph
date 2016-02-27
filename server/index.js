@@ -105,7 +105,7 @@ app.post('/login', (req, res, next) => {
     if (err) return next(err);
     if (!isMatch) return res.json({msg: 'Invalid username or password.'});
     const token = jwt.sign({username, userId}, config.jwtSecret, {
-      expiresIn: '1 day'
+      expiresIn: '7 days'
     });
     res.json({token});
   });

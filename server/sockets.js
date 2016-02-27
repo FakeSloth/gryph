@@ -56,7 +56,7 @@ function connection(io, socket) {
     if (db('users').has(userId)) {
       if (!data.token) return;
       jwt.verify(data.token, config.jwtSecret, (err, decoded) => {
-        if (err) return;
+        if (err) return socket.emit('error token');
         if (decoded.userId !== userId) return;
         handleAddUser(username);
       });
