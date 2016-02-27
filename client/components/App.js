@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import Navbar from './Navbar';
+import Navbar from '../containers/Navbar';
 
 const App = ({children}) => {
   return (

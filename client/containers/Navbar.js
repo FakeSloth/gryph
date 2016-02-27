@@ -1,8 +1,13 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 import {Link} from 'react-router';
-import Name from '../containers/Name';
+import Name from './Name';
+import {setAllowSeek} from '../actions';
 
-const Navbar = () => {
+const Navbar = ({setAllowSeek}) => {
+  const seekToTrue = () => setAllowSeek(true);
+
   return (
     <nav className="navbar navbar-default">
       <div className="container-fluid">
@@ -18,8 +23,8 @@ const Navbar = () => {
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul className="nav navbar-nav">
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/playlists">Playlists</Link></li>
+            <li onClick={seekToTrue}><Link to="/about">About</Link></li>
+            <li onClick={seekToTrue}><Link to="/playlists">Playlists</Link></li>
           </ul>
           <Name />
         </div>
@@ -28,4 +33,15 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+Navbar.propTypes = {
+  setAllowSeek: PropTypes.func.isRequired
+};
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({setAllowSeek}, dispatch);
+}
+
+export default connect(
+  (state) => state,
+  mapDispatchToProps
+)(Navbar);
