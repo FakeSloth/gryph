@@ -1,3 +1,4 @@
+
 'use strict';
 
 const _ = require('lodash');
@@ -12,6 +13,7 @@ const moment = require('moment');
 const winston = require('winston');
 
 const TEN_MINUTE_LIMIT = 600000;
+const MESSAGE_COOLDOWN = 500;
 
 let chatHistory = [];
 let isPlaying = false;
@@ -55,7 +57,7 @@ function connection(io, socket) {
 
     if (Users.get(userId)) return;
 
-    if (db('users').has(userId)) {
+    if (db('users').get(userId)) {
       if (!data.token) return;
       jwt.verify(data.token, config.jwtSecret, (err, decoded) => {
         if (err) return socket.emit('error token');
@@ -70,12 +72,23 @@ function connection(io, socket) {
   /**
    * A chat message event.
    *
-   * @params {Object} msg - {text: String, username: String, className: string}
+   * @params {Object} msg - {text: String, username: String}
    */
 
   socket.on('chat message', (msg) => {
-    if (!_.isObject(msg) || (_.isObject(msg) && !msg.text)) return;
-    if (!msg.text.trim() || msg.text.length > 300) return;
+    if (!_.isObject(msg)) return;
+    if (!_.isString(msg.username) || !_.isString(msg.text)) return;
+    if (!msg.username || !msg.text) return;
+    if (!socket.userId || toId(msg.username) !== socket.userId) return;
+    const user = Users.get(socket.userId);
+    const diff = Date.now() - user.lastMessageTime;
+    if (diff < MESSAGE_COOLDOWN) {
+      return socket.emit('chat message', {
+        text: 'Your message was not sent because you have sented too many messages.',
+        className: 'text-danger'
+      });
+    }
+    user.lastMessageTime = Date.now();
 
     if (msg.username) {
       if (toId(msg.username) !== socket.userId) return;

@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 const toId = require('../toId');
@@ -12,6 +14,9 @@ function User(name, socket) {
   this.isNamed = false;
 }
 
+User.prototype.lastMessage = '';
+User.prototype.lastMessageTime = 0;
+
 User.prototype.setName = function(name) {
   delete users[this.userId];
   this.name = name;
@@ -20,7 +25,6 @@ User.prototype.setName = function(name) {
   this.isNamed = true;
   users[this.userId] = this;
 };
-
 
 function createUser(name, socket) {
   const user = new User(name, socket);
