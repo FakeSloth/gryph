@@ -4,7 +4,7 @@ import hashColor from '../hashColor';
 const Message = ({message}) => {
   let msg;
 
-  const {username, className, text} = message;
+  const {username, className, text, html} = message;
 
   if (username) {
     msg = (
@@ -18,6 +18,12 @@ const Message = ({message}) => {
     msg = (
       <li>
         <span className={className}>{text}</span>
+      </li>
+    );
+  } else if (html) {
+    msg = (
+      <li>
+        <span dangerouslySetInnerHTML={{__html: text}}></span>
       </li>
     );
   } else {

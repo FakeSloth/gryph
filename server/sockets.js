@@ -76,10 +76,11 @@ function connection(io, socket) {
   socket.on('chat message', (msg) => {
     if (!_.isObject(msg)) return;
     if (!_.isString(msg.username) || !_.isString(msg.text)) return;
-    if (!msg.username || !msg.text) return;
+    if (!msg.username || !msg.text || msg.html) return;
     if (!socket.userId || toId(msg.username) !== socket.userId) return;
-    const emit = (data) => socket.emit('chat message', data);
-    const message = parser(msg.text, Users.get(socket.userId), emit);
+    const socketEmit = (data) => socket.emit('chat message', data);
+    const ioEmit = (data) => io.emit('chat message', data);
+    const message = parser(msg.text, Users.get(socket.userId), socketEmit, ioEmit);
     if (!message) return;
     pushToChatHistory(message);
     io.emit('chat message', message);
