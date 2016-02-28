@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import hashColor from '../hashColor';
+import hashColor from '../../hashColor';
 
 const Message = ({message}) => {
   let msg;

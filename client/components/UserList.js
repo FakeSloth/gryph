@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import hashColor from '../hashColor';
+import hashColor from '../../hashColor';
 
 class UserList extends Component {
   constructor(props) {

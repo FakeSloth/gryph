@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import Video from './Video';
 import VideoInput from './VideoInput';
-import hashColor from '../hashColor';
+import hashColor from '../../hashColor';
 
 const Player = (props) => {
   const {videoId, host} = props.video;

@@ -1,7 +1,7 @@
 'use strct';
 
 const escapeHtml = require('./escapeHtml');
-const hashColor = require('../client/hashColor');
+const hashColor = require('../hashColor');
 
 module.exports = {
   hello(target, user) {
