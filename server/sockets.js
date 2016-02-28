@@ -129,10 +129,13 @@ function connection(io, socket) {
     }).catch(error => winston.error(error.response.body));
   });
 
-  socket.on('disconnect', () => {
+  function removeUser() {
     Users.remove(socket.userId);
     io.emit('update userlist', Users.list());
-  });
+  }
+
+  socket.on('logout', removeUser);
+  socket.on('disconnect', removeUser);
 }
 
 function pushToChatHistory(message) {

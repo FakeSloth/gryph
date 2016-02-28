@@ -123,7 +123,7 @@ class Name extends Component {
     localStorage.removeItem('token');
     actions.setChooseName(BEFORE_CHOOSE_NAME);
     actions.setUsername('');
-    socket.emit('disconnect');
+    socket.emit('logout');
   }
 
   render() {
