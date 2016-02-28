@@ -160,6 +160,21 @@ class Name extends Component {
           className="navbar-form navbar-right"
           onSubmit={(e) => this.handleSubmitDuringChooseName(e, usernames)}
         >
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={(e) => {
+              e.preventDefault();
+              if (!username) {
+                actions.setChooseName(BEFORE_CHOOSE_NAME);
+              } else {
+                actions.setChooseName(AFTER_CHOOSE_NAME);
+              }
+            }}
+          >
+            <span className="glyphicon glyphicon-chevron-left"></span>
+          </button>
+          {' '}
           <div className="form-group">
             <input
               type="text"
@@ -183,7 +198,11 @@ class Name extends Component {
               className="btn btn-default"
               onClick={(e) => {
                 e.preventDefault();
-                actions.setChooseName(AFTER_CHOOSE_NAME);
+                if (!username) {
+                  actions.setChooseName(BEFORE_CHOOSE_NAME);
+                } else {
+                  actions.setChooseName(AFTER_CHOOSE_NAME);
+                }
               }}
             >
               <span className="glyphicon glyphicon-chevron-left"></span>
