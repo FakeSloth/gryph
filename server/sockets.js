@@ -13,7 +13,6 @@ const moment = require('moment');
 const winston = require('winston');
 
 const TEN_MINUTE_LIMIT = 600000;
-const MESSAGE_COOLDOWN = 500;
 
 let chatHistory = [];
 let isPlaying = false;
@@ -80,23 +79,11 @@ function connection(io, socket) {
     if (!_.isString(msg.username) || !_.isString(msg.text)) return;
     if (!msg.username || !msg.text) return;
     if (!socket.userId || toId(msg.username) !== socket.userId) return;
-    const user = Users.get(socket.userId);
-    const diff = Date.now() - user.lastMessageTime;
-    if (diff < MESSAGE_COOLDOWN) {
-      return socket.emit('chat message', {
-        text: 'Your message was not sent because you have sented too many messages.',
-        className: 'text-danger'
-      });
-    }
-    user.lastMessageTime = Date.now();
-
-    if (msg.username) {
-      if (toId(msg.username) !== socket.userId) return;
-      msg.text = parser(msg.text);
-    }
-
-    pushToChatHistory(msg);
-    io.emit('chat message', msg);
+    const emit = (data) => socket.emit('chat message', data);
+    const message = parser(msg.text, Users.get(socket.userId), emit);
+    if (!message) return;
+    pushToChatHistory(message);
+    io.emit('chat message', message);
   });
 
   socket.on('add video', (data) => {
