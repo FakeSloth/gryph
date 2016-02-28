@@ -79,7 +79,10 @@ function connection(io, socket) {
     if (!msg.username || !msg.text || msg.html) return;
     if (!socket.userId || toId(msg.username) !== socket.userId) return;
     const socketEmit = (data) => socket.emit('chat message', data);
-    const ioEmit = (data) => io.emit('chat message', data);
+    const ioEmit = (data) => {
+      pushToChatHistory(data);
+      io.emit('chat message', data);
+    };
     const message = parser(msg.text, Users.get(socket.userId), socketEmit, ioEmit);
     if (!message) return;
     pushToChatHistory(message);
