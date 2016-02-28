@@ -26,10 +26,6 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
-  socket.emit('update messages', chatHistory);
-  socket.emit('update userlist', Users.list());
-  if (isPlaying) socket.emit('next video', currentVideo);
-
   function handleAddUser(username) {
     if (!socket.userId) {
       socket.userId = Users.create(username, socket);
@@ -39,6 +35,12 @@ function connection(io, socket) {
 
     io.emit('update userlist', Users.list());
   }
+
+  socket.on('initial load', () => {
+    socket.emit('update messages', chatHistory);
+    socket.emit('update userlist', Users.list());
+    if (isPlaying) socket.emit('next video', currentVideo);
+  });
 
   socket.on('add user', (data) => {
     if (!_.isObject(data) || (_.isObject(data) && !data.name)) return;

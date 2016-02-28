@@ -34,6 +34,8 @@ class Root extends Component {
       actions.setUsername(decoded.username);
       socket.emit('add user', {name: decoded.username, token});
     }
+
+    socket.emit('initial load');
   }
 
   render() {
