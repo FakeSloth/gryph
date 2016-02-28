@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const path = require('path');
 const socketio = require('socket.io');
+const toId = require('toid');
 const winston = require('winston');
 
 const webpack = require('webpack');
@@ -24,7 +25,6 @@ const webpackConfig = require('../webpack.config');
 const config = require('./config');
 const db = require('./db');
 const sockets = require('./sockets');
-const toId = require('../toId');
 
 /**
  * Create Express server.

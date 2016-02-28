@@ -3,7 +3,7 @@
 
 const _ = require('lodash');
 const Users = require('./users');
-const toId = require('../toId');
+const toId = require('toid');
 const parser = require('./parser');
 const config = require('./config');
 const db = require('./db');

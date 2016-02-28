@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetch from 'isomorphic-fetch';
 import hashColor from '../hashColor';
-import toId from '../../toId';
+import toId from 'toid';
 import * as Actions from '../actions';
 import {
   BEFORE_CHOOSE_NAME,

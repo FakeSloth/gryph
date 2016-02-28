@@ -36,6 +36,7 @@
     "react-youtube": "^5.0.0",
     "redux": "^3.3.1",
     "socket.io": "^1.4.5",
+    "toid": "^1.0.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
