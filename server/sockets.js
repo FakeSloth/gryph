@@ -28,7 +28,7 @@ function sockets(io) {
 
 function connection(io, socket) {
   function handleAddUser(username) {
-    if (!socket.userId) {
+    if (!socket.userId || !Users.get(socket.userId)) {
       socket.userId = Users.create(username, socket);
     } else {
       Users.get(socket.userId).setName(username);
@@ -50,8 +50,7 @@ function connection(io, socket) {
     if (!userId || userId.length > 19) return;
 
     if (socket.userId === userId) {
-      Users.get(socket.userId).setName(username);
-      return io.emit('update userlist', Users.list());
+      return handleAddUser(username);
     }
 
     if (Users.get(userId)) return;
