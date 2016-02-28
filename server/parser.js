@@ -84,6 +84,7 @@ function markup(message) {
 
     // remove zalgo
     .replace(/[\u0300-\u036f\u0483-\u0489\u0610-\u0615\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06ED\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]{3,}/g, '')
+    .replace(/[\u239b-\u23b9]/g, '')
 
     // ``code``
     .replace(/\`\`([^< ](?:[^<`]*?[^< ])??)\`\`/g, '<code>$1</code>')
