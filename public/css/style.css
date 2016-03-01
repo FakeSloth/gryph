@@ -3,6 +3,10 @@
 	overflow: hidden;
 }
 
+#outer-userlist {
+	padding: 0;
+}
+
 .chatbox {
 	height: 80vh;
 	overflow-y: auto;

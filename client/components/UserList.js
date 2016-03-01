@@ -42,7 +42,7 @@ class UserList extends Component {
     ));
 
     return (
-      <div className="col-md-1">
+      <div className="col-md-1" id="outer-userlist">
         <div className="text-center">
           <small>{numUsers} {numUsers === 1 ? 'User' : 'Users'}</small>
         </div>
