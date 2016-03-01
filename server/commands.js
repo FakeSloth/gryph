@@ -21,7 +21,7 @@ module.exports = {
     if (!this.isRank('admin')) return;
     room.addHtml(`<div class='declare'>${escapeHtml(target)}</div>`);
   },
-  
+
   wall: 'announce',
   announce(target, room, user) {
     if (!this.isRank('mod')) return;
@@ -83,7 +83,7 @@ module.exports = {
 
   viewqueue: 'queue',
   queue(target, room, user) {
-    room.queueEach((video, index) => {
+    room.eachVideoInQueue((video, index) => {
       const duration = moment.duration(video.duration).humanize();
       this.sendReply(`${index+1}. ${video.host} - ${duration}`);
     });

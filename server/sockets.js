@@ -82,7 +82,7 @@ function connection(io, socket) {
         resetVideo(emitter);
       }
     },
-    queueEach(cb) {
+    eachVideoInQueue(cb) {
       if (!videoQueue.length) return context.errorReply('Video queue is empty.');
       _(_.reverse(videoQueue)).forEach(cb);
     }
