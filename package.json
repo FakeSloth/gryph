@@ -17,7 +17,7 @@
     "body-parser": "^1.15.0",
     "chalk": "^1.1.1",
     "compression": "^1.6.1",
-    "dem-feels": "^1.2.0",
+    "dem-feels": "^1.4.0",
     "express": "^4.13.3",
     "got": "^6.1.1",
     "hbs": "^4.0.0",
