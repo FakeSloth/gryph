@@ -21,7 +21,8 @@ module.exports = {
     if (!this.isRank('admin')) return;
     room.addHtml(`<div class='declare'>${escapeHtml(target)}</div>`);
   },
-
+  
+  wall: 'announce',
   announce(target, room, user) {
     if (!this.isRank('mod')) return;
     const strong = `<strong style='color: ${hashColor(user.userId)}'>${user.name}:</strong>`;
