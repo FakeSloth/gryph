@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const compress = require('compression');
 const express = require('express');
+const favicon = require('serve-favicon');
 const http = require('http');
 const jwt = require('jsonwebtoken');
 const logger = require('morgan');
@@ -16,6 +17,7 @@ const path = require('path');
 const socketio = require('socket.io');
 const toId = require('toid');
 const winston = require('winston');
+const week = 604800000;
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -60,6 +62,7 @@ if (app.get('isDev')) {
 }
 
 app.use(compress());
+app.use(favicon(path.join(__dirname, '../public/favicon.ico'), { maxAge: week }));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.set('port', config.port);
