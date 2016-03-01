@@ -220,7 +220,7 @@ class Name extends Component {
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-              <strong style={{color: hashColor(username)}}>{username}</strong>{' '}
+              <strong style={{color: hashColor(toId(username))}}>{username}</strong>{' '}
               <span className="caret"></span>
             </a>
             <ul className="dropdown-menu">
@@ -234,7 +234,7 @@ class Name extends Component {
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-              <strong style={{color: hashColor(username)}}>{username}</strong>{' '}
+              <strong style={{color: hashColor(toId(username))}}>{username}</strong>{' '}
               <span className="caret"></span>
             </a>
             <ul className="dropdown-menu">

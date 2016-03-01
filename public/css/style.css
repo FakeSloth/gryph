@@ -13,3 +13,7 @@ img {
 	vertical-align: baseline;
 }
 
+.rank {
+	vertical-align: middle;
+	padding: 2px;
+}

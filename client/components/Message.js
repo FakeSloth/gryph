@@ -4,11 +4,12 @@ import hashColor from '../../hashColor';
 const Message = ({message}) => {
   let msg;
 
-  const {username, className, text, html} = message;
+  const {username, className, text, html, rank} = message;
 
   if (username) {
     msg = (
       <li>
+        <span className="rank" dangerouslySetInnerHTML={{__html: rank}}></span>
         <strong style={{color: hashColor(username)}}>{username}:</strong>
         {' '}
         <span dangerouslySetInnerHTML={{__html: text}}></span>

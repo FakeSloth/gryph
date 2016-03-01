@@ -1,28 +1,33 @@
 'use strict';
 
 const toId = require('toid');
+const db = require('./db');
+const ranks = require('./config').ranks;
 
 let users = {};
 
-function User(name, socket) {
-  this.name = name;
-  this.userId = toId(name);
-  this.socket = socket;
-  this.ip = socket.request.connection.remoteAddress;
-  this.isNamed = false;
+class User {
+  constructor(name, socket) {
+    this.name = name;
+    this.userId = toId(name);
+    this.socket = socket;
+    this.ip = socket.request.connection.remoteAddress;
+    this.isNamed = false;
+    this.lastMessage = '';
+    this.lastMessageTime = 0;
+    this.rank = db('ranks').get(this.userId, 0);
+    this.rankDisplay = ranks[this.rank];
+  }
+
+  setName(name) {
+    delete users[this.userId];
+    this.name = name;
+    this.userId = toId(name);
+    this.socket.userId = this.userId;
+    this.isNamed = true;
+    users[this.userId] = this;
+  }
 }
-
-User.prototype.lastMessage = '';
-User.prototype.lastMessageTime = 0;
-
-User.prototype.setName = function(name) {
-  delete users[this.userId];
-  this.name = name;
-  this.userId = toId(name);
-  this.socket.userId = this.userId;
-  this.isNamed = true;
-  users[this.userId] = this;
-};
 
 function createUser(name, socket) {
   const user = new User(name, socket);
@@ -35,7 +40,11 @@ function getUser(name) {
 }
 
 function listUsers() {
-  return Object.keys(users).map(name => users[name].name);
+  return Object.keys(users)
+               .map(name => ({
+                 name: users[name].name,
+                 rank: users[name].rankDisplay
+               }));
 }
 
 function removeUser(name) {

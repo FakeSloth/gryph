@@ -63,7 +63,7 @@ function parser(message, user, context, room) {
   }
   user.lastMessage = normalized;
 
-  return {text: markup(normalized), username: user.name};
+  return {text: markup(normalized), username: user.name, rank: user.rankDisplay};
 }
 
 function markup(message) {

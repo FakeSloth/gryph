@@ -103,7 +103,8 @@ function connection(io, socket) {
     if (!_.isString(msg.username) || !_.isString(msg.text)) return;
     if (!msg.username || !msg.text || msg.html) return;
     if (!socket.userId || toId(msg.username) !== socket.userId) return;
-    const message = parser(msg.text, Users.get(socket.userId), context, room);
+    const user = Users.get(socket.userId);
+    const message = parser(msg.text, user, context, room);
     if (!message) return;
     pushToChatHistory(message);
     io.emit('chat message', message);
