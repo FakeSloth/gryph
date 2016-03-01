@@ -11,6 +11,7 @@ const got = require('got');
 const moment = require('moment');
 const winston = require('winston');
 
+let timeout;
 let chatHistory = db('chat').get('lobby', []);
 let isPlaying = false;
 let videoQueue = [];
@@ -36,10 +37,7 @@ function connection(io, socket) {
     },
     isRank(rank) {
       if (Users.get(socket.userId).rank < config.rankNames[toId(rank)]) {
-        socket.emit('chat message', {
-          text: 'Access Denied.',
-          className: 'text-danger'
-        });
+        this.errorReply('Access Denied.');
         return false;
       }
       return true;
@@ -72,6 +70,17 @@ function connection(io, socket) {
       user.setRank(rank);
       io.emit('chat message', {text: `${name} was ${move} to ${rankName} by ${Users.get(socket.userId).name}.`});
       io.emit('update userlist', Users.list());
+    },
+    skipVideo(name) {
+      if (!isPlaying) return context.errorReply('No video is playing.');
+      io.emit('chat message', {text: `Video skipped by ${name}.`});
+      clearTimeout(timeout);
+      const emitter = (video) => io.emit('next video', video);
+      if (videoQueue.length) {
+        nextVideo(emitter);
+      } else {
+        resetVideo(emitter);
+      }
     }
   };
 
@@ -203,7 +212,7 @@ function nextVideo(emitVideo) {
   delete videoQueueIps[video.ip];
   currentVideo = {videoId: video.videoId, host: video.host, start: Date.now()};
   emitVideo(currentVideo);
-  setTimeout(() => {
+  timeout = setTimeout(() => {
     if (videoQueue.length) {
       nextVideo(emitVideo);
     } else {

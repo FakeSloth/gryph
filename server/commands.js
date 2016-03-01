@@ -1,6 +1,8 @@
 /*eslint no-unused-vars: 0*/
 'use strct';
 
+const Users = require('./users');
+const toId = require('toid');
 const escapeHtml = require('./escapeHtml');
 const hashColor = require('../hashColor');
 
@@ -50,5 +52,18 @@ module.exports = {
     if (!this.isRank('gmod')) return;
     if (!target) return this.sendReply('/reg [user] - Change a user\'s rank to a regular user.');
     room.rankUser(target, 0, 'Regular User');
+  },
+
+  ip(target, room, user) {
+    if (!this.isRank('gmod')) return;
+    if (!target) target = user.userId;
+    const targetUser = Users.get(toId(target));
+    if (!targetUser) return this.errorReply('This user is not online.');
+    this.sendReply(`${targetUser.name}'s ip is ${targetUser.ip}.`);
+  },
+
+  skip(target, room, user) {
+    if (!this.isRank('admin')) return;
+    room.skipVideo(user.name);
   }
 };
