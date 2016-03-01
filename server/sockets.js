@@ -87,7 +87,7 @@ function connection(io, socket) {
     },
     eachVideoInQueue(cb) {
       if (!videoQueue.length) return context.errorReply('Video queue is empty.');
-      _(_.reverse(videoQueue)).forEach(cb);
+      _(videoQueue.slice().reverse()).forEach(cb);
     }
   };
 
