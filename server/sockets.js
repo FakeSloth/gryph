@@ -11,8 +11,6 @@ const got = require('got');
 const moment = require('moment');
 const winston = require('winston');
 
-const TEN_MINUTE_LIMIT = 600000;
-
 let chatHistory = [];
 let isPlaying = false;
 let videoQueue = [];
@@ -105,7 +103,7 @@ function connection(io, socket) {
 
     if (socket.userId === userId) {
       if (db('users').get(userId) && data.token) {
-        jwt.verify(data.token, config.jwtSecret, (err) => {
+        return jwt.verify(data.token, config.jwtSecret, (err) => {
           if (err) return socket.emit('error token');
           handleAddUser(username, true);
         });
@@ -163,7 +161,7 @@ function connection(io, socket) {
       }
       const duration = json.items[0].contentDetails.duration;
       const ms = moment.duration(duration).asMilliseconds();
-      if (ms > TEN_MINUTE_LIMIT) {
+      if (ms > config.videoLimit && user.rank < 4) {
         return socket.emit('chat message', {
           text: 'Video is too long. The limit is 10 minutes.',
           className: 'text-danger'
@@ -184,6 +182,7 @@ function connection(io, socket) {
 
   function removeUser() {
     Users.remove(socket.userId);
+    delete socket.userId;
     io.emit('update userlist', Users.list());
   }
 

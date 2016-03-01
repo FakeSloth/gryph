@@ -30,4 +30,6 @@ config.rankNames = {
   'staff': 5
 };
 
+config.videoLimit = 600000; // 10 minutes in millisecnds
+
 module.exports = config;
