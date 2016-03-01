@@ -13,6 +13,7 @@ class User {
     this.socket = socket;
     this.ip = socket.request.connection.remoteAddress;
     this.isNamed = false;
+    this.isRegistered = false;
     this.lastMessage = '';
     this.lastMessageTime = 0;
     this.rank = db('ranks').get(this.userId, 0);
@@ -26,6 +27,12 @@ class User {
     this.socket.userId = this.userId;
     this.isNamed = true;
     users[this.userId] = this;
+  }
+
+  setRank(rank) {
+    this.rank = rank;
+    this.rankDisplay = ranks[rank];
+    db('ranks').set(this.userId, rank);
   }
 }
 

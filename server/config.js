@@ -14,8 +14,20 @@ config.database = {
 };
 
 config.ranks = {
-  0: '&nbsp;',
-  1: '<img src="http://help.twitch.tv/customer/portal/attachments/349938" title="Adminstrator">'
+  0: '<span style="padding-left: 1em">&nbsp;</span>',
+  1: '<img src="http://help.twitch.tv/customer/portal/attachments/349944" title="Voice" height="18" width="18">',
+  2: '<img src="http://help.twitch.tv/customer/portal/attachments/349943" title="Moderator" height="18" width="18">',
+  3: '<img src="http://help.twitch.tv/customer/portal/attachments/387081" title="Global Moderator" height="18" width="18">',
+  4: '<img src="http://help.twitch.tv/customer/portal/attachments/349941" title="Adminstrator" height="18" width="18">',
+  5: '<img src="http://help.twitch.tv/customer/portal/attachments/349938" title="Staff" height="18" width="18">'
+};
+
+config.rankNames = {
+  'voice': 1,
+  'mod': 2,
+  'gmod': 3,
+  'admin': 4,
+  'staff': 5
 };
 
 module.exports = config;

@@ -1,4 +1,3 @@
-
 'use strict';
 
 const _ = require('lodash');
@@ -36,6 +35,16 @@ function connection(io, socket) {
     },
     sendHtml(text) {
       socket.emit('chat message', {text, html: true});
+    },
+    isRank(rank) {
+      if (Users.get(socket.userId).rank < config.rankNames[toId(rank)]) {
+        socket.emit('chat message', {
+          text: 'Access Denied.',
+          className: 'text-danger'
+        });
+        return false;
+      }
+      return true;
     }
   };
 
@@ -49,14 +58,34 @@ function connection(io, socket) {
       const message = {text, html: true};
       pushToChatHistory(message);
       io.emit('chat message', message);
+    },
+    rankUser(name, rank, rankName) {
+      const user = Users.get(toId(name));
+      if (!user) {
+        return context.errorReply('A user must be online to be promoted or demoted.');
+      } else if (!user.isRegistered) {
+        return context.errorReply('A user must be registered to be promoted or demoted.');
+      } else if (user.rank > Users.get(socket.userId).rank) {
+        return context.errorReply('You cannot change the rank of user higher than you.');
+      } else if (user.rank === rank) {
+        return context.errorReply('This user is already this rank.');
+      }
+      const move = user.rank < rank ? 'promoted' : 'demoted';
+      user.setRank(rank);
+      io.emit('chat message', {text: `${name} was ${move} to ${rankName} by ${Users.get(socket.userId).name}.`});
+      io.emit('update userlist', Users.list());
     }
   };
 
-  function handleAddUser(username) {
+  function handleAddUser(username, isRegistered) {
     if (!socket.userId || !Users.get(socket.userId)) {
       socket.userId = Users.create(username, socket);
     } else {
       Users.get(socket.userId).setName(username);
+    }
+
+    if (isRegistered) {
+      Users.get(socket.userId).isRegistered = true;
     }
 
     io.emit('update userlist', Users.list());
@@ -75,6 +104,12 @@ function connection(io, socket) {
     if (!userId || userId.length > 19) return;
 
     if (socket.userId === userId) {
+      if (db('users').get(userId) && data.token) {
+        jwt.verify(data.token, config.jwtSecret, (err) => {
+          if (err) return socket.emit('error token');
+          handleAddUser(username, true);
+        });
+      }
       return handleAddUser(username);
     }
 
@@ -85,18 +120,12 @@ function connection(io, socket) {
       jwt.verify(data.token, config.jwtSecret, (err, decoded) => {
         if (err) return socket.emit('error token');
         if (decoded.userId !== userId) return;
-        handleAddUser(username);
+        handleAddUser(username, true);
       });
     } else {
       handleAddUser(username);
     }
   });
-
-  /**
-   * A chat message event.
-   *
-   * @params {Object} msg - {text: String, username: String}
-   */
 
   socket.on('chat message', (msg) => {
     if (!_.isObject(msg)) return;
