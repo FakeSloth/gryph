@@ -32,4 +32,6 @@ config.rankNames = {
 
 config.videoLimit = 600000; // 10 minutes in millisecnds
 
+config.faviconCache = 604800000; // 1 week
+
 module.exports = config;

@@ -17,7 +17,6 @@ const path = require('path');
 const socketio = require('socket.io');
 const toId = require('toid');
 const winston = require('winston');
-const week = 604800000;
 
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -62,7 +61,9 @@ if (app.get('isDev')) {
 }
 
 app.use(compress());
-app.use(favicon(path.join(__dirname, '../public/favicon.ico'), { maxAge: week }));
+app.use(favicon(path.join(__dirname, '../public/favicon.ico'), {
+  maxAge: config.faviconCache
+}));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.set('port', config.port);
