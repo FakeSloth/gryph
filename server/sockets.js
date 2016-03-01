@@ -11,7 +11,7 @@ const got = require('got');
 const moment = require('moment');
 const winston = require('winston');
 
-let chatHistory = [];
+let chatHistory = db('chat').get('lobby', []);
 let isPlaying = false;
 let videoQueue = [];
 let videoQueueIps = {};
@@ -195,6 +195,7 @@ function pushToChatHistory(message) {
     chatHistory.shift();
   }
   chatHistory.push(message);
+  db('chat').set('lobby', chatHistory);
 }
 
 function nextVideo(emitVideo) {
