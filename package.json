@@ -4,7 +4,7 @@
   "description": "A video sharing chat application.",
   "scripts": {
     "start": "node server",
-    "test": "eslint client common server",
+    "test": "eslint client/**/*.js server/*.js *.js",
     "build": "webpack -p"
   },
   "repository": {

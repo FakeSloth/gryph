@@ -25,7 +25,12 @@ class UserList extends Component {
 
     const list = users.map((user, index) => (
       <li id="userlist" key={index}>
-        <span className="rank" dangerouslySetInnerHTML={{__html: user.rank}}></span>
+        <span
+          className="rank"
+          style={user.rank === '&nbsp;' ? {paddingLeft: '1em'} : {}}
+          dangerouslySetInnerHTML={{__html: user.rank}}
+        >
+        </span>
         <strong style={{color: hashColor(toId(user.name))}}>
           {user.name}
         </strong>
@@ -46,7 +51,7 @@ class UserList extends Component {
 }
 
 UserList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.string).isRequired
+  users: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default UserList;
