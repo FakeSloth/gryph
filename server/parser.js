@@ -10,11 +10,10 @@ const SAME_MESSAGE_COOLDOWN = 5 * 60 * 1000;
 const VALID_COMMAND_TOKENS = '/';
 
 
-function parser(message, user, socketEmit, ioEmit) {
-  const emitError = (text) => socketEmit({text, className: 'text-danger'});
+function parser(message, user, context, room) {
   const diff = Date.now() - user.lastMessageTime;
   if (diff < MESSAGE_COOLDOWN) {
-    emitError('Your message was not sent because you have sented too many messages.');
+    context.errorReply('Your message was not sent because you have sented too many messages.');
     return false;
   }
   user.lastMessageTime = Date.now();
@@ -43,33 +42,23 @@ function parser(message, user, socketEmit, ioEmit) {
     if (typeof commandHandler === 'string') {
       commandHandler = commands[commandHandler];
     }
-    commandHandler.call({
-      sendReply(msg) {
-        socketEmit({text: msg});
-      },
-      sendHtml(html) {
-        socketEmit({text: html, html: true});
-      },
-      add(html) {
-        ioEmit({text: html, html: true});
-      }
-    }, target, user);
+    commandHandler.call(context, target, room, user);
     return false;
   } else if (cmdToken) {
-    emitError('The command \'' + cmdToken + cmd + '\' was unrecognized. To send a message starting with \'' + cmdToken + cmd + '\', type \'' + cmdToken.repeat(2) + cmd + '\'.');
+    context.errorReply('The command \'' + cmdToken + cmd + '\' was unrecognized. To send a message starting with \'' + cmdToken + cmd + '\', type \'' + cmdToken.repeat(2) + cmd + '\'.');
     return false;
   }
 
   if (message.length > MAX_MESSAGE_LENGTH) return false;
 
   if (/[\u239b-\u23b9]/.test(message)) {
-    emitError('Your message contains banned characters.');
+    context.errorReply('Your message contains banned characters.');
     return false;
   }
 
   const normalized = message.trim();
   if ((normalized === user.lastMessage) && diff < SAME_MESSAGE_COOLDOWN) {
-    emitError('You can\'t send the same message again so soon.');
+    context.errorReply('You can\'t send the same message again so soon.');
     return false;
   }
   user.lastMessage = normalized;

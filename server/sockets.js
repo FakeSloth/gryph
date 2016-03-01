@@ -27,6 +27,31 @@ function sockets(io) {
 }
 
 function connection(io, socket) {
+  const context = {
+    sendReply(text) {
+      socket.emit('chat message', {text});
+    },
+    errorReply(text) {
+      socket.emit('chat message', {text, className: 'text-danger'});
+    },
+    sendHtml(text) {
+      socket.emit('chat message', {text, html: true});
+    }
+  };
+
+  const room = {
+    add(text) {
+      const message = {text};
+      pushToChatHistory(message);
+      io.emit('chat message', message);
+    },
+    addHtml(text) {
+      const message = {text, html: true};
+      pushToChatHistory(message);
+      io.emit('chat message', message);
+    }
+  };
+
   function handleAddUser(username) {
     if (!socket.userId || !Users.get(socket.userId)) {
       socket.userId = Users.create(username, socket);
@@ -78,12 +103,7 @@ function connection(io, socket) {
     if (!_.isString(msg.username) || !_.isString(msg.text)) return;
     if (!msg.username || !msg.text || msg.html) return;
     if (!socket.userId || toId(msg.username) !== socket.userId) return;
-    const socketEmit = (data) => socket.emit('chat message', data);
-    const ioEmit = (data) => {
-      pushToChatHistory(data);
-      io.emit('chat message', data);
-    };
-    const message = parser(msg.text, Users.get(socket.userId), socketEmit, ioEmit);
+    const message = parser(msg.text, Users.get(socket.userId), context, room);
     if (!message) return;
     pushToChatHistory(message);
     io.emit('chat message', message);
