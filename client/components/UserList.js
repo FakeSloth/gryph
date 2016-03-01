@@ -25,7 +25,6 @@ class UserList extends Component {
       if (a > b) return 1;
       return 0;
     });
-    console.log(users);
 
     const list = users.map((user, index) => (
       <li id="userlist" key={index}>
