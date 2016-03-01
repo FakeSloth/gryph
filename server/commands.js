@@ -5,6 +5,7 @@ const Users = require('./users');
 const toId = require('toid');
 const escapeHtml = require('./escapeHtml');
 const hashColor = require('../hashColor');
+const moment = require('moment');
 
 module.exports = {
   hello(target, room, user) {
@@ -65,5 +66,13 @@ module.exports = {
   skip(target, room, user) {
     if (!this.isRank('admin')) return;
     room.skipVideo(user.name);
+  },
+
+  viewqueue: 'queue',
+  queue(target, room, user) {
+    room.queueEach((video, index) => {
+      const duration = moment.duration(video.duration).humanize();
+      this.sendReply(`${index+1}. ${video.host} - ${duration}`);
+    });
   }
 };

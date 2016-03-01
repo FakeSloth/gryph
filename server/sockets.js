@@ -81,6 +81,10 @@ function connection(io, socket) {
       } else {
         resetVideo(emitter);
       }
+    },
+    queueEach(cb) {
+      if (!videoQueue.length) return context.errorReply('Video queue is empty.');
+      _(videoQueue).forEach(cb);
     }
   };
 
