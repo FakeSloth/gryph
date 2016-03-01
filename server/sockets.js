@@ -41,6 +41,9 @@ function connection(io, socket) {
         return false;
       }
       return true;
+    },
+    clearChat() {
+      socket.emit('update messages', []);
     }
   };
 

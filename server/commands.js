@@ -87,5 +87,9 @@ module.exports = {
       const duration = moment.duration(video.duration).humanize();
       this.sendReply(`${index+1}. ${video.host} - ${duration}`);
     });
+  },
+
+  clear(target, room, user) {
+    this.clearChat();
   }
 };
