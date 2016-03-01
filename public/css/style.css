@@ -1,5 +1,5 @@
 #userlist {
-	width: 97px;
+	white-space: nowrap;
 	overflow: hidden;
 }
 

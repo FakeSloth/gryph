@@ -27,7 +27,7 @@ class UserList extends Component {
       <li id="userlist" key={index}>
         <span
           className="rank"
-          style={user.rank === '&nbsp;' ? {paddingLeft: '1em'} : {}}
+          style={user.rank === '&nbsp;' ? {paddingLeft: '1em'} : null}
           dangerouslySetInnerHTML={{__html: user.rank}}
         >
         </span>
