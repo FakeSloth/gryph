@@ -73,7 +73,7 @@ module.exports = {
     if (!target) target = user.userId;
     const targetUser = Users.get(toId(target));
     if (!targetUser) return this.errorReply('This user is not online.');
-    this.sendReply(targetUser.name + '\'s ip is ${targetUser.ip}.');
+    this.sendReply(targetUser.name + '\'s ip is ' + targetUser.ip + '.');
   },
 
   skip(target, room, user) {
