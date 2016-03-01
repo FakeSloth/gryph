@@ -17,18 +17,22 @@ class UserList extends Component {
     const numUsers = this.props.users.length;
 
     users.sort((a, b) => {
+      if (a.rank < b.rank) return 1;
+      if (a.rank > b.rank) return -1;
+      if (a.rank && !b.hasOwnProperty('rank')) return -1;
       a = a.name.toLowerCase(), b = b.name.toLowerCase();
       if (a < b) return -1;
       if (a > b) return 1;
       return 0;
     });
+    console.log(users);
 
     const list = users.map((user, index) => (
       <li id="userlist" key={index}>
         <span
           className="rank"
-          style={user.rank === '&nbsp;' ? {paddingLeft: '1em'} : null}
-          dangerouslySetInnerHTML={{__html: user.rank}}
+          style={user.rank === 0 ? {paddingLeft: '20px'} : null}
+          dangerouslySetInnerHTML={{__html: user.rankDisplay}}
         >
         </span>
         <strong style={{color: hashColor(toId(user.name))}}>

@@ -48,10 +48,14 @@ function getUser(name) {
 
 function listUsers() {
   return Object.keys(users)
-               .map(name => ({
-                 name: users[name].name,
-                 rank: users[name].rankDisplay
-               }));
+    .map(name => {
+      const user = users[name];
+      return {
+        name: user.name,
+        rank: user.rank,
+        rankDisplay: user.rankDisplay
+      };
+    });
 }
 
 function removeUser(name) {

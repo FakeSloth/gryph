@@ -9,7 +9,7 @@ const Message = ({message}) => {
   if (username) {
     msg = (
       <li>
-        <span className="rank" dangerouslySetInnerHTML={{__html: rank}}></span>
+        <span className={rank !== ' ' ? 'rank' : null} dangerouslySetInnerHTML={{__html: rank}}></span>
         <strong style={{color: hashColor(username)}}>{username}:</strong>
         {' '}
         <span dangerouslySetInnerHTML={{__html: text}}></span>
