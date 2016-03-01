@@ -17,6 +17,18 @@ module.exports = {
     room.addHtml(`${dot} ${user.name} <em>${escapeHtml(target)}</em>`);
   },
 
+  declare(target, room, user) {
+    if (!this.isRank('admin')) return;
+    room.addHtml(`<div class='declare'>${escapeHtml(target)}</div>`);
+  },
+
+  announce(target, room, user) {
+    if (!this.isRank('mod')) return;
+    const strong = `<strong style='color: ${hashColor(user.userId)}'>${user.name}:</strong>`;
+    const announcment = `<text class="announce">${escapeHtml(target)}</text>`;
+    room.addHtml(`${strong} ${announcment}`);
+  },
+
   staff(target, room, user) {
     if (!this.isRank('staff')) return;
     if (!target) return this.sendReply('/staff [user] - Change a user\'s rank to staff.');
