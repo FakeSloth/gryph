@@ -4,7 +4,10 @@
   "description": "A video sharing chat application.",
   "scripts": {
     "start": "node server",
-    "test": "eslint client/**/*.js server/*.js *.js",
+    "test": "npm run lint && npm run test:server && npm run test:commands",
+    "test:commands": "ava test/commands.js --tap | tap-spec",
+    "test:server": "mocha test/server.js --timeout 10000",
+    "lint": "eslint client/**/*.js server/*.js *.js",
     "build": "webpack -p"
   },
   "repository": {
@@ -41,6 +44,7 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "ava": "^0.12.0",
     "babel-core": "^6.5.1",
     "babel-loader": "^6.2.2",
     "babel-preset-es2015": "^6.3.13",
@@ -48,6 +52,9 @@
     "babel-preset-react-hmre": "^1.0.1",
     "eslint": "^2.2.0",
     "eslint-plugin-react": "^4.0.0",
+    "mocha": "^2.4.5",
+    "supertest": "^1.2.0",
+    "tap-spec": "^4.1.1",
     "webpack": "^1.9.11",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.2.0"

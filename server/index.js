@@ -170,4 +170,4 @@ server.listen(app.get('port'), (error) => {
   winston.info('==> Listening on port %s in %s mode.', port, env);
 });
 
-module.exports = app;
+module.exports = server;
