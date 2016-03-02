@@ -76,7 +76,7 @@ function connection(io, socket) {
     },
     skipVideo(name) {
       if (!isPlaying) return context.errorReply('No video is playing.');
-      io.emit('chat message', {text: `Video skipped by ${name}.`});
+      io.emit('chat message', {text: `${currentVideo.host}'s video skipped by ${name}.`});
       clearTimeout(timeout);
       const emitter = (video) => io.emit('next video', video);
       if (videoQueue.length) {
