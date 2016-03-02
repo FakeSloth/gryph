@@ -11,7 +11,8 @@ class User {
     this.name = name;
     this.userId = toId(name);
     this.socket = socket;
-    this.ip = socket.request.connection.remoteAddress;
+    this.ip = socket.request.headers['x-forwarded-for'] ||
+              socket.request.connection.remoteAddress;
     this.isNamed = false;
     this.isRegistered = false;
     this.lastMessage = '';
