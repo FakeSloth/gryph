@@ -1,5 +1,5 @@
 /*eslint no-unused-vars: 0*/
-'use strct';
+'use strict';
 
 const Users = require('./users');
 const toId = require('toid');
@@ -91,5 +91,39 @@ module.exports = {
 
   clear(target, room, user) {
     this.clearChat();
+  },
+
+  github: 'git',
+  git(target, room, user) {
+    const gitUrl = '<a href=https://github.com/FakeSloth/gryph> Github Repository!</a>';
+    this.sendHtml(`Gryph is open source! Check out our ${gitUrl}`);
+  },
+
+  credit: 'credits',
+  credits(target, room, user) {
+    this.sendHtml(`<br>Gryph is brought to you by the following people:\n
+      - CreaturePhil - Design and Development\n
+      - fender - Development</br>`);
+  },
+
+  commands: 'commandlist',
+  cmdlist: 'commandlist',
+  commandlist(target, room, user) {
+    let cmdlist = `- /queue: Shows the order for songs to be played.\n
+      - /ranks OR /staff: Explanation of the staff and moderator groups.\n
+      - /me: Say a message in the third person.\n
+      - /git: Links to the project github repository.\n
+      - /credits: Credits the Gryph development team.\n`;
+    if (!this.isRank('mod', true)) {
+      this.sendReply(cmdlist);
+      return;
+    } else {
+      cmdlist += `- /declare: Declare a large message. Used for making announcments.\n
+      - /announce or /wall: Highlight and important message in blue.\n
+      - /skip: Skips to the next video in the cue.\n
+      - /ip: Displays the ip address of a target user.\n
+      - Promotion: /[rank] Promotes a user to a target rank.`;
+      this.sendReply(cmdlist);
+    }
   }
 };

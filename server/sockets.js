@@ -35,9 +35,9 @@ function connection(io, socket) {
     sendHtml(text) {
       socket.emit('chat message', {text, html: true});
     },
-    isRank(rank) {
+    isRank(rank, isNoReply) {
       if (Users.get(socket.userId).rank < config.rankNames[toId(rank)]) {
-        this.errorReply('Access Denied.');
+        if (!isNoReply) this.errorReply('Access Denied.');
         return false;
       }
       return true;
