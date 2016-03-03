@@ -7,6 +7,35 @@
 	padding: 0;
 }
 
+#loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -150px;
+	margin-left: -200px;
+}
+
+#loading h1 {
+	display: inline;
+	font-size: 5em;
+}
+
+.inline {
+	display: inline;
+}
+
+.ball-pulse > div {
+  background: #111;
+	width: 10px;
+	height: 10px;
+	margin-left: 10px;
+}
+
+.ball-scale-ripple > div {
+	border-color: #0074D9 #0074D9;
+	margin-top: 15px;
+}
+
 .chatbox {
 	height: 80vh;
 	overflow-y: auto;
