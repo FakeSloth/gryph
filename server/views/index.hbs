@@ -1,25 +1,75 @@
 <div id="root">
-  <div id="loading">
+  <nav class="navbar navbar-default navbar-static">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">gryph</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Playlists</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <form class="navbar-form navbar-right">
+            <button class="btn btn-primary">Choose Name</button>
+            <button class="btn btn-default">Login/Register</button>
+          </form>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-7">
+        <div class="jumbotron">
+          <h1 class="inline">Loading</h1>
 
-        <div class="loader-inner ball-scale-ripple">
+          <div class="loader-inner ball-pulse inline">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+
+        </div>
+        <form>
+          <div class="row">
+            <div class="col-md-10">
+              <input type="text" class="form-control" placeholder="YouTube Video Url" />
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary">Add Video</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-1">
+        <div class="text-center">
+          <small>0 Users</small>
+        </div>
+        <ul class="list-unstyled"></ul>
+      </div>
+      <div class="col-md-4">
+
+        <div class="loader-inner ball-scale-ripple-multiple">
+          <div></div>
+          <div></div>
           <div></div>
         </div>
 
+        <ul class="chatbox list-unstyled"></ul>
+        <form>
+          <input type="text" class="form-control"/>
+        </form>
       </div>
-
-      <div class="col-md-10">
-        <h1>Loading</h1>
-
-        <div class="loader-inner ball-pulse inline">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-        
-      </div>
-
     </div>
   </div>
 </div>

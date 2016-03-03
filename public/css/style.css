@@ -7,19 +7,6 @@
 	padding: 0;
 }
 
-#loading {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -150px;
-	margin-left: -200px;
-}
-
-#loading h1 {
-	display: inline;
-	font-size: 5em;
-}
-
 .inline {
 	display: inline;
 }
@@ -31,9 +18,16 @@
 	margin-left: 10px;
 }
 
-.ball-scale-ripple > div {
+.ball-scale-ripple-multiple {
+	position: absolute;
+	top: 35%;
+	left: 30%;
+}
+
+.ball-scale-ripple-multiple > div {
 	border-color: #0074D9 #0074D9;
-	margin-top: 15px;
+	width: 200px;
+	height: 200px;
 }
 
 .chatbox {
