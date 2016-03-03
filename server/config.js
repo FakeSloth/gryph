@@ -34,4 +34,6 @@ config.videoLimit = 600000; // 10 minutes in millisecnds
 
 config.faviconCache = 604800000; // 1 week
 
+config.isDev = process.env.NODE_ENV !== 'production';
+
 module.exports = config;

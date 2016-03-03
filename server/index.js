@@ -4,18 +4,15 @@
  * Module dependencies.
  */
 
-const bcrypt = require('bcrypt-nodejs');
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
 const compress = require('compression');
 const express = require('express');
 const favicon = require('serve-favicon');
 const http = require('http');
-const jwt = require('jsonwebtoken');
 const logger = require('morgan');
 const path = require('path');
 const socketio = require('socket.io');
-const toId = require('toid');
 const winston = require('winston');
 
 const webpack = require('webpack');
@@ -24,8 +21,12 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const webpackConfig = require('../webpack.config');
 
 const config = require('./config');
-const db = require('./db');
 const sockets = require('./sockets');
+
+const homeRoute = require('./routes');
+const authRoute = require('./routes/auth');
+const loginRoute = require('./routes/login');
+const registerRoute = require('./routes/register');
 
 /**
  * Create Express server.
@@ -48,9 +49,7 @@ const io = socketio(server);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.set('isDev', app.get('env') !== 'production');
-
-if (app.get('isDev')) {
+if (config.isDev) {
   // compile react components
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
@@ -73,54 +72,10 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
  * App routes.
  */
 
-app.get('/', (req, res) => {
-  res.render('index', {title: 'gryph', isDev: app.get('isDev')});
-});
-
-app.post('/register', (req, res, next) => {
-  const username = req.body.username.trim();
-  const userId = toId(username);
-  if (!username || !req.body.password) return next();
-  if (username.length > 19 || req.body.password.length > 300) return next();
-  if (db('users').get(userId)) {
-    return res.json({msg: 'Someone has already registered this username.'});
-  }
-  bcrypt.genSalt(10, function(err, salt) {
-    if (err) return next(err);
-    bcrypt.hash(req.body.password, salt, null, function(err, hash) {
-      if (err) return next(err);
-      db('users').set(userId, {username, userId, password: hash});
-      const token = jwt.sign({username, userId}, config.jwtSecret, {
-        expiresIn: '1 day'
-      });
-      res.json({token});
-    });
-  });
-});
-
-app.post('/login', (req, res, next) => {
-  const username = req.body.username.trim();
-  const userId = toId(username);
-  if (!username || !req.body.password) return next();
-  if (username.length > 19 || req.body.password.length > 300) return next();
-  const user = db('users').get(userId);
-  if (!user) return res.json({msg: 'Invalid username or password.'});
-  bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
-    if (err) return next(err);
-    if (!isMatch) return res.json({msg: 'Invalid username or password.'});
-    const token = jwt.sign({username, userId}, config.jwtSecret, {
-      expiresIn: '7 days'
-    });
-    res.json({token});
-  });
-});
-
-app.post('/auth', (req, res) => {
-  if (db('users').has(toId(req.body.name))) {
-    return res.json({msg: 'This username is registered.'});
-  }
-  return res.json({success: true});
-});
+app.get('/', homeRoute);
+app.post('/auth', authRoute);
+app.post('/login', loginRoute);
+app.post('/register', registerRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
