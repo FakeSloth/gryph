@@ -5,10 +5,9 @@ const commands = require('./commands');
 const escapeHtml = require('./escapeHtml');
 
 const MAX_MESSAGE_LENGTH = 300;
-const MESSAGE_COOLDOWN = 500;
+const MESSAGE_COOLDOWN = 400;
 const SAME_MESSAGE_COOLDOWN = 5 * 60 * 1000;
 const VALID_COMMAND_TOKENS = '/';
-
 
 function parser(message, user, context, room) {
   const diff = Date.now() - user.lastMessageTime;
