@@ -74,6 +74,11 @@ function parser(message, user) {
   }
   user.lastMessage = normalized;
 
+  if (user.isMuted) {
+    context.errorReply('You are muted and cannot talk in this room.');
+    return false;
+  }
+
   return {text: markup(normalized), username: user.name, rank: user.rankDisplay};
 }
 

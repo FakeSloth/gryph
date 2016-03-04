@@ -5,6 +5,7 @@ const db = require('./db');
 const ranks = require('./config').ranks;
 
 let users = {};
+let mutedUsers = {};
 
 class User {
   constructor(name, socket) {
@@ -13,12 +14,32 @@ class User {
     this.socket = socket;
     this.ip = socket.request.headers['x-forwarded-for'] ||
               socket.request.connection.remoteAddress;
+
+    this.isMuted = mutedUsers[this.ip] ? true : false;
     this.isNamed = false;
     this.isRegistered = false;
+
+    this.muteTimeout = mutedUsers[this.ip] ? mutedUsers[this.ip] : null;
+
     this.lastMessage = '';
     this.lastMessageTime = 0;
+
     this.rank = db('ranks').get(this.userId, 0);
     this.rankDisplay = ranks[this.rank];
+  }
+
+  mute(ms) {
+    this.isMuted = true;
+    this.muteTimeout = setTimeout(this.unmute.bind(this), ms);
+    mutedUsers[this.ip] = this.muteTimeout;
+  }
+
+  unmute(emitExpired) {
+    this.isMuted = false;
+    delete mutedUsers[this.ip];
+    if (!emitExpired) {
+      this.socket.emit('chat message', {text: 'Your mute has expired.'});
+    }
   }
 
   setName(name) {
