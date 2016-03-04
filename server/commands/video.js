@@ -6,7 +6,7 @@ const moment = require('moment');
 module.exports = {
   skip(target, room, user) {
     if (!this.isRank('admin')) return;
-    room.skipVideo(user.name);
+    room.skipVideo(user.name, target);
   },
 
   viewqueue: 'queue',

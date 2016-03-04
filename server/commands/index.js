@@ -55,9 +55,12 @@ function createCommandsAPI(io, socket, socketStore) {
       io.emit('chat message', {text: `${name} was ${move} to ${rankName} by ${Users.get(socket.userId).name}.`});
       io.emit('update userlist', Users.list());
     },
-    skipVideo(name) {
+    skipVideo(name, target) {
+      const reason = target ? ` (${target.trim()})` : '';
       if (!socketStore.isPlaying) return context.errorReply('No video is playing.');
-      io.emit('chat message', {text: socketStore.currentVideo.host  + '\'s video skipped by ' + name + '.'});
+      io.emit('chat message', {
+        text: socketStore.currentVideo.host  + '\'s video skipped by ' + name + '.' + reason
+      });
       clearTimeout(socketStore.timeout);
       socketStore.resumeVideoQueue();
     },
