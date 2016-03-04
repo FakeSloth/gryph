@@ -58,6 +58,8 @@ function parser(message, user) {
   } else if (cmdToken) {
     context.errorReply('The command \'' + cmdToken + cmd + '\' was unrecognized. To send a message starting with \'' + cmdToken + cmd + '\', type \'' + cmdToken.repeat(2) + cmd + '\'.');
     return false;
+  } else if (isValidCmdToken && isEscapedCmd) {
+    message = message.substr(1);
   }
 
   if (message.length > MAX_MESSAGE_LENGTH) return false;
