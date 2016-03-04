@@ -14,6 +14,12 @@ function addVideo(socket, socketStore, data) {
   const videoId = validateVideo(data);
   if (!videoId) return;
   const user = Users.get(socket.userId);
+  if (user.isVideoLocked) {
+    return socket.emit('chat message', {
+      text: 'You are locked from adding more videos.',
+      className: 'text-danger'
+    });
+  }
   if (socketStore.videoQueueIps[user.ip]) {
     return socket.emit('chat message', {
       text: 'You already have a video in the queue.',

@@ -6,6 +6,7 @@ const ranks = require('./config').ranks;
 
 let users = {};
 let mutedUsers = {};
+let vidLockUsers = {};
 
 class User {
   constructor(name, socket) {
@@ -18,6 +19,7 @@ class User {
     this.isMuted = mutedUsers[this.ip] ? true : false;
     this.isNamed = false;
     this.isRegistered = false;
+    this.isVideoLocked = vidLockUsers[this.ip] ? true : false;
 
     this.muteTimeout = mutedUsers[this.ip] ? mutedUsers[this.ip] : null;
 
@@ -40,6 +42,16 @@ class User {
     if (!emitExpired) {
       this.socket.emit('chat message', {text: 'Your mute has expired.'});
     }
+  }
+
+  vidLock() {
+    this.isVideoLocked = true;
+    vidLockUsers[this.ip] = true;
+  }
+
+  unvidLock() {
+    this.isVideoLocked = false;
+    delete vidLockUsers[this.ip];
   }
 
   setName(name) {
