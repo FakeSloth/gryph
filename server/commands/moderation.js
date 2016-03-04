@@ -13,8 +13,8 @@ module.exports = {
     if (targetUser.isMuted) return this.errorReply(`User ${parts[0]} is already muted.`);
     if (targetUser.rank > user.rank) return this.errorReply('You do not have enough authority to mute this user.');
     targetUser.mute(600000);
-    const reason = parts[1] ? ` (${parts[1]}).` : '.';
-    room.add(`${targetUser.name} was muted by ${user.name} for 10 minutes${reason}`);
+    const reason = parts[1] ? ` (${parts[1].trim()})` : '';
+    room.add(`${targetUser.name} was muted by ${user.name} for 10 minutes.${reason}`);
   },
 
   unmute(target, room, user) {
