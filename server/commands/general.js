@@ -94,7 +94,7 @@ module.exports = {
 
   'memusage': 'memoryusage',
   memoryusage: function (target) {
-    if (!this.can('hotpatch')) return false;
+    if (!this.isRank('staff')) return;
     let memUsage = process.memoryUsage();
     let results = [memUsage.rss, memUsage.heapUsed, memUsage.heapTotal];
     let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
