@@ -11,9 +11,11 @@ module.exports = {
 
   viewqueue: 'queue',
   queue(target, room, user) {
+    let buf = '';
     room.eachVideoInQueue((video, index) => {
       const duration = moment.duration(video.duration).humanize();
-      this.sendReply(`${index+1}. ${video.host} - ${duration}`);
+      buf += `${index+1}. ${video.host} - ${duration}<br>`;
     });
+    this.sendHtml(buf);
   }
 };
