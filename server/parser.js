@@ -1,13 +1,24 @@
 'use strict';
 
+const _ = require('lodash');
 const demFeels = require('dem-feels');
-const commands = require('./commands/general');
 const escapeHtml = require('./escapeHtml');
+const fs = require('fs');
+const path = require('path');
 
 const MAX_MESSAGE_LENGTH = 300;
 const MESSAGE_COOLDOWN = 400;
 const SAME_MESSAGE_COOLDOWN = 5 * 60 * 1000;
 const VALID_COMMAND_TOKENS = '/';
+
+let commands = {};
+
+const baseDir = path.join(__dirname, 'commands');
+fs.readdirSync(baseDir)
+  .filter(name => name !== 'index.js')
+  .forEach(name => {
+    _.assign(commands, require(path.join(baseDir, name)));
+  });
 
 function parser(message, user) {
   const context = this.context;
