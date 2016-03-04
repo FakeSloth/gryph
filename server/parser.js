@@ -1,7 +1,7 @@
 'use strict';
 
 const demFeels = require('dem-feels');
-const commands = require('./commands');
+const commands = require('./commands/general');
 const escapeHtml = require('./escapeHtml');
 
 const MAX_MESSAGE_LENGTH = 300;
@@ -9,7 +9,8 @@ const MESSAGE_COOLDOWN = 400;
 const SAME_MESSAGE_COOLDOWN = 5 * 60 * 1000;
 const VALID_COMMAND_TOKENS = '/';
 
-function parser(message, user, context, room) {
+function parser(message, user) {
+  const context = this.context;
   const diff = Date.now() - user.lastMessageTime;
   if (diff < MESSAGE_COOLDOWN) {
     context.errorReply('Your message was not sent because you have sented too many messages.');
@@ -41,7 +42,7 @@ function parser(message, user, context, room) {
     if (typeof commandHandler === 'string') {
       commandHandler = commands[commandHandler];
     }
-    commandHandler.call(context, target, room, user);
+    commandHandler.call(context, target, this.room, user);
     return false;
   } else if (cmdToken) {
     context.errorReply('The command \'' + cmdToken + cmd + '\' was unrecognized. To send a message starting with \'' + cmdToken + cmd + '\', type \'' + cmdToken.repeat(2) + cmd + '\'.');

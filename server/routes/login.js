@@ -1,6 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt-nodejs');
+const config = require('../config');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 const toId = require('toid');

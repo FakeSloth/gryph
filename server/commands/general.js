@@ -1,10 +1,10 @@
 /*eslint no-unused-vars: 0*/
 'use strict';
 
-const Users = require('./users');
+const Users = require('../users');
 const toId = require('toid');
-const escapeHtml = require('./escapeHtml');
-const hashColor = require('../hashColor');
+const escapeHtml = require('../escapeHtml');
+const hashColor = require('../../hashColor');
 const moment = require('moment');
 
 module.exports = {

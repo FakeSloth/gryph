@@ -1,5 +1,5 @@
 import test from 'ava';
-import {hello, me} from '../server/commands';
+import {hello, me} from '../server/commands/general';
 
 test('/hello', t => {
   t.plan(1);

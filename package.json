@@ -7,7 +7,7 @@
     "test": "npm run lint && npm run test:server && npm run test:commands",
     "test:commands": "ava test/commands.js --tap | tap-spec",
     "test:server": "mocha test/server.js --timeout 10000",
-    "lint": "eslint client/**/*.js server/*.js *.js",
+    "lint": "eslint client/**/*.js server/**/*.js *.js",
     "build": "webpack -p"
   },
   "repository": {
