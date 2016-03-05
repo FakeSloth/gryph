@@ -11,6 +11,10 @@
 	display: inline;
 }
 
+.username a span {
+	color: blue;	
+}
+
 .ball-pulse > div {
   background: #111;
 	width: 10px;

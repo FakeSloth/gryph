@@ -3,6 +3,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import fetch from 'isomorphic-fetch';
+import {Navbar, NavDropdown, MenuItem, Button, Input} from 'react-bootstrap';
 import toId from 'toid';
 import hashColor from '../../hashColor';
 import * as Actions from '../actions';
@@ -135,34 +136,29 @@ class Name extends Component {
 
     if (chooseName === BEFORE_CHOOSE_NAME) {
       formBody = (
-        <form
-          className="navbar-form navbar-right"
-          onSubmit={e => e.preventDefault()}
-        >
-          <button
+        <Navbar.Form pullRight onSubmit={e => e.preventDefault()}>
+          <Button
             onClick={() => actions.setChooseName(DURING_CHOOSE_NAME)}
-            className="btn btn-primary"
+            bsStyle="primary"
           >
             Choose Name
-          </button>
+          </Button>
           {' '}
-          <button
+          <Button
             onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}
-            className="btn btn-default"
           >
             Login/Register
-          </button>
-        </form>
+          </Button>
+        </Navbar.Form>
       );
     } else if (chooseName === DURING_CHOOSE_NAME) {
       formBody = (
         <form
-          className="navbar-form navbar-right"
+          className="navbar-form"
           onSubmit={(e) => this.handleSubmitDuringChooseName(e, usernames)}
         >
-          <button
+          <Button
             type="button"
-            className="btn btn-default"
             onClick={(e) => {
               e.preventDefault();
               if (!username) {
@@ -173,12 +169,11 @@ class Name extends Component {
             }}
           >
             <span className="glyphicon glyphicon-chevron-left"></span>
-          </button>
+          </Button>
           {' '}
           <div className="form-group">
-            <input
+            <Input
               type="text"
-              className="form-control"
               placeholder="Username"
               value={this.state.name}
               onChange={(e) => this.handleChange(e)}
@@ -189,13 +184,12 @@ class Name extends Component {
     } else if (chooseName === DURING_CHOOSE_AUTH_NAME) {
       formBody = (
         <form
-          className="navbar-form navbar-right"
+          className="navbar-form"
           onSubmit={(e) => e.preventDefault()}
         >
           <div className="form-group">
-            <button
+            <Button
               type="button"
-              className="btn btn-default"
               onClick={(e) => {
                 e.preventDefault();
                 if (!username) {
@@ -206,43 +200,33 @@ class Name extends Component {
               }}
             >
               <span className="glyphicon glyphicon-chevron-left"></span>
-            </button>
+            </Button>
             {' '}
             <input type="text" className="form-control" placeholder="Username" ref="username_input" />{' '}
             <input type="password" className="form-control" placeholder="Password" ref="password_input" />{' '}
-            <button className="btn btn-primary" onClick={() => this.auth('login', usernames)}>Login</button>
-            <button className="btn btn-default" onClick={() => this.auth('register', usernames)}>Register</button>
+            <Button bsStyle="primary" onClick={() => this.auth('login', usernames)}>Login</Button>
+            <Button onClick={() => this.auth('register', usernames)}>Register</Button>
           </div>
         </form>
       );
     } else if (chooseName === AFTER_CHOOSE_AUTH_NAME) {
       formBody = (
-        <ul className="nav navbar-nav navbar-right">
-          <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-              <strong style={{color: hashColor(toId(username))}}>{username}</strong>{' '}
-              <span className="caret"></span>
-            </a>
-            <ul className="dropdown-menu">
-              <li><a href="#" onClick={() => this.logout()}>Logout</a></li>
-            </ul>
-          </li>
-        </ul>
+        <NavDropdown
+          id="dropdown-custom-1"
+          title={<strong style={{color: hashColor(toId(username))}}>{username}</strong>}
+        >
+          <MenuItem onClick={() => this.logout()}>Logout</MenuItem>
+        </NavDropdown>
       );
     } else if (chooseName === AFTER_CHOOSE_NAME) {
       formBody = (
-        <ul className="nav navbar-nav navbar-right">
-          <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-              <strong style={{color: hashColor(toId(username))}}>{username}</strong>{' '}
-              <span className="caret"></span>
-            </a>
-            <ul className="dropdown-menu">
-              <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_NAME)}>Change Name</a></li>
-              <li><a href="#" onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}>Login/Register</a></li>
-            </ul>
-          </li>
-        </ul>
+        <NavDropdown
+          id="dropdown-custom-2"
+          title={<strong style={{color: hashColor(toId(username))}}>{username}</strong>}
+        >
+          <MenuItem onClick={() => actions.setChooseName(DURING_CHOOSE_NAME)}>Change Name</MenuItem>
+          <MenuItem onClick={() => actions.setChooseName(DURING_CHOOSE_AUTH_NAME)}>Login/Register</MenuItem>
+        </NavDropdown>
       );
     }
 

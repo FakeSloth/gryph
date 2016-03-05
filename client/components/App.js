@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react';
-import Navbar from '../containers/Navbar';
+import Navigation from '../containers/Navigation';
 
 const App = ({children}) => {
   return (
     <div>
-      <Navbar />
+      <Navigation />
       <div className="container-fluid">
         {children}
       </div>
