@@ -7,29 +7,6 @@
 	padding: 0;
 }
 
-.inline {
-	display: inline;
-}
-
-.ball-pulse > div {
-  background: #111;
-	width: 10px;
-	height: 10px;
-	margin-left: 10px;
-}
-
-.ball-scale-ripple-multiple {
-	position: absolute;
-	top: 35%;
-	left: 30%;
-}
-
-.ball-scale-ripple-multiple > div {
-	border-color: #0074D9 #0074D9;
-	width: 200px;
-	height: 200px;
-}
-
 .chatbox {
 	height: 80vh;
 	overflow-y: auto;
