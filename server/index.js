@@ -27,6 +27,7 @@ const homeRoute = require('./routes');
 const authRoute = require('./routes/auth');
 const loginRoute = require('./routes/login');
 const registerRoute = require('./routes/register');
+const searchRoute = require('./routes/search');
 
 /**
  * Create Express server.
@@ -76,6 +77,7 @@ app.get('/', homeRoute);
 app.post('/auth', authRoute);
 app.post('/login', loginRoute);
 app.post('/register', registerRoute);
+app.post('/search', searchRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

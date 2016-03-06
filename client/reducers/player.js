@@ -7,17 +7,17 @@ const initialState = {
   videoId: ''
 };
 
-function player(state = initialState, actions) {
-  switch (actions.type) {
+function player(state = initialState, action) {
+  switch (action.type) {
     case START_NEXT_VIDEO:
       return Object.assign({}, state, {
-        videoId: actions.videoId,
-        host: actions.host,
-        start: actions.start
+        videoId: action.videoId,
+        host: action.host,
+        start: action.start
       });
     case SET_ALLOW_SEEK:
       return Object.assign({}, state, {
-        allowSeek: actions.allowSeek
+        allowSeek: action.allowSeek
       });
     default:
       return state;

@@ -50,3 +50,10 @@ export function setAllowSeek(allowSeek) {
     allowSeek
   };
 }
+
+export function setSearchVideos(videos) {
+  return {
+    type: types.SET_SEARCH_VIDEOS,
+    videos
+  };
+}

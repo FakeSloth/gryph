@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import {Router, IndexRoute, Route, browserHistory} from 'react-router';
 import App from '../components/App';
 import About from '../components/About';
-import Playlists from '../components/Playlists';
+import Playlists from './Playlists';
 import Home from './Home';
 import jwtDecode from 'jwt-decode';
 import {AFTER_CHOOSE_AUTH_NAME, BEFORE_CHOOSE_NAME} from '../constants/chooseName';
