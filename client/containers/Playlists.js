@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Tabs, Tab} from 'react-bootstrap';
+import {Tabs, Tab, Modal, Button} from 'react-bootstrap';
 import fetch from 'isomorphic-fetch';
 import * as Actions from '../actions';
 import PlaylistInput from '../components/PlaylistInput';
@@ -11,11 +11,23 @@ class Playlists extends Component  {
   constructor(props) {
     super(props);
 
-    this.state = {active: 0};
+    this.state = {activeKey: 1, showModal: false, playlist: ''};
+  }
+
+  handleChange(name) {
+    this.setState({playlist: name});
+  }
+
+  close() {
+    this.setState({ showModal: false });
+  }
+
+  open() {
+    this.setState({ showModal: true });
   }
 
   searchVideos(term) {
-    const {actions} = this.props;
+    const {actions, playlistNames} = this.props;
 
     fetch('/search', {
       method: 'post',
@@ -32,37 +44,93 @@ class Playlists extends Component  {
     .then((response) => response.json())
     .then((res) => {
       actions.setSearchVideos(res.videos);
-      this.setState({active: 1});
+      this.setState({activeKey: 1});
     })
     .catch(error => console.error(error));
   }
 
   render() {
-    const {username, videos} = this.props;
+    const {username, videos, actions, playlists, playlistNames} = this.props;
+    console.log(this.state.playlist, playlistNames[0]);
+    console.log(this.state.playlist === playlistNames[0]);
 
     return (
       <div>
-        <PlaylistInput
-          username={username}
-          searchVideos={(term) => this.searchVideos(term)}
-        />
+        <div className="row">
+          <div className="col-md-2 text-center">
+            <Button
+              bsStyle="primary"
+              onClick={() => this.open()}
+            >
+              Create Playlist
+            </Button>
+          </div>
+          <div className="col-md-10">
+            <PlaylistInput
+              username={username}
+              onSubmit={(term) => this.searchVideos(term)}
+              placeholder="Search YouTube Videos"
+            />
+          </div>
+        </div>
+        <Modal show={this.state.showModal} onHide={() => this.close()}>
+          <Modal.Header closeButton>
+            <Modal.Title>Create Playlist</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <PlaylistInput
+              username={username}
+              onSubmit={(name) => {
+                actions.createPlaylist(name);
+                this.close();
+              }}
+              placeholder="Playlist name"
+            />
+          </Modal.Body>
+        </Modal>
         <br />
         <Tabs
-          defaultActiveKey={1}
           position="left"
-          tabWidth={3}
-          activeKey={this.state.active}
+          activeKey={this.state.activeKey}
           onSelect={(key) => {
-            this.setState({active: key});
+            this.setState({activeKey: key});
           }}
         >
           <Tab eventKey={1} title="Search Results">
             {videos.length ?
-              <Videos videos={videos} /> :
+              (<Videos
+                videos={videos}
+                playlists={playlists}
+                playlistNames={playlistNames}
+                playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
+                onChange={(name) => this.handleChange(name)}
+                add={actions.addToPlaylist} />) :
               <h1>No Search Results</h1>}
           </Tab>
-          <Tab eventKey={2} title="Tab 2">Tab 2 content</Tab>
-          <Tab eventKey={3} title="Tab 3" disabled>Tab 3 content</Tab>
+          {Object.keys(playlists).map((name, index) => (
+            <Tab eventKey={index+2} title={name} key={index}>
+              <div className="row">
+                <div className="col-md-10">
+                  <h1 style={{lineHeight: 0}}>{name}</h1>
+                </div>
+                <div className="col-md-2">
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => actions.deletePlaylist(name)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <Videos
+                videos={playlists[name]}
+                playlists={playlists}
+                playlistNames={playlistNames}
+                playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
+                onChange={(name) => this.handleChange}
+                add={() => console.log('cant add shit')} />
+            </Tab>
+          ))}
         </Tabs>
         <br />
       </div>
@@ -71,9 +139,12 @@ class Playlists extends Component  {
 }
 
 function mapStateToProps(state) {
+  console.log(state.playlists.playlists);
   return {
     username: state.name.username,
-    videos: state.playlists.videos
+    playlists: state.playlists.playlists,
+    videos: state.playlists.videos,
+    playlistNames: Object.keys(state.playlists.playlists)
   };
 }
 

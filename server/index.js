@@ -26,6 +26,7 @@ const sockets = require('./sockets');
 const homeRoute = require('./routes');
 const authRoute = require('./routes/auth');
 const loginRoute = require('./routes/login');
+const playlistsRoute = require('./routes/playlists');
 const registerRoute = require('./routes/register');
 const searchRoute = require('./routes/search');
 
@@ -76,6 +77,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.get('/', homeRoute);
 app.post('/auth', authRoute);
 app.post('/login', loginRoute);
+app.post('/playlists', playlistsRoute);
 app.post('/register', registerRoute);
 app.post('/search', searchRoute);
 

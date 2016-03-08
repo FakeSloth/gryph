@@ -57,3 +57,25 @@ export function setSearchVideos(videos) {
     videos
   };
 }
+
+export function createPlaylist(name) {
+  return {
+    type: types.CREATE_PLAYLIST,
+    name
+  };
+}
+
+export function deletePlaylist(name) {
+  return {
+    type: types.DELETE_PLAYLIST,
+    name
+  };
+}
+
+export function addToPlaylist(name, video) {
+  return {
+    type: types.ADD_TO_PLAYLIST,
+    name,
+    video
+  };
+}
