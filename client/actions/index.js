@@ -79,3 +79,11 @@ export function addToPlaylist(name, video) {
     video
   };
 }
+
+export function removeFromPlaylist(name, url) {
+  return {
+    type: types.REMOVE_FROM_PLAYLIST,
+    name,
+    url
+  };
+}

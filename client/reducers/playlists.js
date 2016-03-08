@@ -3,9 +3,10 @@ import {
   CREATE_PLAYLIST,
   DELETE_PLAYLIST,
   ADD_TO_PLAYLIST,
+  REMOVE_FROM_PLAYLIST,
   SET_PLAYLISTS
 } from '../constants/ActionTypes';
-import {omit} from 'lodash';
+import {omit, filter} from 'lodash';
 
 const initialState = {
   videos: [],
@@ -37,7 +38,7 @@ function player(state = initialState, action) {
         });
       }
     case ADD_TO_PLAYLIST:
-      if (!state.playlists[action.name]) {
+      if (!state.playlists.hasOwnProperty(action.name)) {
         return state;
       } else {
         return Object.assign({}, state, {
@@ -46,6 +47,17 @@ function player(state = initialState, action) {
               ...state.playlists[action.name],
               action.video
             ]
+          })
+        });
+      }
+    case REMOVE_FROM_PLAYLIST:
+      if (!state.playlists.hasOwnProperty(action.name)) {
+        return state;
+      } else {
+        const playlist = state.playlists[action.name];
+        return Object.assign({}, state, {
+          playlists: Object.assign({}, state.playlists, {
+            [action.name]: filter(playlist, video => video.url !== action.url)
           })
         });
       }

@@ -5,7 +5,7 @@ import {Tabs, Tab, Modal, Button} from 'react-bootstrap';
 import fetch from 'isomorphic-fetch';
 import * as Actions from '../actions';
 import PlaylistInput from '../components/PlaylistInput';
-import Videos from '../components/Videos';
+import PlaylistVideos from '../components/PlaylistVideos';
 
 class Playlists extends Component  {
   constructor(props) {
@@ -19,11 +19,11 @@ class Playlists extends Component  {
   }
 
   close() {
-    this.setState({ showModal: false });
+    this.setState({showModal: false});
   }
 
   open() {
-    this.setState({ showModal: true });
+    this.setState({showModal: true});
   }
 
   searchVideos(term) {
@@ -51,8 +51,6 @@ class Playlists extends Component  {
 
   render() {
     const {username, videos, actions, playlists, playlistNames} = this.props;
-    console.log(this.state.playlist, playlistNames[0]);
-    console.log(this.state.playlist === playlistNames[0]);
 
     return (
       <div>
@@ -98,13 +96,14 @@ class Playlists extends Component  {
         >
           <Tab eventKey={1} title="Search Results">
             {videos.length ?
-              (<Videos
+              (<PlaylistVideos
                 videos={videos}
                 playlists={playlists}
                 playlistNames={playlistNames}
                 playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
                 onChange={(name) => this.handleChange(name)}
-                add={actions.addToPlaylist} />) :
+                add={actions.addToPlaylist}
+                remove={actions.removeFromPlaylist} />) :
               <h1>No Search Results</h1>}
           </Tab>
           {Object.keys(playlists).map((name, index) => (
@@ -122,13 +121,14 @@ class Playlists extends Component  {
                   </button>
                 </div>
               </div>
-              <Videos
+              <PlaylistVideos
                 videos={playlists[name]}
                 playlists={playlists}
                 playlistNames={playlistNames}
                 playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
                 onChange={(name) => this.handleChange}
-                add={() => console.log('cant add shit')} />
+                add={actions.addToPlaylist}
+                remove={actions.removeFromPlaylist} />
             </Tab>
           ))}
         </Tabs>

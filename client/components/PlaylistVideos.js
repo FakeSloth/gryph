@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
-import PlaylistAdd from './PlaylistAdd';
+import PlaylistSelect from './PlaylistSelect';
 
-class Videos extends Component {
+class PlaylistVideos extends Component {
   render() {
-    const {videos, playlists, playlistNames, add, playlist, onChange} = this.props;
-    console.log('WHY', playlist)
+    const {videos, playlists, playlistNames, add, playlist, onChange, remove} = this.props;
 
     const videolist = videos.map((video, index) => (
       <div className="media" key={index}>
@@ -27,12 +26,14 @@ class Videos extends Component {
           </h4>
           <p>Duration: <em>{video.duration}</em></p>
           {playlistNames.length ?
-            <PlaylistAdd
+            <PlaylistSelect
               playlistNames={playlistNames}
+              playlists={playlists}
               video={video}
               onChange={onChange}
               playlist={playlist}
               add={add}
+              remove={remove}
             />
             : <p className="text-info">Create a playlist to add a video.</p>}
         </div>
@@ -43,4 +44,4 @@ class Videos extends Component {
   }
 }
 
-export default Videos;
+export default PlaylistVideos;
