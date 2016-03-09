@@ -3,7 +3,7 @@ import PlaylistSelect from './PlaylistSelect';
 
 class PlaylistVideos extends Component {
   render() {
-    const {videos, playlists, playlistNames, add, playlist, onChange, remove} = this.props;
+    const {videos, playlists, playlistNames, add, playlist, onChange, remove, save} = this.props;
 
     const videolist = videos.map((video, index) => (
       <div className="media" key={index}>
@@ -29,6 +29,7 @@ class PlaylistVideos extends Component {
             <PlaylistSelect
               playlistNames={playlistNames}
               playlists={playlists}
+              save={save}
               video={video}
               onChange={onChange}
               playlist={playlist}

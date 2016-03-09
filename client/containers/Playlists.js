@@ -26,6 +26,30 @@ class Playlists extends Component  {
     this.setState({showModal: true});
   }
 
+  savePlaylists() {
+    const {playlists} = this.props;
+
+    fetch('/playlists', {
+      method: 'post',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        playlists,
+        token: localStorage.getItem('token')
+      })
+    })
+    .then((response) => response.json())
+    .then((res) => {
+      if (!res.success) {
+        console.error('Error saving playlists.');
+      }
+    })
+    .catch(error => console.error(error));
+  }
+
   searchVideos(term) {
     const {actions, playlistNames} = this.props;
 
@@ -80,6 +104,7 @@ class Playlists extends Component  {
               username={username}
               onSubmit={(name) => {
                 actions.createPlaylist(name);
+                setTimeout(() => this.savePlaylists(), 5000);
                 this.close();
               }}
               placeholder="Playlist name"
@@ -102,6 +127,7 @@ class Playlists extends Component  {
                 playlistNames={playlistNames}
                 playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
                 onChange={(name) => this.handleChange(name)}
+                save={() => this.savePlaylists()}
                 add={actions.addToPlaylist}
                 remove={actions.removeFromPlaylist} />) :
               <h1>No Search Results</h1>}
@@ -139,7 +165,7 @@ class Playlists extends Component  {
 }
 
 function mapStateToProps(state) {
-  console.log(state.playlists.playlists);
+  console.log(state.playlists);
   return {
     username: state.name.username,
     playlists: state.playlists.playlists,

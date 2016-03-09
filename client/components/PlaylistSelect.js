@@ -1,7 +1,7 @@
 import React from 'react';
 import {some} from 'lodash';
 
-function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, playlists}) {
+function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, playlists, save}) {
   return (
     <div className="form-group form-inline">
       <select
@@ -20,16 +20,18 @@ function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, 
           onClick={() => {
             console.log(video, video.url);
             remove(playlist, video.url);
+            setTimeout(() => save(), 5000);
           }}
         >
           Remove
         </button>) : (
         <button
-            className="btn btn-default"
-            onClick={() => {
-              add(playlist, video);
-            }}
-          >
+          className="btn btn-default"
+          onClick={() => {
+            add(playlist, video);
+            setTimeout(() => save(), 5000);
+          }}
+        >
             Add
         </button>)}
     </div>

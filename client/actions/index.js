@@ -58,6 +58,13 @@ export function setSearchVideos(videos) {
   };
 }
 
+export function setPlaylists(playlists) {
+  return {
+    type: types.SET_PLAYLISTS,
+    playlists
+  };
+}
+
 export function createPlaylist(name) {
   return {
     type: types.CREATE_PLAYLIST,

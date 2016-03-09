@@ -17,6 +17,7 @@ class Root extends Component {
     socket.on('chat message', (msg) => actions.addMessage(msg));
     socket.on('update messages', (msgs) => actions.updateMessages(msgs));
     socket.on('update userlist', (users) => actions.updateUserList(users));
+    socket.on('update playlists', (playlists) => actions.setPlaylists(playlists || {}));
     socket.on('next video', (video) => {
       const {videoId, host, start} = video;
       actions.startNextVideo(videoId, host, start);
