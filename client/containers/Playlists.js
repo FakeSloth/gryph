@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+/*eslint no-console: 0*/
+import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Tabs, Tab, Modal, Button} from 'react-bootstrap';
@@ -51,7 +52,7 @@ class Playlists extends Component  {
   }
 
   searchVideos(term) {
-    const {actions, playlistNames} = this.props;
+    const {actions} = this.props;
 
     fetch('/search', {
       method: 'post',
@@ -75,6 +76,12 @@ class Playlists extends Component  {
 
   render() {
     const {username, videos, actions, playlists, playlistNames} = this.props;
+
+    if (!username) {
+      return (
+        <h1 className="text-center">Please login to create playlists.</h1>
+      );
+    }
 
     return (
       <div>
@@ -104,7 +111,7 @@ class Playlists extends Component  {
               username={username}
               onSubmit={(name) => {
                 actions.createPlaylist(name);
-                setTimeout(() => this.savePlaylists(), 5000);
+                setTimeout(() => this.savePlaylists(), 1000);
                 this.close();
               }}
               placeholder="Playlist name"
@@ -115,9 +122,7 @@ class Playlists extends Component  {
         <Tabs
           position="left"
           activeKey={this.state.activeKey}
-          onSelect={(key) => {
-            this.setState({activeKey: key});
-          }}
+          onSelect={(key) => this.setState({activeKey: key})}
         >
           <Tab eventKey={1} title="Search Results">
             {videos.length ?
@@ -152,7 +157,8 @@ class Playlists extends Component  {
                 playlists={playlists}
                 playlistNames={playlistNames}
                 playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
-                onChange={(name) => this.handleChange}
+                onChange={(name) => this.handleChange(name)}
+                save={() => this.savePlaylists()}
                 add={actions.addToPlaylist}
                 remove={actions.removeFromPlaylist} />
             </Tab>
@@ -164,8 +170,15 @@ class Playlists extends Component  {
   }
 }
 
+Playlists.propTypes = {
+  actions: PropTypes.object.isRequired,
+  playlists: PropTypes.object.isRequired,
+  playlistNames: PropTypes.array.isRequired,
+  username: PropTypes.string.isRequired,
+  videos: PropTypes.array.isRequired
+};
+
 function mapStateToProps(state) {
-  console.log(state.playlists);
   return {
     username: state.name.username,
     playlists: state.playlists.playlists,

@@ -19,6 +19,10 @@ function player(state = initialState, action) {
       return Object.assign({}, state, {
         videos: action.videos
       });
+    case SET_PLAYLISTS:
+      return Object.assign({}, state, {
+        playlists: action.playlists
+      });
     case CREATE_PLAYLIST:
       if (state.playlists.hasOwnProperty(action.name)) {
         return state;
@@ -61,10 +65,6 @@ function player(state = initialState, action) {
           })
         });
       }
-    case SET_PLAYLISTS:
-      return Object.assign({}, state, {
-        playlists: action.playlists
-      });
     default:
       return state;
   }

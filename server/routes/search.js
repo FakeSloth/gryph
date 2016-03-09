@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const config = require('../config');
-const db = require('../db');
 const got = require('got');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
@@ -14,7 +13,7 @@ const baseUrl = domain + queries + '&key=' + config.googleAPIKey + '&q=';
 
 function search(req, res, next) {
   if (!req.body.term) return;
-  jwt.verify(req.body.token, config.jwtSecret, (err, decoded) => {
+  jwt.verify(req.body.token, config.jwtSecret, (err) => {
     if (err) return next(err);
     let videos = [];
     got(baseUrl + req.body.term)
@@ -28,7 +27,6 @@ function search(req, res, next) {
       .then(response => {
         const json = JSON.parse(response.body);
         if (!json.items.length) return next();
-        console.log(json.items.length, videos.length)
         videos = _.map(videos, (video, index) => {
           const item = json.items[index];
           if (!item) return video;

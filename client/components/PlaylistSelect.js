@@ -1,7 +1,16 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {some} from 'lodash';
 
-function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, playlists, save}) {
+function PlaylistSelect({
+  add,
+  onChange,
+  playlist,
+  playlistNames,
+  playlists,
+  remove,
+  save,
+  video
+}) {
   return (
     <div className="form-group form-inline">
       <select
@@ -18,9 +27,8 @@ function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, 
       (<button
           className="btn btn-danger"
           onClick={() => {
-            console.log(video, video.url);
             remove(playlist, video.url);
-            setTimeout(() => save(), 5000);
+            setTimeout(() => save(), 1000);
           }}
         >
           Remove
@@ -29,7 +37,7 @@ function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, 
           className="btn btn-default"
           onClick={() => {
             add(playlist, video);
-            setTimeout(() => save(), 5000);
+            setTimeout(() => save(), 1000);
           }}
         >
             Add
@@ -37,5 +45,17 @@ function PlaylistSelect({playlistNames, video, onChange, playlist, add, remove, 
     </div>
   );
 }
+
+PlaylistSelect.propTypes = {
+  add: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  playlist: PropTypes.string.isRequired,
+  playlists: PropTypes.object.isRequired,
+  playlistNames: PropTypes.array.isRequired,
+  remove: PropTypes.func.isRequired,
+  save: PropTypes.func.isRequired,
+  video: PropTypes.object.isRequired,
+  videos: PropTypes.array.isRequired
+};
 
 export default PlaylistSelect;

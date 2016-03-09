@@ -4,7 +4,7 @@ const config = require('../config');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 
-function playlists(req, res) {
+function playlists(req, res, next) {
   if (!req.body.playlists) return;
   jwt.verify(req.body.token, config.jwtSecret, (err, decoded) => {
     if (err) return next(err);

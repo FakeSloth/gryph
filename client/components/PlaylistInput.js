@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 
-const PlaylistInput = ({username, placeholder, onSubmit, clear}) => {
+const PlaylistInput = ({username, placeholder, onSubmit}) => {
   let input;
 
   return (
@@ -11,7 +11,6 @@ const PlaylistInput = ({username, placeholder, onSubmit, clear}) => {
       if (!username) return;
       if (text.length > 300) return;
       onSubmit(text);
-      if (clear) input.text = '';
     }}>
       <input type="text"
              className="form-control"
@@ -21,6 +20,12 @@ const PlaylistInput = ({username, placeholder, onSubmit, clear}) => {
              }} />
     </form>
   );
+};
+
+PlaylistInput.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired
 };
 
 export default PlaylistInput;
