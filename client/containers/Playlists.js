@@ -12,7 +12,7 @@ class Playlists extends Component  {
   constructor(props) {
     super(props);
 
-    this.state = {activeKey: 1, showModal: false, playlist: ''};
+    this.state = {activeKey: 1, showModal: false, playlist: '', loading: false};
   }
 
   handleChange(name) {
@@ -69,7 +69,7 @@ class Playlists extends Component  {
     .then((response) => response.json())
     .then((res) => {
       actions.setSearchVideos(res.videos);
-      this.setState({activeKey: 1});
+      this.setState({activeKey: 1, loading: false});
     })
     .catch(error => console.error(error));
   }
@@ -97,7 +97,10 @@ class Playlists extends Component  {
           <div className="col-md-10">
             <PlaylistInput
               username={username}
-              onSubmit={(term) => this.searchVideos(term)}
+              onSubmit={(term) => {
+                this.setState({loading: true});
+                this.searchVideos(term);
+              }}
               placeholder="Search YouTube Videos"
             />
           </div>
@@ -125,7 +128,7 @@ class Playlists extends Component  {
           onSelect={(key) => this.setState({activeKey: key})}
         >
           <Tab eventKey={1} title="Search Results">
-            {videos.length ?
+            {!this.state.loading ? (videos.length ?
               (<PlaylistVideos
                 videos={videos}
                 playlists={playlists}
@@ -135,7 +138,7 @@ class Playlists extends Component  {
                 save={() => this.savePlaylists()}
                 add={actions.addToPlaylist}
                 remove={actions.removeFromPlaylist} />) :
-              <h1>No Search Results</h1>}
+              <h1>No Search Results</h1>) : <h1>Loading...</h1>}
           </Tab>
           {Object.keys(playlists).map((name, index) => (
             <Tab eventKey={index+2} title={name} key={index}>
