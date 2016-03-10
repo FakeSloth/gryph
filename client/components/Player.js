@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 import Video from './Video';
 import VideoInput from './VideoInput';
+import WaitList from './WaitList';
 import hashColor from '../../hashColor';
 
 const Player = (props) => {
@@ -23,6 +24,7 @@ const Player = (props) => {
         </div>
       )}
       <VideoInput {...props} />
+      <WaitList {...props} />
     </div>
   );
 };
@@ -30,14 +32,21 @@ const Player = (props) => {
 Player.propTypes = {
   addMessage: PropTypes.func.isRequired,
   addVideo: PropTypes.func.isRequired,
+  emitPlaylist: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  playlist: PropTypes.string.isRequired,
+  playlistNames: PropTypes.array.isRequired,
+  playlists: PropTypes.object.isRequired,
   setAllowSeek: PropTypes.func.isRequired,
+  setWaitList: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired,
   video: PropTypes.shape({
     allowSeek: PropTypes.bool.isRequired,
     host: PropTypes.string.isRequired,
     start: PropTypes.number.isRequired,
-    videoId: PropTypes.string.isRequired
-  }).isRequired
+    videoId: PropTypes.string.isRequired,
+  }).isRequired,
+  waitList: PropTypes.string.isRequired
 };
 
 export default Player;

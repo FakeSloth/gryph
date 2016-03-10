@@ -94,3 +94,10 @@ export function removeFromPlaylist(name, url) {
     url
   };
 }
+
+export function setWaitList(waitList) {
+  return {
+    type: types.SET_WAIT_LIST,
+    waitList
+  };
+}

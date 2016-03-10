@@ -1,15 +1,18 @@
 'use strict';
 
 const Parser = require('./parser');
+const Users = require('./users');
 const config = require('./config');
 const createCommandsAPI = require('./commands');
 const db = require('./db');
+const toId = require('toid');
 
 const addUser = require('./events/addUser');
 const addVideo = require('./events/addVideo');
 const chatMessage = require('./events/chatMessage');
 const initialLoad = require('./events/initialLoad');
 const removeUser = require('./events/removeUser');
+const selectPlaylist = require('./events/selectPlaylist');
 
 let socketStore = {
   chatHistory: db('chat').get('lobby', []),
@@ -26,6 +29,20 @@ let socketStore = {
   nextVideo() {
     const video = this.videoQueue.pop();
     delete this.videoQueueIps[video.ip];
+    if (video.inPlaylist) {
+      const user = Users.get(toId(video.host));
+      const nextVid = user.updatePlaylist(true);
+      if (nextVid) {
+        this.videoQueue.unshift({
+          videoId: nextVid.videoId,
+          host: user.name,
+          ip: user.ip,
+          duration: nextVid.duration,
+          inPlaylist: true
+        });
+        this.videoQueueIps[user.ip] = true;
+      }
+    }
     this.currentVideo = {
       videoId: video.videoId,
       host: video.host,
@@ -71,6 +88,7 @@ function sockets(io) {
     socket.on('disconnect', removeUser.bind(null, io, socket));
     socket.on('initial load', initialLoad.bind(null, socket, socketStore));
     socket.on('logout', removeUser.bind(null, io, socket));
+    socket.on('select playlist', selectPlaylist.bind(null, socket, socketStore));
   });
 }
 

@@ -1,0 +1,3 @@
+export const JOIN_WAIT_LIST = 'JOIN_WAIT_LIST';
+export const CHOOSE_PLAYLIST = 'CHOOSE_PLAYLIST';
+export const LEAVE_WAIT_LIST = 'LEAVE_WAIT_LIST';

@@ -3,6 +3,7 @@
 const toId = require('toid');
 const db = require('./db');
 const ranks = require('./config').ranks;
+const _ = require('lodash');
 
 let users = {};
 let mutedUsers = {};
@@ -28,6 +29,9 @@ class User {
 
     this.rank = db('ranks').get(this.userId, 0);
     this.rankDisplay = ranks[this.rank];
+
+    this.previousVideos = [];
+    this.playlist = [];
   }
 
   mute(ms) {
@@ -67,6 +71,29 @@ class User {
     this.rank = rank;
     this.rankDisplay = ranks[rank];
     db('ranks').set(this.userId, rank);
+  }
+
+  updatePlaylist(playlist) {
+    if (!playlist) {
+      this.playlist = [];
+      return;
+    } else if (!this.playlist.length && playlist === true) {
+      return false;
+    } else if (!this.playlist.length) {
+      this.playlist = playlist;
+    }
+
+    let randIndex = _.random(0, this.playlist.length - 1);
+    let videoId = this.playlist[randIndex].url.split('=')[1];
+    while (this.previousVideos.indexOf(videoId) >= 0 && this.playlist.length) {
+      this.playlist.splice(randIndex, 1);
+      randIndex = _.random(0, this.playlist.length - 1);
+      videoId = this.playlist[randIndex].url.split('=')[1];
+    }
+    let duration = this.playlist[randIndex].ms;
+    this.previousVideos.push(videoId);
+    this.playlist.splice(randIndex, 1);
+    return {videoId, duration};
   }
 }
 

@@ -11,6 +11,7 @@ function PlaylistSelect({
   save,
   video
 }) {
+  console.log('selected', playlist);
   return (
     <div className="form-group form-inline">
       <select
@@ -23,6 +24,7 @@ function PlaylistSelect({
         ))}
       </select>
       {' '}
+      {console.log(playlist, playlists[playlist], some(playlists[playlist], {url: video.url}))}
       {some(playlists[playlist], {url: video.url}) ?
       (<button
           className="btn btn-danger"

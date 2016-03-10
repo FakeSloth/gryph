@@ -36,6 +36,7 @@ function search(req, res, next) {
           const minutes = md.minutes() ? (md.minutes() < 10 ? '0' + md.minutes() : md.minutes()) + ':' : '0:';
           const seconds = md.seconds() ? (md.seconds() < 10 ? '0' + md.seconds() : md.seconds()) : '';
           video.duration = hours + minutes + seconds;
+          video.ms = md.asMilliseconds();
           return video;
         });
         res.json({videos});

@@ -8,6 +8,7 @@ export const UPDATE_USER_LIST = 'UPDATE_USER_LIST';
 
 export const START_NEXT_VIDEO = 'START_NEXT_VIDEO';
 export const SET_ALLOW_SEEK = 'SET_ALLOW_SEEK';
+export const SET_WAIT_LIST = 'SET_WAIT_LIST';
 
 export const SET_SEARCH_VIDEOS = 'SET_SEARCH_VIDEOS';
 
