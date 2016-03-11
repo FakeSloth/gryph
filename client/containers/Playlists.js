@@ -135,6 +135,7 @@ class Playlists extends Component  {
                 playlistNames={playlistNames}
                 playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
                 onChange={(name) => this.handleChange(name)}
+                displaySelect={true}
                 save={() => this.savePlaylists()}
                 add={actions.addToPlaylist}
                 remove={actions.removeFromPlaylist} />) :
@@ -159,9 +160,10 @@ class Playlists extends Component  {
                 videos={playlists[name]}
                 playlists={playlists}
                 playlistNames={playlistNames}
-                playlist={this.state.playlist || (playlistNames.length ? playlistNames[0] : '')}
+                playlist={playlistNames[index]}
                 onChange={(name) => this.handleChange(name)}
                 save={() => this.savePlaylists()}
+                displaySelect={false}
                 add={actions.addToPlaylist}
                 remove={actions.removeFromPlaylist} />
             </Tab>

@@ -3,6 +3,7 @@ import {some} from 'lodash';
 
 function PlaylistSelect({
   add,
+  displaySelect,
   onChange,
   playlist,
   playlistNames,
@@ -11,20 +12,20 @@ function PlaylistSelect({
   save,
   video
 }) {
-  console.log('selected', playlist);
   return (
     <div className="form-group form-inline">
-      <select
-        className="form-control"
-        value={playlist}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {playlistNames.map((name, index) => (
-          <option value={name} key={index}>{name}</option>
-        ))}
-      </select>
+      {displaySelect ? (
+        <select
+          className="form-control"
+          value={playlist}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          {playlistNames.map((name, index) => (
+            <option value={name} key={index}>{name}</option>
+          ))}
+        </select>
+      ) : null}
       {' '}
-      {console.log(playlist, playlists[playlist], some(playlists[playlist], {url: video.url}))}
       {some(playlists[playlist], {url: video.url}) ?
       (<button
           className="btn btn-danger"
