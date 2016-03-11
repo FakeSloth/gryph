@@ -77,7 +77,7 @@ class Playlists extends Component  {
   render() {
     const {username, videos, actions, playlists, playlistNames} = this.props;
 
-    if (!username) {
+    if (!username || !localStorage.getItem('token')) {
       return (
         <h1 className="text-center">Please login to create playlists.</h1>
       );
