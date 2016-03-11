@@ -8,7 +8,19 @@ function messages(state = [], action) {
         action.message
       ];
     case UPDATE_MESSAGES:
-      return action.messages;
+      return [
+        ...action.messages,
+        {
+          text: `
+            <div class="text-center welcome">
+              <h4>Welcome to gryph!</h3>
+              <p>A video sharing chat application. (Plug.dj clone)</p>
+              <p><strong>Update: </strong>Playlists are added! - CreaturePhil</p>
+            </div>
+          `,
+          html: true
+        }
+      ];
     default:
       return state;
   }

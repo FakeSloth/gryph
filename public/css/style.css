@@ -33,3 +33,9 @@ img {
 	background: rgb(25, 128, 235);
 	color: rgb(255, 255, 255);
 }
+
+.welcome {
+	border: 1px solid #0074D9;
+	padding: 10px;
+	margin-bottom: 2px;
+}
