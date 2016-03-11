@@ -1,12 +1,10 @@
 'use strict';
 
 const Users = require('../users');
-const config = require('../config');
 const isObject = require('lodash/isObject');
 
 function selectPlaylist(socket, socketStore, playlist) {
   if (!socket.userId) return;
-  console.log(playlist);
   if (!playlist || (isObject(playlist) && !Object.keys(playlist).length)) {
     return Users.get(socket.userId).updatePlaylist();
   }

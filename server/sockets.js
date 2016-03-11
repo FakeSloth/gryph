@@ -32,7 +32,7 @@ let socketStore = {
     if (video.inPlaylist) {
       const user = Users.get(toId(video.host));
       const nextVid = user.updatePlaylist(true);
-      if (nextVid) {
+      if (nextVid && (nextVid.duration < config.videoLimit || user.rank >= 4)) {
         this.videoQueue.unshift({
           videoId: nextVid.videoId,
           host: user.name,

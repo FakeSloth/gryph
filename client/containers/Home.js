@@ -18,7 +18,7 @@ class Home extends Component {
   }
 
   render () {
-    const {messages, actions, userList, username, video, waitList, playlists, playlistNames} = this.props;
+    const {messages, actions, userList, username, video, playlists, playlistNames} = this.props;
 
     return (
       <div className="row">

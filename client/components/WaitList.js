@@ -40,7 +40,6 @@ function WaitList({emitPlaylist, onChange, playlist, playlistNames, playlists, s
         <Button
           bsStyle="primary"
           onClick={() => {
-            console.log(playlist)
             emitPlaylist(playlists[playlist]);
             setWaitList(LEAVE_WAIT_LIST);
           }}
@@ -91,7 +90,7 @@ WaitList.propTypes = {
     allowSeek: PropTypes.bool.isRequired,
     host: PropTypes.string.isRequired,
     start: PropTypes.number.isRequired,
-    videoId: PropTypes.string.isRequired,
+    videoId: PropTypes.string.isRequired
   }).isRequired,
   waitList: PropTypes.string.isRequired
 };
