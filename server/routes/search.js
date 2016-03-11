@@ -8,7 +8,7 @@ const moment = require('moment');
 const winston = require('winston');
 
 const domain = 'https://www.googleapis.com/youtube/v3/search';
-const queries = '?part=snippet&maxResults=20';
+const queries = '?part=snippet&maxResults=20&type=video';
 const baseUrl = domain + queries + '&key=' + config.googleAPIKey + '&q=';
 
 function search(req, res, next) {
