@@ -145,7 +145,7 @@ class Playlists extends Component  {
             <Tab eventKey={index+2} title={name} key={index}>
               <div className="row">
                 <div className="col-md-10">
-                  <h1 style={{lineHeight: 0}}>{name}</h1>
+                  <h1 style={{lineHeight: 0}}>{name} - {playlists[name].length} {playlists[name].length === 1 ? 'video' : 'videos'}</h1>
                 </div>
                 <div className="col-md-2">
                   <button
