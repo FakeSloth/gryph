@@ -51,6 +51,7 @@ function PlaylistSelect({
 
 PlaylistSelect.propTypes = {
   add: PropTypes.func.isRequired,
+  displaySelect: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   playlist: PropTypes.string.isRequired,
   playlists: PropTypes.object.isRequired,

@@ -98,7 +98,7 @@ class Playlists extends Component  {
             <PlaylistInput
               username={username}
               onSubmit={(term) => {
-                this.setState({loading: true});
+                this.setState({activeKey: 1, loading: true});
                 this.searchVideos(term);
               }}
               placeholder="Search YouTube Videos"
