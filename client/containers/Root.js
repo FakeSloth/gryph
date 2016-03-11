@@ -15,7 +15,20 @@ class Root extends Component {
     const actions = bindActionCreators(Actions, this.props.store.dispatch);
 
     socket.on('chat message', (msg) => actions.addMessage(msg));
-    socket.on('update messages', (msgs) => actions.updateMessages(msgs));
+    socket.on('update messages', (msgs) => {
+      actions.updateMessages(msgs);
+      actions.addMessage({
+        text: `
+          <div style="border: 1px solid #0074D9; padding: 10px" class="text-center">
+            <h4>Welcome to gryph!</h3>
+            <p>A video sharing chat application. (Plug.dj clone)</p>
+              <strong>Update: </strong>Playlists are added! - CreaturePhil
+            </div>
+          </div>
+        `,
+        html: true
+      });
+    });
     socket.on('update userlist', (users) => actions.updateUserList(users));
     socket.on('update playlists', (playlists) => actions.setPlaylists(playlists || {}));
     socket.on('next video', (video) => {
