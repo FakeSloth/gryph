@@ -14,7 +14,7 @@ $ cd gryph && npm install
 $ npm start
 ```
 
-## Directory Layout
+## Project Structure
 ```
 .
 ├── client/
@@ -75,6 +75,25 @@ $ npm start
 ├── hashColor.js                # User name color hashes
 ├── package.json                # The list of 3rd party libraries and utilities
 └── webpack.config.js           # Configurations for client-side and server-side bundles
+```
+
+## Scripts
+
+```
+# runs eslint on client and server files
+$ npm run lint
+
+# Test chat commands
+$ npm run test:commands
+
+# Test server routes
+$ npm run test:server
+
+# Run all three above
+$ npm test
+
+# Creates bundle.js
+$ npm run build
 ```
 
 ## License
