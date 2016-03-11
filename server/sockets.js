@@ -29,8 +29,8 @@ let socketStore = {
   nextVideo() {
     const video = this.videoQueue.pop();
     delete this.videoQueueIps[video.ip];
-    if (video.inPlaylist) {
-      const user = Users.get(toId(video.host));
+    const user = Users.get(toId(video.host));
+    if (video.inPlaylist && user) {
       const nextVid = user.updatePlaylist(true);
       if (nextVid && (nextVid.duration < config.videoLimit || user.rank >= 4)) {
         this.videoQueue.unshift({
