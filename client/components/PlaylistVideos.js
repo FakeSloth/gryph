@@ -12,7 +12,7 @@ function PlaylistVideos(props) {
             className="media-object"
             src={video.image}
             alt={video.title}
-            width={150}
+            width={170}
             height={100}
           />
         </a>
