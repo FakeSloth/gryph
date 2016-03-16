@@ -5,6 +5,8 @@ const Users = require('../users');
 const toId = require('toid');
 const escapeHtml = require('../escapeHtml');
 const hashColor = require('../../hashColor');
+const db = require('./../db');
+const ranks = require('../config').rankNames;
 
 module.exports = {
   hello(target, room, user) {
@@ -110,7 +112,7 @@ module.exports = {
     );
 
     if (!buffer.length) buffer = 'No authority present.';
-    this.sendHtml(`<div class='text-center welcome'>Gryph Authority List:<br /><br />` + buffer.join('<br /><br />') + `</div>`);
+    this.sendHtml(`<div class='text-center welcome'>Gryph Authority List:<br /><br />${buffer.join('<br /><br />')}</div>`);
   },
 
   'memusage': 'memoryusage',
