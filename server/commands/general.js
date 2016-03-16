@@ -91,6 +91,27 @@ module.exports = {
       - CreaturePhil - Design and Development\n
       - fender - Development</br>`);
   },
+  
+  auth(target, room, user) {
+    const allRanks = db('ranks').object();
+    let rankLists = {};
+
+    for (let name in allRanks) {
+      for (let rank in ranks) {
+        if (!rankLists[rank]) rankLists[rank] = [];        
+        if (allRanks[name] === ranks[rank]) rankLists[rank].push(name);
+      }
+    }
+
+    let buffer = Object.keys(rankLists).sort((a, b) =>
+      (ranks[a] < ranks[b]
+    )).map(r =>
+      (ranks[r] ? r + 's (' + r + ')' : r) + ':<br />' + rankLists[r].join(', ')
+    );
+
+    if (!buffer.length) buffer = 'No authority present.';
+    this.sendHtml(`<div class='text-center welcome'>Gryph Authority List:<br /><br />` + buffer.join('<br /><br />') + `</div>`);
+  },
 
   'memusage': 'memoryusage',
   memoryusage: function (target) {
