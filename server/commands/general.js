@@ -99,21 +99,24 @@ module.exports = {
     const allRanks = db('ranks').object();
     let rankNames = _.invert(ranks);
     let rankLists = {};
-
     _.forIn(allRanks, function(value, key) {
       if (!rankLists[rankNames[value]]) rankLists[rankNames[value]] = [];
-      if (allRanks[key] === value) rankLists[rankNames[value]].push(`<font color="${hashColor(key)}">${key}</font>`);
+      if (allRanks[key] === value) {
+        const arr = rankLists[rankNames[value]];
+        arr.push(`<b><font color="${hashColor(key)}">${key}</font></b>`);
+      }
     });
-
-    let buffer = Object.keys(rankLists).sort((a, b) =>
-      (ranks[a] < ranks[b]
-    )).map(r =>
-      (ranks[r] ? r + 's (' + r + ')' : r) + ':<br />' + rankLists[r].join(', ')
-    );
+    let buffer = _.keys(rankLists).sort((a, b) => ranks[a] < ranks[b])
+      .map(r =>
+        (ranks[r] ? r + 's (' + r + ')' : r) + ':<br />' + rankLists[r].join(', ')
+      );
     if (!buffer.length) buffer = 'No authority present.';
-    this.sendHtml(`<div class='text-center welcome'>Gryph Authority List:<br /><br />${buffer.join('<br /><br />')}</div>`);
+    this.sendHtml(`
+      <div class='text-center welcome'>Gryph Authority List:<br /><br />
+      ${buffer.join('<br /><br />')}</div>
+    `);
   },
-  
+
   'memusage': 'memoryusage',
   memoryusage: function (target) {
     if (!this.isRank('staff')) return;
