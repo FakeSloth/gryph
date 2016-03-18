@@ -108,7 +108,7 @@ module.exports = {
     let buffer = Object.keys(rankLists).sort((a, b) =>
       (ranks[a] < ranks[b]
     )).map(r =>
-      (ranks[r] ? r + 's (' + r + ')' : r) + ':\n' + rankLists[r].join(', ')
+      (ranks[r] ? r + 's (' + r + ')' : r) + ':<br />' + rankLists[r].join(', ')
     );
     if (!buffer.length) buffer = 'No authority present.';
     this.sendHtml(`<div class='text-center welcome'>Gryph Authority List:<br /><br />${buffer.join('<br /><br />')}</div>`);
