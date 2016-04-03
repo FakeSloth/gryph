@@ -1,39 +1,25 @@
 import * as types from '../constants/ActionTypes';
 
-export function addMessage(message) {
-  return {
-    type: types.ADD_MESSAGE,
-    message
+function createAction(type, paramName) {
+  return function(param) {
+    return {
+      type,
+      [paramName]: param,
+    };
   };
 }
 
-export function updateMessages(messages) {
-  return {
-    type: types.UPDATE_MESSAGES,
-    messages
-  };
-}
-
-export function setUsername(name) {
-  return {
-    type: types.SET_USERNAME,
-    name
-  };
-}
-
-export function setChooseName(chooseName) {
-  return {
-    type: types.SET_CHOOSE_NAME,
-    chooseName
-  };
-}
-
-export function updateUserList(users) {
-  return {
-    type: types.UPDATE_USER_LIST,
-    users
-  };
-}
+export const addMessage = createAction(types.ADD_MESSAGE, 'message');
+export const updateMessages = createAction(types.UPDATE_MESSAGES, 'messages');
+export const setUsername = createAction(types.SET_USERNAME, 'name');
+export const setChooseName = createAction(types.SET_CHOOSE_NAME, 'chooseName');
+export const updateUserList = createAction(types.UPDATE_USER_LIST, 'users');
+export const setAllowSeek = createAction(types.SET_ALLOW_SEEK, 'allowSeek');
+export const setSearchVideos = createAction(types.SET_SEARCH_VIDEOS, 'videos');
+export const setPlaylists = createAction(types.SET_PLAYLISTS, 'playlists');
+export const createPlaylist = createAction(types.CREATE_PLAYLIST, 'name');
+export const deletePlaylist = createAction(types.DELETE_PLAYLIST, 'name');
+export const setWaitList = createAction(types.SET_WAIT_LIST, 'waitList');
 
 export function startNextVideo(videoId, host, start) {
   return {
@@ -41,41 +27,6 @@ export function startNextVideo(videoId, host, start) {
     videoId,
     host,
     start
-  };
-}
-
-export function setAllowSeek(allowSeek) {
-  return {
-    type: types.SET_ALLOW_SEEK,
-    allowSeek
-  };
-}
-
-export function setSearchVideos(videos) {
-  return {
-    type: types.SET_SEARCH_VIDEOS,
-    videos
-  };
-}
-
-export function setPlaylists(playlists) {
-  return {
-    type: types.SET_PLAYLISTS,
-    playlists
-  };
-}
-
-export function createPlaylist(name) {
-  return {
-    type: types.CREATE_PLAYLIST,
-    name
-  };
-}
-
-export function deletePlaylist(name) {
-  return {
-    type: types.DELETE_PLAYLIST,
-    name
   };
 }
 
@@ -92,12 +43,5 @@ export function removeFromPlaylist(name, url) {
     type: types.REMOVE_FROM_PLAYLIST,
     name,
     url
-  };
-}
-
-export function setWaitList(waitList) {
-  return {
-    type: types.SET_WAIT_LIST,
-    waitList
   };
 }
