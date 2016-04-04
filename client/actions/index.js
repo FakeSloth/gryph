@@ -4,7 +4,7 @@ function createAction(type, paramName) {
   return function(param) {
     return {
       type,
-      [paramName]: param,
+      [paramName]: param
     };
   };
 }

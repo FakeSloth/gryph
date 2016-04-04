@@ -130,24 +130,25 @@ module.exports = {
     this.sendReply('Main process. RSS: ' + results[0] + '. Heap: ' + results[1] + ' / ' + results[2] + '.');
   },
 
+  help: 'commandlist',
   commands: 'commandlist',
   cmdlist: 'commandlist',
   commandlist(target, room, user) {
-    let cmdlist = `- /queue: Shows the order for songs to be played.\n
-      - /ranks OR /staff: Explanation of the staff and moderator groups.\n
-      - /me: Say a message in the third person.\n
-      - /git: Links to the project github repository.\n
-      - /credits: Credits the Gryph development team.\n`;
+    let cmdlist = `- /queue: Shows the order for songs to be played.<br>
+      - /ranks OR /staff: Explanation of the staff and moderator groups.<br>
+      - /me: Say a message in the third person.<br>
+      - /git: Links to the project github repository.<br>
+      - /credits: Credits the Gryph development team.<br>`;
     if (!this.isRank('mod', true)) {
-      this.sendReply(cmdlist);
+      this.sendHtml(cmdlist);
       return;
     } else {
-      cmdlist += `- /declare: Declare a large message. Used for making announcments.\n
-      - /announce or /wall: Highlight and important message in blue.\n
-      - /skip: Skips to the next video in the cue.\n
-      - /ip: Displays the ip address of a target user.\n
+      cmdlist += `- /declare: Declare a large message. Used for making announcments.<br>
+      - /announce or /wall: Highlight and important message in blue.<br>
+      - /skip: Skips to the next video in the cue.<br>
+      - /ip: Displays the ip address of a target user.<br>
       - Promotion: /[rank] Promotes a user to a target rank.`;
-      this.sendReply(cmdlist);
+      this.sendHtml(cmdlist);
     }
   }
 };
