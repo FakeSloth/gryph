@@ -1,4 +1,6 @@
 const config = require('./config');
-const db = require(config.database.name)(config.database.location);
+const db = require('origindb')(config.database.location, {
+  adapter: config.database.name
+});
 
 module.exports = db;

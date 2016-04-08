@@ -26,7 +26,6 @@
     "hbs": "^4.0.0",
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.9.0",
-    "machdb": "^1.0.0",
     "moment": "^2.12.0",
     "morgan": "^1.7.0",
     "origindb": "^2.6.1",

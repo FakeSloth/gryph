@@ -9,7 +9,7 @@ config.googleAPIKey = process.env.GOOGLE_API_KEY || 'AIzaSyDYwPzLevXauI-kTSVXTLr
 config.jwtSecret = process.env.JWT_SECRET || 'super secret';
 
 config.database = {
-  name: process.env.DATABASE || 'origindb' || 'machdb',
+  name: process.env.DATABASE || 'files' || 'mongo',
   location: process.env.DATABASE_LOCATION || 'db' || 'mongodb://localhost:27017/myproject'
 };
 
