@@ -15,11 +15,6 @@ const path = require('path');
 const socketio = require('socket.io');
 const winston = require('winston');
 
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const webpackConfig = require('../webpack.config');
-
 const config = require('./config');
 const sockets = require('./sockets');
 
@@ -52,11 +47,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 if (config.isDev) {
-  // compile react components
-  const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
-  app.use(webpackHotMiddleware(compiler));
-
   // turn on console logging
   app.use(logger('dev'));
 }
